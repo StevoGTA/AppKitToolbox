@@ -152,7 +152,7 @@ static	CVReturn	sDisplayLinkOutputCallback(CVDisplayLinkRef displayLink, const C
 	// Cleanup
 	[self removePeriodic];
 
-	DisposeOf(self.gpuInternal);
+	Delete(self.gpuInternal);
 }
 
 // MARK: NSResponder methods
