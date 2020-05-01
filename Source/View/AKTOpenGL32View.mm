@@ -288,7 +288,7 @@ CVReturn sDisplayLinkOutputCallback(CVDisplayLinkRef displayLink, const CVTimeSt
 
 			// Setup
 			SOpenGLGPUSetupInfo	openGLGPUSetupInfo(openGLView.contentsScale);
-			openGLView.gpu.setup(S2DSize32(openGLView.size.width, openGLView.size.height), &openGLGPUSetupInfo);
+			openGLView.gpu.setup(S2DSizeF32(openGLView.size.width, openGLView.size.height), &openGLGPUSetupInfo);
 
 			// Call proc
 			openGLView.periodicProc(
