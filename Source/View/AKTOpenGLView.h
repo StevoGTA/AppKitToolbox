@@ -5,8 +5,6 @@
 #pragma once
 
 #import "AKTGPUView.h"
-#import "CGPU.h"
-#import "TimeAndDate.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

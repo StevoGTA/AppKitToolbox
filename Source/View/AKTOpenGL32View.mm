@@ -13,6 +13,8 @@
 static	void		sAcquireContextProc(AKTOpenGLView* openGLView);
 static	bool		sTryAcquireContextProc(AKTOpenGLView* openGLView);
 static	void		sReleaseContextProc(AKTOpenGLView* openGLView);
+static	S2DSizeU16	sGetSizeProc(AKTOpenGLView* openGLView);
+static	Float32		sGetScaleProc(AKTOpenGLView* openGLView);
 static	CVReturn	sDisplayLinkOutputCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* inNow,
 							const CVTimeStamp* inOutputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut,
 							void* context);
@@ -42,76 +44,6 @@ static	CVReturn	sDisplayLinkOutputCallback(CVDisplayLinkRef displayLink, const C
 
 @synthesize periodicProc;
 
-// MARK: SceneAppGPUView methods
-
-//----------------------------------------------------------------------------------------------------------------------
-- (CGPU&) gpu
-{
-	return *self.gpuInternal;
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-- (void) installPeriodic
-{
-	// Check display link ref
-	if (self.displayLinkRef == nil) {
-		// Create
-		CVDisplayLinkRef	displayLinkRef;
-		CVReturn			error;
-		error = CVDisplayLinkCreateWithActiveCGDisplays(&displayLinkRef);
-		if (error != kCVReturnSuccess) {
-			CLogServices::logError(
-					CString(OSSTR("CVDisplayLinkCreateWithActiveCGDisplays() returned error ")) + CString(error));
-
-			return;
-		}
-
-		// Store
-		self.displayLinkRef = displayLinkRef;
-
-		// Set output callback
-		error = CVDisplayLinkSetOutputCallback(self.displayLinkRef, sDisplayLinkOutputCallback, (__bridge void*) self);
-		if (error != kCVReturnSuccess) {
-			CLogServices::logError(CString(OSSTR("CVDisplayLinkSetOutputCallback() returned error ")) + CString(error));
-
-			return;
-		}
-
-		// Set current CGDisplay from OpenGL context
-		error =
-				CVDisplayLinkSetCurrentCGDisplayFromOpenGLContext(self.displayLinkRef, self.openGLContext.CGLContextObj,
-						self.pixelFormat.CGLPixelFormatObj);
-		if (error != kCVReturnSuccess) {
-			CLogServices::logError(
-					CString(OSSTR("CVDisplayLinkSetCurrentCGDisplayFromOpenGLContext() returned error ")) +
-							CString(error));
-
-			return;
-		}
-
-		// Start
-		error = CVDisplayLinkStart(self.displayLinkRef);
-		if (error != kCVReturnSuccess) {
-			CLogServices::logError(CString(OSSTR("CVDisplayLinkStart() returned error ")) + CString(error));
-
-			return;
-		}
-	}
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-- (void) removePeriodic
-{
-	// Lock to make sure we are not removing while in output callback
-	[self.displayLinkLock lock];
-	CVDisplayLinkStop(self.displayLinkRef);
-	CVDisplayLinkRelease(self.displayLinkRef);
-	[self.displayLinkLock unlock];
-
-	// Clear
-	self.displayLinkRef = nil;
-}
-
 // MARK: Lifecycle methods
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -140,7 +72,9 @@ static	CVReturn	sDisplayLinkOutputCallback(CVDisplayLinkRef displayLink, const C
 				new CGPU(
 						CGPUProcsInfo((COpenGLGPUAcquireContextProc) sAcquireContextProc,
 								(COpenGLGPUTryAcquireContextProc) sTryAcquireContextProc,
-								(COpenGLGPUReleaseContextProc) sReleaseContextProc, (__bridge void*) self));
+								(COpenGLGPUReleaseContextProc) sReleaseContextProc,
+								(COpenGLGPUGetSizeProc) sGetSizeProc, (COpenGLGPUGetScaleProc) sGetScaleProc,
+								(__bridge void*) self));
 	}
 
 	return self;
@@ -217,6 +151,76 @@ static	CVReturn	sDisplayLinkOutputCallback(CVDisplayLinkRef displayLink, const C
 	[self.openGLContext setValues:&swapInt forParameter:NSOpenGLCPSwapInterval];
 }
 
+// MARK: AKTGPUView methods
+
+//----------------------------------------------------------------------------------------------------------------------
+- (CGPU&) gpu
+{
+	return *self.gpuInternal;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) installPeriodic
+{
+	// Check display link ref
+	if (self.displayLinkRef == nil) {
+		// Create
+		CVDisplayLinkRef	displayLinkRef;
+		CVReturn			error;
+		error = CVDisplayLinkCreateWithActiveCGDisplays(&displayLinkRef);
+		if (error != kCVReturnSuccess) {
+			CLogServices::logError(
+					CString(OSSTR("CVDisplayLinkCreateWithActiveCGDisplays() returned error ")) + CString(error));
+
+			return;
+		}
+
+		// Store
+		self.displayLinkRef = displayLinkRef;
+
+		// Set output callback
+		error = CVDisplayLinkSetOutputCallback(self.displayLinkRef, sDisplayLinkOutputCallback, (__bridge void*) self);
+		if (error != kCVReturnSuccess) {
+			CLogServices::logError(CString(OSSTR("CVDisplayLinkSetOutputCallback() returned error ")) + CString(error));
+
+			return;
+		}
+
+		// Set current CGDisplay from OpenGL context
+		error =
+				CVDisplayLinkSetCurrentCGDisplayFromOpenGLContext(self.displayLinkRef, self.openGLContext.CGLContextObj,
+						self.pixelFormat.CGLPixelFormatObj);
+		if (error != kCVReturnSuccess) {
+			CLogServices::logError(
+					CString(OSSTR("CVDisplayLinkSetCurrentCGDisplayFromOpenGLContext() returned error ")) +
+							CString(error));
+
+			return;
+		}
+
+		// Start
+		error = CVDisplayLinkStart(self.displayLinkRef);
+		if (error != kCVReturnSuccess) {
+			CLogServices::logError(CString(OSSTR("CVDisplayLinkStart() returned error ")) + CString(error));
+
+			return;
+		}
+	}
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) removePeriodic
+{
+	// Lock to make sure we are not removing while in output callback
+	[self.displayLinkLock lock];
+	CVDisplayLinkStop(self.displayLinkRef);
+	CVDisplayLinkRelease(self.displayLinkRef);
+	[self.displayLinkLock unlock];
+
+	// Clear
+	self.displayLinkRef = nil;
+}
+
 // MARK: Internal methods
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -273,6 +277,19 @@ void sReleaseContextProc(AKTOpenGLView* openGLView)
 	[openGLView releaseContext];
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
+S2DSizeU16 sGetSizeProc(AKTOpenGLView* openGLView)
+{
+	return S2DSizeU16(openGLView.size.width, openGLView.size.height);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+Float32 sGetScaleProc(AKTOpenGLView* openGLView)
+{
+	return openGLView.contentsScale;
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 CVReturn sDisplayLinkOutputCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* inNow,
 		const CVTimeStamp* inOutputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut, void* context)
@@ -287,8 +304,6 @@ CVReturn sDisplayLinkOutputCallback(CVDisplayLinkRef displayLink, const CVTimeSt
 			CGLLockContext(openGLView.openGLContext.CGLContextObj);
 
 			// Setup
-			SOpenGLGPUSetupInfo	openGLGPUSetupInfo(openGLView.contentsScale);
-			openGLView.gpu.setup(S2DSizeF32(openGLView.size.width, openGLView.size.height), &openGLGPUSetupInfo);
 
 			// Call proc
 			openGLView.periodicProc(
