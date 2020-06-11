@@ -232,6 +232,7 @@ static	CVReturn	sDisplayLinkOutputCallback(CVDisplayLinkRef displayLink, const C
 	// Make current
 	[self.openGLContext makeCurrentContext];
 }
+
 //----------------------------------------------------------------------------------------------------------------------
 - (BOOL) tryAcquireContext
 {
@@ -276,7 +277,6 @@ void sReleaseContextProc(AKTOpenGLView* openGLView)
 {
 	[openGLView releaseContext];
 }
-
 
 //----------------------------------------------------------------------------------------------------------------------
 S2DSizeU16 sGetSizeProc(AKTOpenGLView* openGLView)

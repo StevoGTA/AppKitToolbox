@@ -113,8 +113,13 @@ static	MTLRenderPassDescriptor*	sGetCurrentRenderPassDescriptor(AKTMetalView* me
 //----------------------------------------------------------------------------------------------------------------------
 - (void) drawInMTKView:(nonnull MTKView*) view
 {
-// TODO: drawInMTKView()
-	self.periodicProc(0.0);
+	// Run lean
+	@autoreleasepool {
+		// Call periodic proc
+		self.periodicProc(
+				SUniversalTime::getCurrentUniversalTime() +
+						1.0 / (UniversalTimeInterval) self.preferredFramesPerSecond);
+	}
 }
 
 @end
