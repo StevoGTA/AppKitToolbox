@@ -52,7 +52,7 @@ static	MTLRenderPassDescriptor*	sGetCurrentRenderPassDescriptor(AKTMetalView* me
 
 		self.gpuInternal =
 				new CGPU(
-						CGPUProcsInfo((CMetalGPUGetDeviceProc) sGetDeviceProc,
+						SGPUProcsInfo((CMetalGPUGetDeviceProc) sGetDeviceProc,
 								(CMetalGPUGetCurrentDrawableProc) sGetCurrentDrawableProc,
 								(CMetalGPUGetPixelFormatProc) sGetPixelFormatProc,
 								(CMetalGPUGetSampleCountProc) sGetSampleCountProc,

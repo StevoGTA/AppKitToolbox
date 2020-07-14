@@ -70,7 +70,7 @@ static	CVReturn	sDisplayLinkOutputCallback(CVDisplayLinkRef displayLink, const C
 
 		self.gpuInternal =
 				new CGPU(
-						CGPUProcsInfo((COpenGLGPUAcquireContextProc) sAcquireContextProc,
+						SGPUProcsInfo((COpenGLGPUAcquireContextProc) sAcquireContextProc,
 								(COpenGLGPUTryAcquireContextProc) sTryAcquireContextProc,
 								(COpenGLGPUReleaseContextProc) sReleaseContextProc,
 								(COpenGLGPUGetSizeProc) sGetSizeProc, (COpenGLGPUGetScaleProc) sGetScaleProc,
