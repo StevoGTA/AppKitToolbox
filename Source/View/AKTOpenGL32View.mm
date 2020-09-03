@@ -112,6 +112,16 @@ static	CVReturn	sDisplayLinkOutputCallback(CVDisplayLinkRef displayLink, const C
 // MARK: NSView methods
 
 //----------------------------------------------------------------------------------------------------------------------
+- (void) setFrameSize:(NSSize) newSize
+{
+	// Do super
+	[super setFrameSize:newSize];
+
+	// Store
+	self.size = self.bounds.size;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 - (void) renewGState
 {
 	// Called whenever graphics state has been updated (such as window resize).  OpenGL rendering is not synchronous
@@ -131,7 +141,6 @@ static	CVReturn	sDisplayLinkOutputCallback(CVDisplayLinkRef displayLink, const C
 	[super viewDidChangeBackingProperties];
 
 	// Get current info
-	self.size = self.bounds.size;
 	self.contentsScale = self.window.backingScaleFactor;
 }
 
