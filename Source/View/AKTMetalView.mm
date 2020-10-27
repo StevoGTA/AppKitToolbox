@@ -46,6 +46,7 @@ static	MTLRenderPassDescriptor*	sGetCurrentRenderPassDescriptor(AKTMetalView* me
 		// Complete setup
 		self.delegate = self;
 
+		self.depthStencilPixelFormat = MTLPixelFormatDepth32Float;
 #if defined(DEBUG)
 		self.clearColor = MTLClearColorMake(0.5, 0.0, 0.25, 1.0);
 #endif
