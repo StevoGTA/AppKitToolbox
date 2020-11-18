@@ -1,6 +1,6 @@
 //
 //  NSOutlineView+Extensions.swift
-//  Media Tools
+//  AppKit Toolbox
 //
 //  Created by Stevo on 9/28/20.
 //  Copyright © 2020 Stevo Brock. All rights reserved.
