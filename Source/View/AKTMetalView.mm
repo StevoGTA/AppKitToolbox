@@ -117,9 +117,7 @@ static	MTLRenderPassDescriptor*	sGetCurrentRenderPassDescriptor(AKTMetalView* me
 	// Run lean
 	@autoreleasepool {
 		// Call periodic proc
-		self.periodicProc(
-				SUniversalTime::getCurrentUniversalTime() +
-						1.0 / (UniversalTimeInterval) self.preferredFramesPerSecond);
+		self.periodicProc(SUniversalTime::getCurrent() + 1.0 / (UniversalTimeInterval) self.preferredFramesPerSecond);
 	}
 }
 
