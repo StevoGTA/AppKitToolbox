@@ -22,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong)	void	(^mouseDraggedProc)(NSEvent* event);
 @property (nonatomic, strong)	void	(^mouseUpProc)(NSEvent* event);
 
-@property (nonatomic, strong)	void	(^periodicProc)(UniversalTime outputTime);
+@property (nonatomic, strong)	void	(^periodicProc)(UniversalTimeInterval outputTime);
 
 // MARK: Instance methods
 - (void) installPeriodic;

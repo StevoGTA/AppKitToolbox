@@ -10,14 +10,16 @@
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: Local procs declaration
 
-static	void		sAcquireContextProc(AKTOpenGLView* openGLView);
-static	bool		sTryAcquireContextProc(AKTOpenGLView* openGLView);
-static	void		sReleaseContextProc(AKTOpenGLView* openGLView);
-static	S2DSizeU16	sGetSizeProc(AKTOpenGLView* openGLView);
-static	Float32		sGetScaleProc(AKTOpenGLView* openGLView);
-static	CVReturn	sDisplayLinkOutputCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* inNow,
-							const CVTimeStamp* inOutputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut,
-							void* context);
+static	void				sAcquireContext(AKTOpenGLView* openGLView);
+static	bool				sTryAcquireContext(AKTOpenGLView* openGLView);
+static	void				sReleaseContext(AKTOpenGLView* openGLView);
+static	S2DSizeU16			sGetSize(AKTOpenGLView* openGLView);
+static	Float32				sGetScale(AKTOpenGLView* openGLView);
+static	CGLContextObj		sGetContext(AKTOpenGLView* openGLView);
+static	CGLPixelFormatObj	sGetPixelFormat(AKTOpenGLView* openGLView);
+static	CVReturn			sDisplayLinkOutput(CVDisplayLinkRef displayLink, const CVTimeStamp* inNow,
+									const CVTimeStamp* inOutputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut,
+									void* context);
 
 //----------------------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------------------
@@ -71,11 +73,12 @@ static	CVReturn	sDisplayLinkOutputCallback(CVDisplayLinkRef displayLink, const C
 
 		self.gpuInternal =
 				new CGPU(
-						SGPUProcsInfo((SGPUProcsInfo::AcquireContextProc) sAcquireContextProc,
-								(SGPUProcsInfo::TryAcquireContextProc) sTryAcquireContextProc,
-								(SGPUProcsInfo::ReleaseContextProc) sReleaseContextProc,
-								(SGPUProcsInfo::GetSizeProc) sGetSizeProc, (SGPUProcsInfo::GetScaleProc) sGetScaleProc,
-								(__bridge void*) self));
+						SGPUProcsInfo((SGPUProcsInfo::AcquireContextProc) sAcquireContext,
+								(SGPUProcsInfo::TryAcquireContextProc) sTryAcquireContext,
+								(SGPUProcsInfo::ReleaseContextProc) sReleaseContext,
+								(SGPUProcsInfo::GetSizeProc) sGetSize, (SGPUProcsInfo::GetScaleProc) sGetScale,
+								(SGPUProcsInfo::GetContextProc) sGetContext,
+								(SGPUProcsInfo::GetPixelFormatProc) sGetPixelFormat, (__bridge void*) self));
 	}
 
 	return self;
@@ -177,7 +180,7 @@ static	CVReturn	sDisplayLinkOutputCallback(CVDisplayLinkRef displayLink, const C
 		// Create
 		CVDisplayLinkRef	displayLinkRef;
 		CVReturn			error;
-		error = CVDisplayLinkCreateWithActiveCGDisplays(&displayLinkRef);
+		error = ::CVDisplayLinkCreateWithActiveCGDisplays(&displayLinkRef);
 		if (error != kCVReturnSuccess) {
 			CLogServices::logError(
 					CString(OSSTR("CVDisplayLinkCreateWithActiveCGDisplays() returned error ")) + CString(error));
@@ -189,7 +192,7 @@ static	CVReturn	sDisplayLinkOutputCallback(CVDisplayLinkRef displayLink, const C
 		self.displayLinkRef = displayLinkRef;
 
 		// Set output callback
-		error = CVDisplayLinkSetOutputCallback(self.displayLinkRef, sDisplayLinkOutputCallback, (__bridge void*) self);
+		error = ::CVDisplayLinkSetOutputCallback(self.displayLinkRef, sDisplayLinkOutput, (__bridge void*) self);
 		if (error != kCVReturnSuccess) {
 			CLogServices::logError(CString(OSSTR("CVDisplayLinkSetOutputCallback() returned error ")) + CString(error));
 
@@ -198,8 +201,8 @@ static	CVReturn	sDisplayLinkOutputCallback(CVDisplayLinkRef displayLink, const C
 
 		// Set current CGDisplay from OpenGL context
 		error =
-				CVDisplayLinkSetCurrentCGDisplayFromOpenGLContext(self.displayLinkRef, self.openGLContext.CGLContextObj,
-						self.pixelFormat.CGLPixelFormatObj);
+				::CVDisplayLinkSetCurrentCGDisplayFromOpenGLContext(self.displayLinkRef,
+						self.openGLContext.CGLContextObj, self.pixelFormat.CGLPixelFormatObj);
 		if (error != kCVReturnSuccess) {
 			CLogServices::logError(
 					CString(OSSTR("CVDisplayLinkSetCurrentCGDisplayFromOpenGLContext() returned error ")) +
@@ -209,7 +212,7 @@ static	CVReturn	sDisplayLinkOutputCallback(CVDisplayLinkRef displayLink, const C
 		}
 
 		// Start
-		error = CVDisplayLinkStart(self.displayLinkRef);
+		error = ::CVDisplayLinkStart(self.displayLinkRef);
 		if (error != kCVReturnSuccess) {
 			CLogServices::logError(CString(OSSTR("CVDisplayLinkStart() returned error ")) + CString(error));
 
@@ -223,8 +226,8 @@ static	CVReturn	sDisplayLinkOutputCallback(CVDisplayLinkRef displayLink, const C
 {
 	// Lock to make sure we are not removing while in output callback
 	[self.displayLinkLock lock];
-	CVDisplayLinkStop(self.displayLinkRef);
-	CVDisplayLinkRelease(self.displayLinkRef);
+	::CVDisplayLinkStop(self.displayLinkRef);
+	::CVDisplayLinkRelease(self.displayLinkRef);
 	[self.displayLinkLock unlock];
 
 	// Clear
@@ -271,38 +274,50 @@ static	CVReturn	sDisplayLinkOutputCallback(CVDisplayLinkRef displayLink, const C
 // MARK: - Local proc definitions
 
 //----------------------------------------------------------------------------------------------------------------------
-void sAcquireContextProc(AKTOpenGLView* openGLView)
+void sAcquireContext(AKTOpenGLView* openGLView)
 {
 	[openGLView acquireContext];
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-bool sTryAcquireContextProc(AKTOpenGLView* openGLView)
+bool sTryAcquireContext(AKTOpenGLView* openGLView)
 {
 	return [openGLView tryAcquireContext];
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void sReleaseContextProc(AKTOpenGLView* openGLView)
+void sReleaseContext(AKTOpenGLView* openGLView)
 {
 	[openGLView releaseContext];
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-S2DSizeU16 sGetSizeProc(AKTOpenGLView* openGLView)
+S2DSizeU16 sGetSize(AKTOpenGLView* openGLView)
 {
 	return S2DSizeU16(openGLView.size.width, openGLView.size.height);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-Float32 sGetScaleProc(AKTOpenGLView* openGLView)
+Float32 sGetScale(AKTOpenGLView* openGLView)
 {
 	return openGLView.contentsScale;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-CVReturn sDisplayLinkOutputCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* inNow,
-		const CVTimeStamp* inOutputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut, void* context)
+CGLContextObj sGetContext(AKTOpenGLView* openGLView)
+{
+	return openGLView.openGLContext.CGLContextObj;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+CGLPixelFormatObj sGetPixelFormat(AKTOpenGLView* openGLView)
+{
+	return openGLView.openGLContext.pixelFormat.CGLPixelFormatObj;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+CVReturn sDisplayLinkOutput(CVDisplayLinkRef displayLink, const CVTimeStamp* inNow, const CVTimeStamp* inOutputTime,
+		CVOptionFlags flagsIn, CVOptionFlags* flagsOut, void* context)
 {
 	// Setup
 	AKTOpenGLView*	openGLView = (__bridge AKTOpenGLView*) context;
@@ -310,18 +325,19 @@ CVReturn sDisplayLinkOutputCallback(CVDisplayLinkRef displayLink, const CVTimeSt
 	// Try to acquire lock
 	if ([openGLView.displayLinkLock tryLock]) {
 		@autoreleasepool {
-			// Lock our context
-			CGLLockContext(openGLView.openGLContext.CGLContextObj);
-
-			// Setup
+			// Lock context
+			::CGLLockContext(openGLView.openGLContext.CGLContextObj);
 
 			// Call proc
 			openGLView.periodicProc(
-					(UniversalTime) inOutputTime->videoTime / (UniversalTime) inOutputTime->videoTimeScale);
+					(UniversalTimeInterval) inOutputTime->videoTime /
+							(UniversalTimeInterval) inOutputTime->videoTimeScale);
 
 			// Flush
-			CGLFlushDrawable(openGLView.openGLContext.CGLContextObj);
-			CGLUnlockContext(openGLView.openGLContext.CGLContextObj);
+			::CGLFlushDrawable(openGLView.openGLContext.CGLContextObj);
+
+			// Unlock context
+			::CGLUnlockContext(openGLView.openGLContext.CGLContextObj);
 		}
 
 		// All done
