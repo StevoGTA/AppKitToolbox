@@ -16,7 +16,7 @@ class ProgressViewController : NSViewController {
 								didSet {
 									// Setup UI
 									_ = self.view
-									self.cancelButton?.isHidden = true
+									self.cancelButton?.isHidden = self.cancelProc == nil;
 								}
 							}
 		@IBOutlet	var	messageLabel :NSTextField!
@@ -33,4 +33,8 @@ class ProgressViewController : NSViewController {
 		// Setup UI
 		self.cancelButton?.isHidden = true
 	}
+
+	// MARK: IBAction methods
+	//------------------------------------------------------------------------------------------------------------------
+	@IBAction func cancel(_ :NSButton) { self.cancelProc?() }
 }
