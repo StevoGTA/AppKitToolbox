@@ -6,27 +6,27 @@ import AppKit
 
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: ProgressViewController
-class ProgressViewController : NSViewController {
+public class ProgressViewController : NSViewController {
 
 	// MARK: Types
-	typealias CancelProc = () -> Void
+	public typealias CancelProc = () -> Void
 
 	// MARK: Properties
-	@objc			var	cancelProc :CancelProc? {
-								didSet {
-									// Setup UI
-									_ = self.view
-									self.cancelButton?.isHidden = self.cancelProc == nil;
+	@objc	public		var	cancelProc :CancelProc? {
+									didSet {
+										// Setup UI
+										_ = self.view
+										self.cancelButton?.isHidden = self.cancelProc == nil;
+									}
 								}
-							}
-		@IBOutlet	var	messageLabel :NSTextField!
-		@IBOutlet	var	indeterminateProgressIndicator :NSProgressIndicator!
-		@IBOutlet	var	determinateProgressIndicator :NSProgressIndicator!
-		@IBOutlet	var	cancelButton :NSButton?
+
+			@IBOutlet	var	messageLabel :NSTextField!
+			@IBOutlet	var	progressIndicator :NSProgressIndicator!
+			@IBOutlet	var	cancelButton :NSButton?
 
 	// MARK: NSViewController methods
 	//------------------------------------------------------------------------------------------------------------------
-	override func awakeFromNib() {
+	override public func awakeFromNib() {
 		// Do super
 		super.awakeFromNib()
 
