@@ -5,6 +5,7 @@
 #import "AKTTreeViewBackingAdapter.h"
 
 #import "CTreeViewBacking.h"
+#import "NSString+C++.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: AKTTreeViewBackingAdapter
@@ -12,6 +13,8 @@
 @interface AKTTreeViewBackingAdapter () <NSOutlineViewDataSource, NSOutlineViewDelegate>
 
 // MARK: Properties
+
+@property (nonatomic, weak)		NSOutlineView*		outlineView;
 
 @property (nonatomic, assign)	CTreeViewBacking*	treeViewBacking;
 
@@ -26,12 +29,15 @@
 {
 	self = [super init];
 	if (self != nil) {
+		// Store
+		self.outlineView = outlineView;
+
 		// Setup
 		self.treeViewBacking = new CTreeViewBacking();
 
 		// Setup NSOutlineView
-		outlineView.dataSource = self;
-		outlineView.delegate = self;
+		self.outlineView.dataSource = self;
+		self.outlineView.delegate = self;
 	}
 
 	return self;
@@ -51,72 +57,75 @@
 //----------------------------------------------------------------------------------------------------------------------
 - (NSInteger) outlineView:(NSOutlineView*) outlineView numberOfChildrenOfItem:(id) item
 {
-return 0;
+	// Return child count
+	return self.treeViewBacking->getChildCount([self viewItemIDForItem:item]);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-- (id) outlineView:(NSOutlineView*) outlineView child:(NSInteger)index ofItem:(id) item
+- (id) outlineView:(NSOutlineView*) outlineView child:(NSInteger) index ofItem:(id) item
 {
-return nil;
+	// Return child view item ID
+	return [self
+			itemForViewItemID:self.treeViewBacking->getChildViewItemID([self viewItemIDForItem:item], (UInt32) index)];
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+////----------------------------------------------------------------------------------------------------------------------
 - (BOOL) outlineView:(NSOutlineView*) outlineView isItemExpandable:(id) item
 {
-return NO;
+return item == nil;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
-- (id) outlineView:(NSOutlineView*) outlineView objectValueForTableColumn:(NSTableColumn*) tableColumn byItem:(id) item
-{
-return nil;
-}
+////----------------------------------------------------------------------------------------------------------------------
+//- (id) outlineView:(NSOutlineView*) outlineView objectValueForTableColumn:(NSTableColumn*) tableColumn byItem:(id) item
+//{
+//return @"ABC";
+//}
 
-//----------------------------------------------------------------------------------------------------------------------
-- (void) outlineView:(NSOutlineView*) outlineView sortDescriptorsDidChange:(NSArray<NSSortDescriptor *>*) oldDescriptors
-{
-}
+////----------------------------------------------------------------------------------------------------------------------
+//- (void) outlineView:(NSOutlineView*) outlineView sortDescriptorsDidChange:(NSArray<NSSortDescriptor*>*) oldDescriptors
+//{
+//}
 
 // MARK: NSOutlineViewDelegate methods
 
 //----------------------------------------------------------------------------------------------------------------------
 - (NSView*) outlineView:(NSOutlineView*) outlineView viewForTableColumn:(NSTableColumn*) tableColumn item:(id) item
 {
-return nil;
+	return self.viewProc(tableColumn, self.treeViewBacking->getTreeItem([self viewItemIDForItem:item]));
 }
 
-//----------------------------------------------------------------------------------------------------------------------
-- (void) outlineViewItemDidExpand:(NSNotification*) notification
-{
-}
+////----------------------------------------------------------------------------------------------------------------------
+//- (void) outlineViewItemDidExpand:(NSNotification*) notification
+//{
+//}
 
-//----------------------------------------------------------------------------------------------------------------------
-- (void) outlineViewItemDidCollapse:(NSNotification*) notification
-{
-}
+////----------------------------------------------------------------------------------------------------------------------
+//- (void) outlineViewItemDidCollapse:(NSNotification*) notification
+//{
+//}
 
-//----------------------------------------------------------------------------------------------------------------------
-- (BOOL) outlineView:(NSOutlineView*) outlineView shouldSelectItem:(id) item
-{
-return NO;
-}
+////----------------------------------------------------------------------------------------------------------------------
+//- (BOOL) outlineView:(NSOutlineView*) outlineView shouldSelectItem:(id) item
+//{
+//return NO;
+//}
 
-//----------------------------------------------------------------------------------------------------------------------
-- (void) outlineViewSelectionDidChange:(NSNotification*) notification
-{
-}
+////----------------------------------------------------------------------------------------------------------------------
+//- (void) outlineViewSelectionDidChange:(NSNotification*) notification
+//{
+//}
 
-//----------------------------------------------------------------------------------------------------------------------
-- (BOOL) outlineView:(NSOutlineView*) outlineView isGroupItem:(id) item
-{
-return NO;
-}
+////----------------------------------------------------------------------------------------------------------------------
+//- (BOOL) outlineView:(NSOutlineView*) outlineView isGroupItem:(id) item
+//{
+//return NO;
+//}
 
-//----------------------------------------------------------------------------------------------------------------------
-- (CGFloat) outlineView:(NSOutlineView*) outlineView sizeToFitWidthOfColumn:(NSInteger) column
-{
-return 0.0;
-}
+////----------------------------------------------------------------------------------------------------------------------
+//- (CGFloat) outlineView:(NSOutlineView*) outlineView sizeToFitWidthOfColumn:(NSInteger) column
+//{
+//return 0.0;
+//}
 
 // MARK: Instance methods
 
@@ -133,9 +142,28 @@ return 0.0;
 // Temporary implementation
 TNArray<I<CTreeItem> >*	treeItems = new TNArray<I<CTreeItem> >(topLevelTreeItems);
 	dispatch_async(dispatch_get_main_queue(), ^{
+		// Update Tree View Backing
 		self.treeViewBacking->add(*treeItems);
 		delete treeItems;
+
+		// Update UI
+		[self.outlineView reloadData];
 	});
+}
+
+// MARK: Private methods
+
+//----------------------------------------------------------------------------------------------------------------------
+- (CString) viewItemIDForItem:(nullable id) item
+{
+	// Return view item ID
+	return (item == nil) ? CTreeViewBacking::mRootViewItemID : CString((__bridge CFStringRef) item);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (id) itemForViewItemID:(const CString&) viewItemID
+{
+	return [NSString stringForCString:viewItemID];
 }
 
 @end
