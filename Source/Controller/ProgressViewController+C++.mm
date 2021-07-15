@@ -35,18 +35,13 @@ static	void	sProc(const CProgress& progress, ProgressViewController* progressVie
 	// Update UI
 	self.messageLabel.stringValue = message;
 
-	if (!isIndeterminate) {
-		// Have progress
-		[self.indeterminateProgressIndicator stopAnimation:self];
+	self.progressIndicator.indeterminate = isIndeterminate;
+	if (isIndeterminate)
+		[self.progressIndicator startAnimation:self];
+	else
+		[self.progressIndicator stopAnimation:self];
 
-		self.determinateProgressIndicator.hidden = NO;
-		self.determinateProgressIndicator.doubleValue = value;
-	} else {
-		// Don't have progress
-		[self.indeterminateProgressIndicator startAnimation:self];
-
-		self.determinateProgressIndicator.hidden = YES;
-	}
+	self.progressIndicator.doubleValue = value;
 }
 
 @end
