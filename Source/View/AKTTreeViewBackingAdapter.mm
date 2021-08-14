@@ -33,7 +33,7 @@
 		self.outlineView = outlineView;
 
 		// Setup
-		self.treeViewBacking = new CTreeViewBacking();
+		self.treeViewBacking = new CTreeViewBacking(CTreeViewBacking::Info(nil, nil, nil, nil, (__bridge void*) self));
 
 		// Setup NSOutlineView
 		self.outlineView.dataSource = self;
@@ -110,10 +110,12 @@ return item == nil;
 //return NO;
 //}
 
-////----------------------------------------------------------------------------------------------------------------------
-//- (void) outlineViewSelectionDidChange:(NSNotification*) notification
-//{
-//}
+//----------------------------------------------------------------------------------------------------------------------
+- (void) outlineViewSelectionDidChange:(NSNotification*) notification
+{
+	// Call proc
+	self.selectionDidChangeProc();
+}
 
 ////----------------------------------------------------------------------------------------------------------------------
 //- (BOOL) outlineView:(NSOutlineView*) outlineView isGroupItem:(id) item
@@ -132,23 +134,39 @@ return item == nil;
 //----------------------------------------------------------------------------------------------------------------------
 - (void) setTopLevelTreeItems:(const TArray<I<CTreeItem> >&) topLevelTreeItems
 {
-	//
+	// Set top level tree items
 	self.treeViewBacking->set(topLevelTreeItems);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 - (void) addTopLevelTreeItems:(const TArray<I<CTreeItem> >&) topLevelTreeItems
 {
-// Temporary implementation
-TNArray<I<CTreeItem> >*	treeItems = new TNArray<I<CTreeItem> >(topLevelTreeItems);
-	dispatch_async(dispatch_get_main_queue(), ^{
-		// Update Tree View Backing
-		self.treeViewBacking->add(*treeItems);
-		delete treeItems;
+	// Update Tree View Backing
+	self.treeViewBacking->add(topLevelTreeItems);
 
-		// Update UI
-		[self.outlineView reloadData];
-	});
+	// Update UI
+	[self.outlineView reloadData];
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (TArray<I<CTreeItem> >) getTopLevelTreeItems
+//----------------------------------------------------------------------------------------------------------------------
+{
+	return self.treeViewBacking->getTopLevelTreeItems();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (TArray<I<CTreeItem> >) getSelectedTreeItems
+//----------------------------------------------------------------------------------------------------------------------
+{
+	// Collect view item IDs
+	__block	TNArray<CString>	viewItemIDs;
+	[self.outlineView.selectedRowIndexes enumerateIndexesUsingBlock:^(NSUInteger index, BOOL* stop) {
+		// Add view item ID
+		viewItemIDs += CString((__bridge CFStringRef) [self.outlineView itemAtRow:index]);
+	}];
+
+	return self.treeViewBacking->getTreeItems(viewItemIDs);
 }
 
 // MARK: Private methods

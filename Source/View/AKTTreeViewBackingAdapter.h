@@ -17,12 +17,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 typedef	NSView*	_Nullable	(^AKTTreeViewBackingAdapterViewProc)(NSTableColumn* _Nullable tableColumn,
 									const I<CTreeItem>& treeItem);
+typedef	void				(^AKTTreeViewBackingAdapterSelectionDidChangeProc)();
 
 @interface AKTTreeViewBackingAdapter : NSObject <AKTTreeViewBackingInterface>
 
 // MARK: Properties
 
-@property (nonatomic, strong)	AKTTreeViewBackingAdapterViewProc	viewProc;
+@property (nonatomic, strong)	AKTTreeViewBackingAdapterViewProc				viewProc;
+@property (nonatomic, strong)	AKTTreeViewBackingAdapterSelectionDidChangeProc	selectionDidChangeProc;
 
 // MARK: Lifecycle methods
 
@@ -32,6 +34,9 @@ typedef	NSView*	_Nullable	(^AKTTreeViewBackingAdapterViewProc)(NSTableColumn* _N
 
 - (void) setTopLevelTreeItems:(const TArray<I<CTreeItem> >&) topLevelTreeItems;
 - (void) addTopLevelTreeItems:(const TArray<I<CTreeItem> >&) topLevelTreeItems;
+
+- (TArray<I<CTreeItem> >) getTopLevelTreeItems;
+- (TArray<I<CTreeItem> >) getSelectedTreeItems;
 
 @end
 
