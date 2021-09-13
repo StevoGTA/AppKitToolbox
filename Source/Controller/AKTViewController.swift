@@ -10,7 +10,7 @@ import AppKit
 
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: AKTViewController
-class AKTViewController : NSViewController {
+open class AKTViewController : NSViewController {
 
 	// MARK: Properties
 	private	var	notificationObservers = [NSObjectProtocol]()
@@ -23,6 +23,21 @@ class AKTViewController : NSViewController {
 	}
 
 	// MARK: Instance methods
+	//------------------------------------------------------------------------------------------------------------------
+	public func presentAlert(style :NSAlert.Style = .warning, message :String? = nil, information :String? = nil,
+			buttonTitles :[String]? = nil,
+			completionProc :@escaping (_ modalResponse :NSApplication.ModalResponse) -> Void = { _ in }) {
+		// Setup
+		let	alert = NSAlert()
+		alert.alertStyle = style
+		alert.messageText = message ?? ""
+		alert.informativeText = information ?? ""
+		buttonTitles?.forEach() { alert.addButton(withTitle: $0) }
+
+		// Present
+		alert.beginSheetModal(for: self.view.window!) { completionProc($0) }
+	}
+
 	//------------------------------------------------------------------------------------------------------------------
 	func addNotificationObserver(forName name :NSNotification.Name, object :Any? = nil, queue :OperationQueue? = nil,
 			proc :@escaping (Notification) -> Void) {
