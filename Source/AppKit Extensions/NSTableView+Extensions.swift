@@ -14,8 +14,20 @@ extension NSTableView {
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
-	func select(_ row :Int, byExtendingSelection extendingSelection :Bool = false) {
+	@objc func reloadDataRetainingSelection() {
+		// Get current selection
+		let	selectedRowIndexes = self.selectedRowIndexes
+
+		// Reload data
+		reloadData()
+
+		// Reset selection
+		self.selectRowIndexes(selectedRowIndexes, byExtendingSelection: false)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc func select(_ rowIndex :Int, byExtendingSelection extendingSelection :Bool = false) {
 		// Select row indexes
-		selectRowIndexes(IndexSet(integer: row), byExtendingSelection: extendingSelection)
+		selectRowIndexes(IndexSet(integer: rowIndex), byExtendingSelection: extendingSelection)
 	}
 }

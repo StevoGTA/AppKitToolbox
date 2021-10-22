@@ -21,6 +21,8 @@
 	if (self != nil) {
 		// Setup
 		self.wantsLayer = YES;
+		self.layer.backgroundColor = NSColor.blackColor.CGColor;
+		self.layer.contentsGravity = kCAGravityResizeAspect;
 	}
 
 	return self;
@@ -34,6 +36,8 @@
 	if (self != nil) {
 		// Setup
 		self.wantsLayer = YES;
+		self.layer.backgroundColor = NSColor.blackColor.CGColor;
+		self.layer.contentsGravity = kCAGravityResizeAspect;
 	}
 
 	return self;
