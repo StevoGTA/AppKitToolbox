@@ -29,7 +29,7 @@ public class AKTTextField : NSTextField {
 		super.textDidChange(notification)
 
 		// Call proc
-		self.textDidChangeProc(self.stringValue ?? "")
+		self.textDidChangeProc(self.stringValue)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
