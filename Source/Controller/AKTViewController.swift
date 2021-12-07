@@ -50,8 +50,8 @@ open class AKTViewController : NSViewController {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	func addNotificationObserver(forName name :NSNotification.Name, object :Any? = nil, queue :OperationQueue? = nil,
-			proc :@escaping (Notification) -> Void) {
+	public func addNotificationObserver(forName name :NSNotification.Name, object :Any? = nil,
+			queue :OperationQueue? = nil, proc :@escaping (Notification) -> Void) {
 		// Add
 		self.notificationObservers.append(
 				NotificationCenter.default.addObserver(forName: name, object: object, queue: queue, using: proc))

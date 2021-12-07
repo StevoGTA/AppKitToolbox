@@ -1,16 +1,16 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	AKTTextField.swift		©2021 Stevo Brock		All rights reserved.
+//	AKTSecureTextField.swift		©2021 Stevo Brock		All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
 import AppKit
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: AKTTextField
-public class AKTTextField : NSTextField {
+// MARK: AKTSecureTextField
+public class AKTSecureTextField : NSSecureTextField {
 
 	// MARK: Properties
 	public	var	isEmpty :Bool { self.stringValue.isEmpty }
-	
+
 	public	var	textDidBeginEditingProc :() -> Void = {}
 	public	var	textDidChangeProc :(_ string :String) -> Void = { _ in }
 	public	var	textDidEndEditingProc :() -> Void = {}
