@@ -16,32 +16,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 // MARK: Types
 
-typedef	void*	_Nullable	(^Proc)(__unsafe_unretained NSViewController* viewController);
+typedef	void*	_Nullable	(^Proc)(__unsafe_unretained NSViewController* viewController, CProgress& progress);
 typedef	void				(^CancelProc)();
 typedef	void				(^CompletionProc)(void* result);
 
 // MARK: Instance methods
 
 - (void) performWithProgressViewController:(ProgressViewController*) progressViewController
-		progress:(const CProgress&) progress procDispatchQueue:(dispatch_queue_t) procDispatchQueue proc:(Proc) proc
+		progress:(CProgress&) progress procDispatchQueue:(dispatch_queue_t) procDispatchQueue proc:(Proc) proc
 		cancelProc:(CancelProc) cancelProc completionProc:(CompletionProc) completionProc;
 - (void) performWithProgressViewController:(ProgressViewController*) progressViewController
-		progress:(const CProgress&) progress proc:(Proc) proc cancelProc:(CancelProc) cancelProc
-		completionProc:(CompletionProc) completionProc;
-- (void) performWithProgressViewController:(ProgressViewController*) progressViewController
-		progress:(const CProgress&) progress procDispatchQueue:(dispatch_queue_t) procDispatchQueue proc:(Proc) proc
-		completionProc:(CompletionProc) completionProc;
-- (void) performWithProgressViewController:(ProgressViewController*) progressViewController
-		progress:(const CProgress&) progress proc:(Proc) proc completionProc:(CompletionProc) completionProc;
-- (void) performWithProgressViewController:(ProgressViewController*) progressViewController
-		progress:(const CProgress&) progress procDispatchQueue:(dispatch_queue_t) procDispatchQueue proc:(Proc) proc
-		cancelProc:(CancelProc) cancelProc;
-- (void) performWithProgressViewController:(ProgressViewController*) progressViewController
-		progress:(const CProgress&) progress proc:(Proc) proc cancelProc:(CancelProc) cancelProc;
-- (void) performWithProgressViewController:(ProgressViewController*) progressViewController
-		progress:(const CProgress&) progress procDispatchQueue:(dispatch_queue_t) procDispatchQueue proc:(Proc) proc;
-- (void) performWithProgressViewController:(ProgressViewController*) progressViewController
-		progress:(const CProgress&) progress proc:(Proc) proc;
+		proc:(Proc) proc cancelProc:(CancelProc) cancelProc completionProc:(CompletionProc) completionProc;
 
 @end
 

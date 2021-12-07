@@ -4,6 +4,8 @@
 
 #import "NSViewController+C++.h"
 
+#import "ProgressViewController+C++.h"
+
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: NSViewController extension
 
@@ -11,7 +13,7 @@
 
 //----------------------------------------------------------------------------------------------------------------------
 - (void) performWithProgressViewController:(ProgressViewController*) progressViewController
-		progress:(const CProgress&) progress procDispatchQueue:(dispatch_queue_t) procDispatchQueue proc:(Proc) proc
+		progress:(CProgress&) progress procDispatchQueue:(dispatch_queue_t) procDispatchQueue proc:(Proc) proc
 		cancelProc:(CancelProc) cancelProc completionProc:(CompletionProc) completionProc
 {
 	// Setup
@@ -31,7 +33,7 @@
 	__unsafe_unretained	typeof(self)	unsafeUnretainedSelf = self;
 	dispatch_async(procDispatchQueue, ^{
 		// Call proc
-		void*	result = proc(unsafeUnretainedSelf);
+		void*	result = proc(unsafeUnretainedSelf, progress);
 
 		// Jump to main queue
 		dispatch_async(dispatch_get_main_queue(), ^{
@@ -48,81 +50,28 @@
 
 //----------------------------------------------------------------------------------------------------------------------
 - (void) performWithProgressViewController:(ProgressViewController*) progressViewController
-		progress:(const CProgress&) progress proc:(Proc) proc cancelProc:(CancelProc) cancelProc
+		proc:(Proc) proc cancelProc:(CancelProc) cancelProc
 		completionProc:(CompletionProc) completionProc
 {
-	[self performWithProgressViewController:progressViewController progress:progress
+	// Setup
+	I<CProgress>*	progress = new I<CProgress>(new CProgress(progressViewController.progressUpdateInfo));
+
+	// Perform
+	[self performWithProgressViewController:progressViewController progress:**progress
 			procDispatchQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) proc:proc
-			cancelProc:cancelProc completionProc:completionProc];
-}
+			cancelProc:^{
+				// Call proc
+				cancelProc();
 
-//----------------------------------------------------------------------------------------------------------------------
-- (void) performWithProgressViewController:(ProgressViewController*) progressViewController
-		progress:(const CProgress&) progress procDispatchQueue:(dispatch_queue_t) procDispatchQueue proc:(Proc) proc
-		completionProc:(CompletionProc) completionProc
-{
-	// Present as sheet
-	[self presentViewControllerAsSheet:progressViewController];
+				// Cleanup
+				delete progress;
+			} completionProc:^(void* result){
+				// Call proc
+				completionProc(result);
 
-	// Perform on proc displatch queue
-	__unsafe_unretained	typeof(self)	unsafeUnretainedSelf = self;
-	dispatch_async(procDispatchQueue, ^{
-		// Call proc
-		void*	result = proc(unsafeUnretainedSelf);
-
-		// Jump to main queue
-		dispatch_async(dispatch_get_main_queue(), ^{
-			// Dismiss
-			[unsafeUnretainedSelf dismissViewController:progressViewController];
-
-			// Call completion proc
-			completionProc(result);
-		});
-	});
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-- (void) performWithProgressViewController:(ProgressViewController*) progressViewController
-		progress:(const CProgress&) progress proc:(Proc) proc completionProc:(CompletionProc) completionProc
-{
-	[self performWithProgressViewController:progressViewController progress:progress
-			procDispatchQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) proc:proc
-			completionProc:completionProc];
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-- (void) performWithProgressViewController:(ProgressViewController*) progressViewController
-		progress:(const CProgress&) progress procDispatchQueue:(dispatch_queue_t) procDispatchQueue proc:(Proc) proc
-		cancelProc:(CancelProc) cancelProc
-{
-	[self performWithProgressViewController:progressViewController progress:progress procDispatchQueue:procDispatchQueue
-			proc:proc cancelProc:cancelProc completionProc:^(void*){}];
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-- (void) performWithProgressViewController:(ProgressViewController*) progressViewController
-		progress:(const CProgress&) progress proc:(Proc) proc cancelProc:(CancelProc) cancelProc
-{
-	[self performWithProgressViewController:progressViewController progress:progress
-			procDispatchQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) proc:proc
-			cancelProc:cancelProc completionProc:^(void*){}];
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-- (void) performWithProgressViewController:(ProgressViewController*) progressViewController
-		progress:(const CProgress&) progress procDispatchQueue:(dispatch_queue_t) procDispatchQueue proc:(Proc) proc
-{
-	[self performWithProgressViewController:progressViewController progress:progress procDispatchQueue:procDispatchQueue
-			proc:proc completionProc:^(void*){}];
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-- (void) performWithProgressViewController:(ProgressViewController*) progressViewController
-		progress:(const CProgress&) progress proc:(Proc) proc
-{
-	[self performWithProgressViewController:progressViewController progress:progress
-			procDispatchQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) proc:proc
-			completionProc:^(void*){}];
+				// Cleanup
+				delete progress;
+			}];
 }
 
 @end
