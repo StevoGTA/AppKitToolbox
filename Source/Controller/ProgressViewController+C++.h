@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 // MARK: Properties
 
-@property (nonatomic, readonly) CProgress::UpdateInfo	progressUpdateInfo;
+@property (nonatomic, readonly)	CProgress	progress;
 
 @end
 

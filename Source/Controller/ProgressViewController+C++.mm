@@ -20,9 +20,9 @@ static	void	sProc(const CProgress& progress, ProgressViewController* progressVie
 // MARK: Properties
 
 //----------------------------------------------------------------------------------------------------------------------
-- (CProgress::UpdateInfo) progressUpdateInfo
+- (CProgress) progress
 {
-	return CProgress::UpdateInfo((CProgress::UpdateInfo::Proc) sProc, (__bridge void*) self);
+	return CProgress(CProgress::UpdateInfo((CProgress::UpdateInfo::Proc) sProc, (__bridge void*) self));
 }
 
 // MARK: Private methods
