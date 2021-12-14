@@ -23,7 +23,7 @@
 		// Cancelled
 		isCancelled = YES;
 
-		// Call proc
+		// Call cancel proc
 		cancelProc(unsafeUnretainedSelf);
 	};
 
