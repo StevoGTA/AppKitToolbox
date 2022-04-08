@@ -13,8 +13,8 @@
 
 //----------------------------------------------------------------------------------------------------------------------
 - (void) performWithProgressViewController:(ProgressViewController*) progressViewController
-		procDispatchQueue:(dispatch_queue_t) procDispatchQueue proc:(Proc) proc cancelProc:(CancelProc) cancelProc
-		completionProc:(CompletionProc) completionProc
+		progress:(const I<CProgress>&) progress procDispatchQueue:(dispatch_queue_t) procDispatchQueue proc:(Proc) proc
+		cancelProc:(CancelProc) cancelProc completionProc:(CompletionProc) completionProc
 {
 	// Setup
 	__block				BOOL			isCancelled = NO;
@@ -30,13 +30,11 @@
 	// Present as sheet
 	[self presentViewControllerAsSheet:progressViewController];
 
-	// Perform on proc displatch queue
+	// Perform on proc dispatch queue
+	__block	I<CProgress>	progressUse(progress);
 	dispatch_async(procDispatchQueue, ^{
-		// Setup
-		CProgress	progress = progressViewController.progress;
-
 		// Call proc
-		void*	result = proc(unsafeUnretainedSelf, progress);
+		void*	result = proc(unsafeUnretainedSelf, progressUse);
 
 		// Jump to main queue
 		dispatch_async(dispatch_get_main_queue(), ^{
@@ -53,11 +51,11 @@
 
 //----------------------------------------------------------------------------------------------------------------------
 - (void) performWithProgressViewController:(ProgressViewController*) progressViewController
-		proc:(Proc) proc cancelProc:(CancelProc) cancelProc
+		progress:(const I<CProgress>&) progress proc:(Proc) proc cancelProc:(CancelProc) cancelProc
 		completionProc:(CompletionProc) completionProc
 {
 	// Perform
-	[self performWithProgressViewController:progressViewController
+	[self performWithProgressViewController:progressViewController progress:progress
 			procDispatchQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) proc:proc
 			cancelProc:cancelProc completionProc:completionProc];
 }

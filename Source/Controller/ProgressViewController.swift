@@ -26,11 +26,16 @@ public class ProgressViewController : NSViewController {
 
 	// MARK: NSViewController methods
 	//------------------------------------------------------------------------------------------------------------------
-	override public func awakeFromNib() {
+	override public func viewDidLoad() {
 		// Do super
-		super.awakeFromNib()
+		super.viewDidLoad()
 
 		// Setup UI
+		self.messageLabel.stringValue = ""
+
+		self.progressIndicator.isIndeterminate = true
+		self.progressIndicator.doubleValue = 0.0
+
 		self.cancelButton?.isHidden = true
 	}
 

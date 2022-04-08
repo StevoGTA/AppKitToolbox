@@ -20,9 +20,9 @@ static	void	sProc(const CProgress& progress, ProgressViewController* progressVie
 // MARK: Properties
 
 //----------------------------------------------------------------------------------------------------------------------
-- (CProgress) progress
+- (CProgress::UpdateInfo) progressUpdateInfo
 {
-	return CProgress(CProgress::UpdateInfo((CProgress::UpdateInfo::Proc) sProc, (__bridge void*) self));
+	return CProgress::UpdateInfo((CProgress::UpdateInfo::Proc) sProc, (__bridge void*) self);
 }
 
 // MARK: Private methods
@@ -30,8 +30,6 @@ static	void	sProc(const CProgress& progress, ProgressViewController* progressVie
 //----------------------------------------------------------------------------------------------------------------------
 - (void) updateUIWithMessage:(NSString*) message isIndeterminate:(BOOL) isIndeterminate value:(Float32) value
 {
-(void) self.view;
-
 	// Update UI
 	self.messageLabel.stringValue = message;
 
@@ -40,7 +38,6 @@ static	void	sProc(const CProgress& progress, ProgressViewController* progressVie
 		[self.progressIndicator startAnimation:self];
 	else
 		[self.progressIndicator stopAnimation:self];
-
 	self.progressIndicator.doubleValue = value;
 }
 
@@ -48,7 +45,7 @@ static	void	sProc(const CProgress& progress, ProgressViewController* progressVie
 
 //----------------------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: Local proc definitions
+// MARK: - Local proc definitions
 
 //----------------------------------------------------------------------------------------------------------------------
 void sProc(const CProgress& progress, ProgressViewController* progressViewController)
