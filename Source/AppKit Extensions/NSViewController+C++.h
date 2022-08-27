@@ -16,18 +16,29 @@ NS_ASSUME_NONNULL_BEGIN
 
 // MARK: Types
 
-typedef	void*	_Nullable	(^Proc)(__unsafe_unretained NSViewController* viewController, const I<CProgress>& progress);
-typedef	void				(^CancelProc)(__unsafe_unretained NSViewController* viewController);
-typedef	void				(^CompletionProc)(__unsafe_unretained NSViewController* viewController, void* result);
+typedef	void				(^ _Nullable AlertCompletionProc)(NSModalResponse modalResponse);
+
+typedef	void*	_Nullable	(^ProgressProc)(__unsafe_unretained NSViewController* viewController,
+									const I<CProgress>& progress);
+typedef	void				(^ProgressCancelProc)(__unsafe_unretained NSViewController* viewController);
+typedef	void				(^ProgressCompletionProc)(__unsafe_unretained NSViewController* viewController,
+									void* result);
 
 // MARK: Instance methods
 
+- (void) presentAlertWithStyle:(NSAlertStyle) alertStyle message:(const CString&) message
+		information:(const CString&) information buttonTitles:(const TArray<CString>&) buttonTitles
+		completionProc:(AlertCompletionProc) completionProc;
+- (void) presentAlertWithStyle:(NSAlertStyle) alertStyle message:(const CString&) message
+		information:(const CString&) information buttonTitles:(const TArray<CString>&) buttonTitles;
+
 - (void) performWithProgressViewController:(ProgressViewController*) progressViewController
-		progress:(const I<CProgress>&) progress procDispatchQueue:(dispatch_queue_t) procDispatchQueue proc:(Proc) proc
-		cancelProc:(CancelProc) cancelProc completionProc:(CompletionProc) completionProc;
+		progress:(const I<CProgress>&) progress procDispatchQueue:(dispatch_queue_t) procDispatchQueue
+		proc:(ProgressProc) proc cancelProc:(ProgressCancelProc) cancelProc
+		completionProc:(ProgressCompletionProc) completionProc;
 - (void) performWithProgressViewController:(ProgressViewController*) progressViewController
-		progress:(const I<CProgress>&) progress proc:(Proc) proc cancelProc:(CancelProc) cancelProc
-		completionProc:(CompletionProc) completionProc;
+		progress:(const I<CProgress>&) progress proc:(ProgressProc) proc cancelProc:(ProgressCancelProc) cancelProc
+		completionProc:(ProgressCompletionProc) completionProc;
 
 @end
 
