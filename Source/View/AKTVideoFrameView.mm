@@ -54,7 +54,7 @@
 	if (status == noErr) {
 		// Success
 		__weak	typeof(self)	weakSelf = self;
-		dispatch_async(dispatch_get_main_queue(), ^{ weakSelf.layer.contents = (__bridge id) imageRef; });
+		dispatch_async(dispatch_get_main_queue(), ^{ weakSelf.layer.contents = (id) CFBridgingRelease(imageRef); });
 	}
 }
 
