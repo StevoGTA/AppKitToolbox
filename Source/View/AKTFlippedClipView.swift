@@ -1,23 +1,13 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	ProgressViewController+C++.h			©2021 Stevo Brock	All rights reserved.
+//	AKTFlippedClipView.swift			©2021 Stevo Brock		All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
-#pragma once
-
-#import "CProgress.h"
-#import "Swift.h"
-
-NS_ASSUME_NONNULL_BEGIN
+import AppKit
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: ProgressViewController extension
+// MARK: AKTFlippedClipView
+public class AKTFlippedClipView : NSClipView {
 
-@interface ProgressViewController (Cpp)
-
-// MARK: Properties
-
-@property (nonatomic, readonly)	CProgress::UpdateInfo	progressUpdateInfo;
-
-@end
-
-NS_ASSUME_NONNULL_END
+	// MARK: Properties
+	public	override	var	isFlipped: Bool { true }
+}

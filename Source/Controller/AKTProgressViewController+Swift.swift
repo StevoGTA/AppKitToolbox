@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	ProgressViewController+Swift.swift			©2021 Stevo Brock		All rights reserved.
+//	AKTProgressViewController+Swift.swift			©2021 Stevo Brock		All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: ProgressViewController extension
-public extension ProgressViewController {
+// MARK: AKTProgressViewController extension
+public extension AKTProgressViewController {
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
@@ -39,7 +39,7 @@ public extension AKTViewController {
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
-	func perform<T>(progress :Progress, progressViewController :ProgressViewController,
+	func perform<T>(progress :Progress, progressViewController :AKTProgressViewController,
 			procDispatchQueue :DispatchQueue = DispatchQueue.global(),
 			proc :@escaping () throws -> T, cancelProc :(() -> Void)? = nil,
 			completionProc :@escaping (_ result :T?, _ error :Error?) -> Void = { _,_ in }) {
@@ -85,7 +85,7 @@ public extension AKTViewController {
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
-	func perform(progress :Progress, progressViewController :ProgressViewController,
+	func perform(progress :Progress, progressViewController :AKTProgressViewController,
 			procDispatchQueue :DispatchQueue = DispatchQueue.global(),
 			proc :@escaping () throws -> Void, cancelProc :(() -> Void)? = nil,
 			completionProc :@escaping (_ error :Error?) -> Void = { _ in }) {

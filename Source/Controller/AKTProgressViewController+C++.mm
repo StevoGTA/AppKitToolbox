@@ -1,21 +1,21 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	ProgressViewController+C++.mm			©2021 Stevo Brock	All rights reserved.
+//	AKTProgressViewController+C++.mm			©2021 Stevo Brock	All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
-#import "ProgressViewController+C++.h"
+#import "AKTProgressViewController+C++.h"
 
 #import "NSString+C++.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: Local proc declarations
 
-static	void	sProc(const CProgress& progress, ProgressViewController* progressViewController);
+static	void	sProc(const CProgress& progress, AKTProgressViewController* progressViewController);
 
 //----------------------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: - ProgressViewController extension
+// MARK: - AKTProgressViewController extension
 
-@implementation ProgressViewController (Cpp)
+@implementation AKTProgressViewController (Cpp)
 
 // MARK: Properties
 
@@ -48,7 +48,7 @@ static	void	sProc(const CProgress& progress, ProgressViewController* progressVie
 // MARK: - Local proc definitions
 
 //----------------------------------------------------------------------------------------------------------------------
-void sProc(const CProgress& progress, ProgressViewController* progressViewController)
+void sProc(const CProgress& progress, AKTProgressViewController* progressViewController)
 //----------------------------------------------------------------------------------------------------------------------
 {
 	// Setup

@@ -1,12 +1,12 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	DropTargetView.swift		©2021 Stevo Brock		All rights reserved.
+//	AKTDropTargetView.swift		©2021 Stevo Brock		All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
 import AppKit
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: DropTargetView
-public class DropTargetView : NSView {
+// MARK: AKTDropTargetView
+public class AKTDropTargetView : NSView {
 
 	// MARK: State
 	private enum State {
@@ -147,8 +147,8 @@ public class DropTargetView : NSView {
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: - FolderFileDropTargetView
-public class FolderFileDropTargetView : DropTargetView {
+// MARK: - AKTFolderFileDropTargetView
+public class AKTFolderFileDropTargetView : AKTDropTargetView {
 
 	// MARK: Properties
 	public	var	queryAcceptFoldersFilesProc :(_ folders :[Folder], _ files :[File]) -> Bool = { _,_ in false }

@@ -1,12 +1,12 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	ProgressViewController.swift			©2021 Stevo Brock		All rights reserved.
+//	AKTProgressViewController.swift			©2021 Stevo Brock		All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
 import AppKit
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: ProgressViewController
-public class ProgressViewController : NSViewController {
+// MARK: AKTProgressViewController
+public class AKTProgressViewController : NSViewController {
 
 	// MARK: Types
 	public typealias CancelProc = () -> Void

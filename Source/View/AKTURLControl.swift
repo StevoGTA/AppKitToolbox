@@ -1,12 +1,12 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	URLControl.swift		©2021 Stevo Brock		All rights reserved.
+//	AKTURLControl.swift		©2021 Stevo Brock		All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
 import AppKit
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: URLControl
-class URLControl : NSControl {
+// MARK: AKTURLControl
+class AKTURLControl : NSControl {
 
 	// MARK: Properties
 			var	urlProc :(_ url :URL) -> Void = { NSWorkspace.shared.open($0) }

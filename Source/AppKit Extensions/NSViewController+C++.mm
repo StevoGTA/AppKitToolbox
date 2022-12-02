@@ -5,7 +5,7 @@
 #import "NSViewController+C++.h"
 
 #import "NSString+C++.h"
-#import "ProgressViewController+C++.h"
+#import "AKTProgressViewController+C++.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: NSViewController extension
@@ -39,7 +39,7 @@
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-- (void) performWithProgressViewController:(ProgressViewController*) progressViewController
+- (void) performWithProgressViewController:(AKTProgressViewController*) progressViewController
 		progress:(const I<CProgress>&) progress procDispatchQueue:(dispatch_queue_t) procDispatchQueue
 		proc:(ProgressProc) proc cancelProc:(ProgressCancelProc) cancelProc
 		completionProc:(ProgressCompletionProc) completionProc
@@ -78,7 +78,7 @@
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-- (void) performWithProgressViewController:(ProgressViewController*) progressViewController
+- (void) performWithProgressViewController:(AKTProgressViewController*) progressViewController
 		progress:(const I<CProgress>&) progress proc:(ProgressProc) proc cancelProc:(ProgressCancelProc) cancelProc
 		completionProc:(ProgressCompletionProc) completionProc
 {

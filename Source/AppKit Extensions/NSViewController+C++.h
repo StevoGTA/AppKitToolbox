@@ -32,11 +32,11 @@ typedef	void				(^ProgressCompletionProc)(__unsafe_unretained NSViewController* 
 - (void) presentAlertWithStyle:(NSAlertStyle) alertStyle message:(const CString&) message
 		information:(const CString&) information buttonTitles:(const TArray<CString>&) buttonTitles;
 
-- (void) performWithProgressViewController:(ProgressViewController*) progressViewController
+- (void) performWithProgressViewController:(AKTProgressViewController*) progressViewController
 		progress:(const I<CProgress>&) progress procDispatchQueue:(dispatch_queue_t) procDispatchQueue
 		proc:(ProgressProc) proc cancelProc:(ProgressCancelProc) cancelProc
 		completionProc:(ProgressCompletionProc) completionProc;
-- (void) performWithProgressViewController:(ProgressViewController*) progressViewController
+- (void) performWithProgressViewController:(AKTProgressViewController*) progressViewController
 		progress:(const I<CProgress>&) progress proc:(ProgressProc) proc cancelProc:(ProgressCancelProc) cancelProc
 		completionProc:(ProgressCompletionProc) completionProc;
 
