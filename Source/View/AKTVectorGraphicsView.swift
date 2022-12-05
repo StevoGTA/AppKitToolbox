@@ -1,12 +1,12 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	VectorGraphicsView.swift			©2021 Stevo Brock		All rights reserved.
+//	AKTVectorGraphicsView.swift			©2021 Stevo Brock		All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
 import AppKit
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: VectorGraphicsView
-public class VectorGraphicsView : NSView {
+// MARK: AKTVectorGraphicsView
+public class AKTVectorGraphicsView : NSView {
 
 	// MARK: Content
 	public enum Content {

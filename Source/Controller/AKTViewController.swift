@@ -1,10 +1,6 @@
-//
-//  AKTViewController.swift
-//  AppKit Toolbox
-//
-//  Created by Stevo on 9/28/20.
-//  Copyright © 2020 Stevo Brock. All rights reserved.
-//
+//----------------------------------------------------------------------------------------------------------------------
+//	AKTViewController.swift		©2020 Stevo Brock		All rights reserved.
+//----------------------------------------------------------------------------------------------------------------------
 
 import AppKit
 
