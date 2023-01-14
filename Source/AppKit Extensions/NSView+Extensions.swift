@@ -1,6 +1,6 @@
 //
 //  NSView+Extensions.swift
-//  Sound Grinder
+//  AppKit Toolbox
 //
 //  Created by Stevo on 5/28/21.
 //
@@ -29,6 +29,7 @@ extension NSView {
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
 	@discardableResult
+	@objc
 	func match(_ view :NSView, activate :Bool = true) -> [NSLayoutConstraint] {
 		// Setup
 		self.translatesAutoresizingMaskIntoConstraints = false
@@ -49,6 +50,7 @@ extension NSView {
 
 	//------------------------------------------------------------------------------------------------------------------
 	@discardableResult
+	@objc
 	func center(in view :NSView, activate :Bool = true) -> [NSLayoutConstraint] {
 		// Setup
 		self.translatesAutoresizingMaskIntoConstraints = false
@@ -67,6 +69,7 @@ extension NSView {
 
 	//------------------------------------------------------------------------------------------------------------------
 	@discardableResult
+	@objc
 	func match(widthOf view :NSView, activate :Bool = true) -> NSLayoutConstraint {
 		// Setup
 		self.translatesAutoresizingMaskIntoConstraints = false
@@ -81,6 +84,7 @@ extension NSView {
 
 	//------------------------------------------------------------------------------------------------------------------
 	@discardableResult
+	@objc
 	func match(heightOf view :NSView, activate :Bool = true) -> NSLayoutConstraint {
 		// Setup
 		self.translatesAutoresizingMaskIntoConstraints = false
@@ -95,6 +99,7 @@ extension NSView {
 
 	//------------------------------------------------------------------------------------------------------------------
 	@discardableResult
+	@objc
 	func match(sizeOf view :NSView, activate :Bool = true) -> [NSLayoutConstraint] {
 		// Setup
 		self.translatesAutoresizingMaskIntoConstraints = false

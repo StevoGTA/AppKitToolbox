@@ -80,23 +80,38 @@ public class AKTSidebarView : NSView {
 
 		// MARK: Instance methods
 		//--------------------------------------------------------------------------------------------------------------
-		@objc func add(view :NSView, leadingInset :CGFloat = 0.0, trailingInset :CGFloat = 0.0) {
+		@objc func add(view :NSView) {
+			// Add
+			addSubview(view)
+			view.spaceVertically(from: self.bottomView)
+			view.alignLeading(to: self, constant: self.itemLeadingInset)
+
+			// Update
+			self.bottomView = view
+		}
+
+		//--------------------------------------------------------------------------------------------------------------		//--------------------------------------------------------------------------------------------------------------
+		@objc func add(view :NSView, leadingInset :CGFloat) {
 			// Add
 			addSubview(view)
 			view.spaceVertically(from: self.bottomView)
 			view.alignLeading(to: self, constant: self.itemLeadingInset + leadingInset)
-			view.alignTrailing(to: self, constant: self.itemTrailingInset + trailingInset)
 
 			// Update
 			self.bottomView = view
 		}
 
 		//--------------------------------------------------------------------------------------------------------------
-		@objc func addItem(title :String) {
-			// Add title
-			let	titleLabel = AKTLabel()
-			titleLabel.stringValue = title
-			add(view: titleLabel)
+		@objc func add(view :NSView, leadingInset :CGFloat, trailingInset :CGFloat) {
+			// Add
+			addSubview(view)
+			view.spaceVertically(from: self.bottomView)
+			view.alignLeading(to: self, constant: self.itemLeadingInset + leadingInset)
+			view.alignTrailing(to: self, constant: self.itemTrailingInset + trailingInset)
+			view.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+
+			// Update
+			self.bottomView = view
 		}
 
 		//--------------------------------------------------------------------------------------------------------------
