@@ -20,7 +20,8 @@ extension NSControl {
 						set {
 							// Setup
 							let	actionProcObject = ActionProcObject(newValue)
-							objc_setAssociatedObject(self, "actionProc", actionProcObject, .OBJC_ASSOCIATION_RETAIN)
+							objc_setAssociatedObject(self, "actionProc", actionProcObject,
+									.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 
 							self.action = #selector(ActionProcObject.callActionProc(_:))
 							self.target = actionProcObject
