@@ -2,6 +2,8 @@
 //	AKTProgressViewController+Swift.swift			©2021 Stevo Brock		All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
+import Foundation
+
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: AKTProgressViewController extension
 public extension AKTProgressViewController {

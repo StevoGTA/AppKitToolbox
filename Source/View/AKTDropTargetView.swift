@@ -16,8 +16,8 @@ public class AKTDropTargetView : NSView {
 	}
 
 	// MARK: Types
-	public typealias QueryAcceptItemsProc = (_ pasteboardType :NSPasteboard.PasteboardType, _ items :[Any]) -> Bool
-	public typealias ReceiveItemsProc = (_ pasteboardType :NSPasteboard.PasteboardType, _ items :[Any]) -> Void
+	public typealias QueryAcceptItemsProc = (_ items :[Any]) -> Bool
+	public typealias ReceiveItemsProc = (_ items :[Any]) -> Void
 
 	// MARK: Properties
 			public	var	borderWidth :CGFloat {
@@ -33,8 +33,8 @@ public class AKTDropTargetView : NSView {
 			public	var	willAcceptColor = NSColor.clear { didSet { self.updateUI() } }
 			public	var	willNotAcceptColor = NSColor.clear { didSet { self.updateUI() } }
 
-	@objc	public	var	queryAcceptItemsProc :QueryAcceptItemsProc = { _, _ in false }
-	@objc	public	var	receiveItemsProc :ReceiveItemsProc = { _,_ in }
+	@objc	public	var	queryAcceptItemsProc :QueryAcceptItemsProc = {  _ in false }
+	@objc	public	var	receiveItemsProc :ReceiveItemsProc = { _ in }
 
 			private	var	state = State.idle
 
@@ -72,19 +72,11 @@ public class AKTDropTargetView : NSView {
 	// MARK: NSDraggingDestination methods
 	//------------------------------------------------------------------------------------------------------------------
 	override public func draggingEntered(_ draggingInfo :NSDraggingInfo) -> NSDragOperation {
-		// Iterate all registered pasteboard types
-		var	dragOperation :NSDragOperation = []
-		for pasteboardType in self.registeredDraggedTypes {
-			// Get items for this pasteboard type
-			guard let item = draggingInfo.draggingPasteboard.propertyList(forType: pasteboardType) else { continue }
+		// Get items
+		let	items = items(for: draggingInfo)
 
-			// Call proc
-			if self.queryAcceptItemsProc(pasteboardType, [item]) {
-				// Success!
-				dragOperation = [.copy]
-				break
-			}
-		}
+		// Compose drag operation
+		let	dragOperation :NSDragOperation = self.queryAcceptItemsProc(items) ? [.copy] : []
 
 		// Update internals
 		self.state = !dragOperation.isEmpty ? .willAcceptDrop : .willNotAcceptDrop
@@ -106,23 +98,19 @@ public class AKTDropTargetView : NSView {
 
 	//------------------------------------------------------------------------------------------------------------------
 	override public func performDragOperation(_ draggingInfo :NSDraggingInfo) -> Bool {
-		// Iterate all registered pasteboard types
-		for pasteboardType in self.registeredDraggedTypes {
-			// Get items for this pasteboard type
-			guard let items = draggingInfo.draggingPasteboard.propertyList(forType: pasteboardType) as? [Any] else
-					{ continue }
+		// Get items
+		let	items = items(for: draggingInfo)
 
-			// Call proc
-			if self.queryAcceptItemsProc(pasteboardType, items) {
-				// Do it
-				self.receiveItemsProc(pasteboardType, items)
+		// Query if accept
+		if self.queryAcceptItemsProc(items) {
+			// We good!
+			self.receiveItemsProc(items)
 
-				// Success
-				return true
-			}
+			return true
+		} else {
+			// Nope
+			return false
 		}
-
-		return false
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -132,6 +120,20 @@ public class AKTDropTargetView : NSView {
 
 		// Update UI
 		updateUI()
+	}
+
+	// MARK: Fileprivate methods
+	//------------------------------------------------------------------------------------------------------------------
+	fileprivate func items(for draggingInfo :NSDraggingInfo) -> [Any] {
+		// Iterate all registered pasteboard types
+		for pasteboardType in self.registeredDraggedTypes {
+			// Get items for this pasteboard type
+			guard let item = draggingInfo.draggingPasteboard.propertyList(forType: pasteboardType) else { continue }
+
+			return [item]
+		}
+
+		return []
 	}
 
 	// MARK: Private methods
@@ -161,42 +163,31 @@ public class AKTFolderFileDropTargetView : AKTDropTargetView {
 		super.awakeFromNib()
 
 		// Setup
+		registerForDraggedTypes([.fileURL])
 		self.queryAcceptItemsProc = { [unowned self] in
-			// Collect Folders and Files
-			let	(folders, files) = self.foldersFiles(for: $0, items: $1)
+			// Setup
+			let	(folders, files) = self.foldersFiles(for: $0 as! [URL])
 
 			return self.queryAcceptFoldersFilesProc(folders, files)
 		}
-		registerForDraggedTypes([.fileURL])
+		self.receiveItemsProc = { [unowned self] in
+			// Setup
+			let	(folders, files) = self.foldersFiles(for: $0 as! [URL])
+
+			// Call proc
+			self.receiveFoldersFilesProc(folders, files)
+		}
 	}
 
-	// MARK: NSDraggingDestination methods
+	// MARK: AKTDropTargetView methods
 	//------------------------------------------------------------------------------------------------------------------
-	override public func performDragOperation(_ draggingInfo :NSDraggingInfo) -> Bool {
+	override func items(for draggingInfo: NSDraggingInfo) -> [Any] {
 		// Retrieve URLs
-		let	urls =
-					draggingInfo.draggingPasteboard.readObjects(forClasses: [NSURL.self],
-							options: [.urlReadingFileURLsOnly : true]) as! [URL]
-
-		// Transmogrify
-		let	(folders, files) = foldersFiles(for: urls)
-
-		// Call proc
-		self.receiveFoldersFilesProc(folders, files)
-
-		return true
+		return draggingInfo.draggingPasteboard.readObjects(forClasses: [NSURL.self],
+				options: [.urlReadingFileURLsOnly : true]) as! [URL]
 	}
 
 	// MARK: Private methods
-	//------------------------------------------------------------------------------------------------------------------
-	private func foldersFiles(for pasteboardType :NSPasteboard.PasteboardType, items :[Any]) ->
-			(folders :[Folder], files :[File]) {
-		// Get urls
-		let	urls = items.map({ URL(fileURLWithPath: $0 as! String) })
-
-		return foldersFiles(for: urls)
-	}
-
 	//------------------------------------------------------------------------------------------------------------------
 	private func foldersFiles(for urls :[URL]) -> (folders :[Folder], files :[File]) {
 		// Transmogrify to Folders and Files
