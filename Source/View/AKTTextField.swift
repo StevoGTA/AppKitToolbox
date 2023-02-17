@@ -11,9 +11,9 @@ public class AKTTextField : NSTextField {
 	// MARK: Properties
 	public	var	isEmpty :Bool { self.stringValue.isEmpty }
 	
-	public	var	textDidBeginEditingProc :() -> Void = {}
+	public	var	textDidBeginEditingProc :(_ string :String) -> Void = { _ in }
 	public	var	textDidChangeProc :(_ string :String) -> Void = { _ in }
-	public	var	textDidEndEditingProc :() -> Void = {}
+	public	var	textDidEndEditingProc :(_ string :String) -> Void = { _ in }
 
 	// MARK: NSTextField methods
 	//------------------------------------------------------------------------------------------------------------------
@@ -22,7 +22,7 @@ public class AKTTextField : NSTextField {
 		super.textDidBeginEditing(notification)
 
 		// Call proc
-		self.textDidBeginEditingProc()
+		self.textDidBeginEditingProc(self.stringValue)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -40,6 +40,6 @@ public class AKTTextField : NSTextField {
 		super.textDidEndEditing(notification)
 
 		// Call proc
-		self.textDidEndEditingProc()
+		self.textDidEndEditingProc(self.stringValue)
 	}
 }
