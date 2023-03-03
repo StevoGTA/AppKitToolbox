@@ -32,6 +32,13 @@ public extension AKTProgressViewController {
 		// Update progress indicator view
 		self.progressIndicator.isIndeterminate = value == nil
 		self.progressIndicator.doubleValue = Double(value ?? 0.0)
+		if value != nil {
+			// Have value
+			self.progressIndicator.stopAnimation(self)
+		} else {
+			// Don't have value
+			self.progressIndicator.startAnimation(self)
+		}
 	}
 }
 
