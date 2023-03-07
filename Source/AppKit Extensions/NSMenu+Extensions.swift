@@ -33,4 +33,14 @@ public extension NSMenu {
 		// Add item
 		addItem(menuItem)
 	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	func addDisabledItem(withTitle title :String) {
+		// Setup
+		let	menuItem = NSMenuItem(title: title, action: nil, keyEquivalent: "")
+		menuItem.isEnabled = false
+
+		// Add item
+		addItem(menuItem)
+	}
 }
