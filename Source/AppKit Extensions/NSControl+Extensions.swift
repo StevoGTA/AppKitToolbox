@@ -15,18 +15,21 @@ extension NSControl {
 	typealias ActionProc = (_ control :NSControl) -> Void
 
 	// MARK: Properties
-	@objc var	actionProc :ActionProc {
-						get { (objc_getAssociatedObject(index, "actionProc") as! ActionProcObject).actionProc }
-						set {
-							// Setup
-							let	actionProcObject = ActionProcObject(newValue)
-							objc_setAssociatedObject(self, "actionProc", actionProcObject,
-									.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+	static			private	var	actionProcKey = "actionProc"
 
-							self.action = #selector(ActionProcObject.callActionProc(_:))
-							self.target = actionProcObject
-						}
-					}
+			@objc			var	actionProc :ActionProc {
+										get { (objc_getAssociatedObject(self, &NSControl.actionProcKey) as!
+												ActionProcObject).actionProc }
+										set {
+											// Setup
+											let	actionProcObject = ActionProcObject(newValue)
+											objc_setAssociatedObject(self, &NSControl.actionProcKey, actionProcObject,
+													.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+
+											self.action = #selector(ActionProcObject.callActionProc(_:))
+											self.target = actionProcObject
+										}
+									}
 
 	// MARK: ActionProcObject
 	@objc class ActionProcObject : NSObject {

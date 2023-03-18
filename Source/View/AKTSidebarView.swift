@@ -18,7 +18,6 @@ public class AKTSidebarView : NSView {
 		private	let	itemTrailingInset :CGFloat
 
 		private	var	titleLabel :AKTLabel!
-		private	var	titleLabelAsBottomLayoutConstraint :NSLayoutConstraint!
 
 		private	var	bottomView :NSView!
 		private	var	bottomViewAsBottomLayoutConstraint :NSLayoutConstraint!
@@ -47,7 +46,7 @@ public class AKTSidebarView : NSView {
 				button!.title = ""
 				button!.state = .on
 				button!.target = self
-				button!.action = #selector(toggleItemVisibility(button:))
+				button!.action = #selector(toggleItemVisibility(_:))
 
 				addSubview(button!)
 				button!.alignLeading(to: self)
@@ -69,7 +68,6 @@ public class AKTSidebarView : NSView {
 				self.titleLabel.alignLeading(to: self)
 			}
 			self.titleLabel.alignTrailing(to: self)
-			self.titleLabelAsBottomLayoutConstraint = self.titleLabel.alignBottom(to: self, activate: false)
 
 			// Update
 			self.bottomView = self.titleLabel
@@ -108,7 +106,8 @@ public class AKTSidebarView : NSView {
 			view.spaceVertically(from: self.bottomView)
 			view.alignLeading(to: self, constant: self.itemLeadingInset + leadingInset)
 			view.alignTrailing(to: self, constant: self.itemTrailingInset + trailingInset)
-			view.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+			view.setContentHuggingPriority(NSLayoutConstraint.Priority(rawValue: 1), for: .horizontal)
+			view.setContentCompressionResistancePriority(NSLayoutConstraint.Priority(rawValue: 1), for: .horizontal)
 
 			// Update
 			self.bottomView = view
@@ -143,15 +142,18 @@ public class AKTSidebarView : NSView {
 
 		// MARK: Obj-C methods
 		//--------------------------------------------------------------------------------------------------------------
-		@objc func toggleItemVisibility(button :NSButton) {
+		@objc func toggleItemVisibility(_ sender :NSButton) {
 			// Update Layout Constraints
-			if button.state == .on {
+			NSAnimationContext.current.duration = 0.1
+
+			// Update
+			if sender.state == .on {
 				// Show
-				NSLayoutConstraint.deactivate([self.titleLabelAsBottomLayoutConstraint])
-				NSLayoutConstraint.activate([self.bottomViewAsBottomLayoutConstraint])
+				self.bottomViewAsBottomLayoutConstraint.animator().constant = 0.0
 			} else {
-				NSLayoutConstraint.deactivate([self.bottomViewAsBottomLayoutConstraint])
-				NSLayoutConstraint.activate([self.titleLabelAsBottomLayoutConstraint])
+				// Hide
+				self.bottomViewAsBottomLayoutConstraint.animator().constant =
+						self.bounds.height - self.titleLabel.bounds.height
 			}
 		}
 
@@ -164,8 +166,17 @@ public class AKTSidebarView : NSView {
 	}
 
 	// MARK: Properties
-	@objc	var	contentInsets = NSEdgeInsets(top: 4.0, left: 4.0, bottom: 4.0, right: 4.0)
-	@objc	var	groupSpacing :CGFloat = 8.0
+	@objc			var	contentInsets = NSEdgeInsets(top: 4.0, left: 4.0, bottom: 4.0, right: 4.0)
+	@objc			var	groupSpacing :CGFloat = 8.0
+
+			private	var	notifcationObserver :NSObjectProtocol?
+
+	// MARK: Lifecycle methods
+	//------------------------------------------------------------------------------------------------------------------
+	deinit {
+		// Cleanup
+		if self.notifcationObserver != nil { NotificationCenter.default.removeObserver(self.notifcationObserver!) }
+	}
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
@@ -184,15 +195,15 @@ public class AKTSidebarView : NSView {
 		scrollView.match(self)
 
 		let clipView = AKTFlippedClipView()
-		scrollView.contentView = clipView
 		clipView.drawsBackground = false
+		scrollView.contentView = clipView
 		clipView.match(scrollView)
 
 		let contentView = NSView()
 		scrollView.documentView = contentView
 		contentView.alignLeading(to: clipView)
+		let	layoutConstraint = contentView.alignTrailing(to: clipView)
 		contentView.alignTop(to: clipView)
-		contentView.alignTrailing(to: clipView)
 
 		// Iterate groups
 		var	previousView :NSView? = nil
@@ -218,6 +229,15 @@ public class AKTSidebarView : NSView {
 
 		// Finalize
 		previousView?.alignBottom(to: contentView, constant: -self.contentInsets.bottom)
+		updateLayoutConstraint(scrollView: scrollView, layoutConstraint: layoutConstraint)
+
+		// Setup Notifications
+		self.notifcationObserver =
+				NotificationCenter.default.addObserver(forName: NSView.frameDidChangeNotification, object: clipView,
+						using: { [unowned self, scrollView, layoutConstraint] _ in
+							// Update layout constraint
+							self.updateLayoutConstraint(scrollView: scrollView, layoutConstraint: layoutConstraint)
+						})
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -233,5 +253,17 @@ public class AKTSidebarView : NSView {
 		self.addSubview(label)
 		label.center(in: self)
 		label.match(widthOf: self)
+	}
+
+	// MARK: Private methods
+	//------------------------------------------------------------------------------------------------------------------
+	private func updateLayoutConstraint(scrollView :NSScrollView, layoutConstraint :NSLayoutConstraint) {
+		DispatchQueue.main.async() { [unowned scrollView, unowned layoutConstraint] in
+			// Update layout constraint
+			NSAnimationContext.current.duration = 0.1
+			layoutConstraint.animator().constant =
+					!(scrollView.verticalScroller?.isHidden ?? true) ?
+							-scrollView.verticalScroller!.bounds.size.width : 0.0
+ 		}
 	}
 }
