@@ -78,7 +78,8 @@ public class AKTSidebarView : NSView {
 
 		// MARK: Instance methods
 		//--------------------------------------------------------------------------------------------------------------
-		@objc func add(view :NSView) {
+		@objc (addView:)
+		func add(view :NSView) {
 			// Add
 			addSubview(view)
 			view.spaceVertically(from: self.bottomView)
@@ -89,7 +90,8 @@ public class AKTSidebarView : NSView {
 		}
 
 		//--------------------------------------------------------------------------------------------------------------		//--------------------------------------------------------------------------------------------------------------
-		@objc func add(view :NSView, leadingInset :CGFloat) {
+		@objc (addView:leadingInset:)
+		func add(view :NSView, leadingInset :CGFloat) {
 			// Add
 			addSubview(view)
 			view.spaceVertically(from: self.bottomView)
@@ -100,7 +102,8 @@ public class AKTSidebarView : NSView {
 		}
 
 		//--------------------------------------------------------------------------------------------------------------
-		@objc func add(view :NSView, leadingInset :CGFloat, trailingInset :CGFloat) {
+		@objc (addView:leadingInset:trailingInset:)
+		func add(view :NSView, leadingInset :CGFloat, trailingInset :CGFloat) {
 			// Add
 			addSubview(view)
 			view.spaceVertically(from: self.bottomView)
