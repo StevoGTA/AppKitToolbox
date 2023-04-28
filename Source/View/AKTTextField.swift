@@ -17,7 +17,7 @@ public class AKTTextField : NSTextField {
 
 	// MARK: NSTextField methods
 	//------------------------------------------------------------------------------------------------------------------
-	public override func textDidBeginEditing(_ notification :Notification) {
+	override public func textDidBeginEditing(_ notification :Notification) {
 		// Do super
 		super.textDidBeginEditing(notification)
 
@@ -26,7 +26,7 @@ public class AKTTextField : NSTextField {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	public override func textDidChange(_ notification :Notification) {
+	override public func textDidChange(_ notification :Notification) {
 		// Do super
 		super.textDidChange(notification)
 
@@ -35,7 +35,7 @@ public class AKTTextField : NSTextField {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	public override func textDidEndEditing(_ notification :Notification) {
+	override public func textDidEndEditing(_ notification :Notification) {
 		// Do super
 		super.textDidEndEditing(notification)
 

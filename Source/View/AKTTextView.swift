@@ -27,7 +27,7 @@ public class AKTTextView : NSTextView, NSTextStorageDelegate {
 
 	// MARK: NSTextView methods
 	//------------------------------------------------------------------------------------------------------------------
-	public override func didChangeText() {
+	override public func didChangeText() {
 		// Call proc
 		self.textDidChangeProc(self.textStorage!.string)
 	}
