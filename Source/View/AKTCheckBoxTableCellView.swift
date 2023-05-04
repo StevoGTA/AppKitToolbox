@@ -9,5 +9,16 @@ import AppKit
 public class AKTCheckBoxTableCellView : NSTableCellView {
 
 	// MARK: Properties
-	@IBOutlet	var	checkBox :NSButton!
+	public				var	state :NSControl.StateValue {
+									get { self.checkBox.state }
+									set { self.checkBox.state = newValue }
+								}
+
+	public				var	stateChangedProc :(_ state :NSControl.StateValue) -> Void = { _ in }
+
+			@IBOutlet	var	checkBox :NSButton!
+
+	// MARK: IBActions
+	//------------------------------------------------------------------------------------------------------------------
+	@IBAction func stateChanged(_ :NSButton) { self.stateChangedProc(self.state) }
 }
