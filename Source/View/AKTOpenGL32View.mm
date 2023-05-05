@@ -73,12 +73,12 @@ static	CVReturn			sDisplayLinkOutput(CVDisplayLinkRef displayLink, const CVTimeS
 
 		self.gpuInternal =
 				new CGPU(
-						SGPUProcsInfo((SGPUProcsInfo::AcquireContextProc) sAcquireContext,
-								(SGPUProcsInfo::TryAcquireContextProc) sTryAcquireContext,
-								(SGPUProcsInfo::ReleaseContextProc) sReleaseContext,
-								(SGPUProcsInfo::GetSizeProc) sGetSize, (SGPUProcsInfo::GetScaleProc) sGetScale,
-								(SGPUProcsInfo::GetContextProc) sGetContext,
-								(SGPUProcsInfo::GetPixelFormatProc) sGetPixelFormat, (__bridge void*) self));
+						CGPU::Procs((CGPU::Procs::AcquireContextProc) sAcquireContext,
+								(CGPU::Procs::TryAcquireContextProc) sTryAcquireContext,
+								(CGPU::Procs::ReleaseContextProc) sReleaseContext,
+								(CGPU::Procs::GetSizeProc) sGetSize, (CGPU::Procs::GetScaleProc) sGetScale,
+								(CGPU::Procs::GetContextProc) sGetContext,
+								(CGPU::Procs::GetPixelFormatProc) sGetPixelFormat, (__bridge void*) self));
 	}
 
 	return self;
