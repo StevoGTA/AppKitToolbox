@@ -4,8 +4,6 @@
 
 #import "NSPathControl+C++.h"
 
-#import "NSString+C++.h"
-
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: NSPathControl extension
 
@@ -22,7 +20,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 - (void) setCFolder:(CFolder) folder
 {
-	self.URL = [NSURL fileURLWithPath:[NSString stringForCString:folder.getFilesystemPath().getString()]];
+	self.URL = [NSURL fileURLWithPath:(__bridge NSString*) folder.getFilesystemPath().getString().getOSString()];
 }
 
 @end

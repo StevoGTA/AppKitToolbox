@@ -14,7 +14,32 @@ public extension NSMenu {
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
-	func addItem(withTitle title :String, target :AnyObject? = nil, action :Selector, representedObject :Any? = nil) {
+	@objc func menuItem(representedObject :Any, deep :Bool = false) -> NSMenuItem? {
+		// Search for NSMenuItem by representedObject
+		return menuItem(matchingProc: { ($0.representedObject as? NSObject)?.isEqual(to: representedObject) ?? false },
+				deep: deep)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc func menuItem(matchingProc :(_ menuItem :NSMenuItem) -> Bool, deep :Bool = false) -> NSMenuItem? {
+		// Iterate all NSMenuItems
+		for menuItem in self.items {
+			// Check this NSMenuItem
+			if matchingProc(menuItem) {
+				// Found it
+				return menuItem
+			} else if deep, let submenuItem = menuItem.submenu?.menuItem(matchingProc: matchingProc, deep: true) {
+				// Found it
+				return submenuItem
+			}
+		}
+
+		return nil
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc func addItem(title :String, target :AnyObject? = nil, action :Selector? = nil,
+			representedObject :Any? = nil) {
 		// Setup
 		let	menuItem = NSMenuItem(title: title, action: action, keyEquivalent: "")
 		menuItem.target = target
@@ -25,7 +50,7 @@ public extension NSMenu {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	func addItem(withTitle title :String, menu :NSMenu) {
+	@objc func addItem(title :String, menu :NSMenu) {
 		// Setup
 		let	menuItem = NSMenuItem(title: title, action: nil, keyEquivalent: "")
 		menuItem.submenu = menu
@@ -35,7 +60,7 @@ public extension NSMenu {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	func addDisabledItem(withTitle title :String) {
+	@objc func addDisabledItem(title :String) {
 		// Setup
 		let	menuItem = NSMenuItem(title: title, action: nil, keyEquivalent: "")
 		menuItem.isEnabled = false
