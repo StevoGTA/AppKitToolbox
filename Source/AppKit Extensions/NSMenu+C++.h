@@ -19,6 +19,8 @@ NS_ASSUME_NONNULL_BEGIN
 // MARK: Instance methods
 
 - (void) addItemWithString:(const CString&) string target:(NSObject*) target action:(SEL) action
+		tag:(NSInteger) tag representedObject:(NSObject*) representedObject;
+- (void) addItemWithString:(const CString&) string target:(NSObject*) target action:(SEL) action
 		representedObject:(NSObject*) representedObject;
 
 @end

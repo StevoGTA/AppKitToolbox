@@ -20,6 +20,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void) addItemWithString:(const CString&) string;
 - (void) addItemWithString:(const CString&) string representedObject:(id) representedObject;
+- (void) addItemWithString:(const CString&) string tag:(NSInteger) tag representedObject:(id) representedObject
+		indentationLevel:(NSInteger) indentationLevel;
+- (void) addItemWithString:(const CString&) string tag:(NSInteger) tag representedObject:(id) representedObject;
+- (void) addItemWithString:(const CString&) string tag:(NSInteger) tag indentationLevel:(NSInteger) indentationLevel;
 - (void) addItemWithString:(const CString&) string tag:(NSInteger) tag;
 - (void) addItemWithString:(const CString&) string target:(NSObject*) target action:(SEL) action;
 

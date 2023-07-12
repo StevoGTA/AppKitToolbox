@@ -17,16 +17,7 @@ extension NSPopUpButton {
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
-	@objc func menuItem(matchingProc :(_ menuItem :NSMenuItem) -> Bool, deep :Bool = false) -> NSMenuItem? {
-		// Call through to menu
-		return self.menu?.menuItem(matchingProc: matchingProc, deep: deep)
-	}
-
-	//------------------------------------------------------------------------------------------------------------------
-	@objc func menuItem(representedObject :Any, deep :Bool = false) -> NSMenuItem? {
-		// Call through to menu
-		return self.menu?.menuItem(representedObject: representedObject, deep: deep)
-	}
+	@objc func add(item :NSMenuItem) { self.menu?.addItem(item) }
 
 	//------------------------------------------------------------------------------------------------------------------
 	@objc func addItem(title :String, tag :Int) {
@@ -55,5 +46,17 @@ extension NSPopUpButton {
 		// Add submenu
 		addItem(withTitle: title)
 		self.lastItem!.submenu = submenu
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc func menuItem(matchingProc :(_ menuItem :NSMenuItem) -> Bool, deep :Bool = false) -> NSMenuItem? {
+		// Call through to menu
+		return self.menu?.menuItem(matchingProc: matchingProc, deep: deep)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc func menuItem(representedObject :Any, deep :Bool = false) -> NSMenuItem? {
+		// Call through to menu
+		return self.menu?.menuItem(representedObject: representedObject, deep: deep)
 	}
 }

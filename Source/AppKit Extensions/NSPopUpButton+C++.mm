@@ -7,7 +7,7 @@
 
 #import "NSPopUpButton+C++.h"
 
-#import "NSMenu+C++.h"
+#import "NSMenuItem+C++.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: NSPopUpButton extension
@@ -29,6 +29,35 @@
 	// Add item
 	[self addItemWithTitle:(__bridge NSString*) string.getOSString()];
 	self.lastItem.representedObject = representedObject;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) addItemWithString:(const CString&) string tag:(NSInteger) tag representedObject:(id) representedObject
+		indentationLevel:(NSInteger) indentationLevel
+{
+	// Add item
+	[self addItemWithTitle:(__bridge NSString*) string.getOSString()];
+	self.lastItem.tag = tag;
+	self.lastItem.representedObject = representedObject;
+	self.lastItem.indentationLevel = indentationLevel;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) addItemWithString:(const CString&) string tag:(NSInteger) tag representedObject:(id) representedObject
+{
+	// Add item
+	[self addItemWithTitle:(__bridge NSString*) string.getOSString()];
+	self.lastItem.tag = tag;
+	self.lastItem.representedObject = representedObject;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) addItemWithString:(const CString&) string tag:(NSInteger) tag indentationLevel:(NSInteger) indentationLevel
+{
+	// Add item
+	[self addItemWithTitle:(__bridge NSString*) string.getOSString()];
+	self.lastItem.tag = tag;
+	self.lastItem.indentationLevel = indentationLevel;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
