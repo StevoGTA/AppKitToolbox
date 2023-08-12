@@ -33,7 +33,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 + (nullable NSView*) instantiateViewWithClass:(Class) clas fromNibNamed:(NSString*) nibName
 {
-	return [self instantiateViewWithClass:clas fromNibNamed:nibName bundle:nil];
+	return [self instantiateViewWithClass:clas fromNibNamed:nibName bundle:NSBundle.mainBundle];
 }
 
 @end
