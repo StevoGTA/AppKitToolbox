@@ -23,6 +23,9 @@ typedef	void				(^AKTTreeViewBackingAdapterSelectionDidChangeProc)();
 
 // MARK: Properties
 
+@property (nonatomic, readonly)	TArray<I<CTreeItem> >							topLevelTreeItems;
+@property (nonatomic, readonly)	TArray<I<CTreeItem> >							selectedTreeItems;
+
 @property (nonatomic, strong)	AKTTreeViewBackingAdapterViewProc				viewProc;
 @property (nonatomic, strong)	AKTTreeViewBackingAdapterSelectionDidChangeProc	selectionDidChangeProc;
 
@@ -34,9 +37,6 @@ typedef	void				(^AKTTreeViewBackingAdapterSelectionDidChangeProc)();
 
 - (void) setTopLevelTreeItems:(const TArray<I<CTreeItem> >&) topLevelTreeItems;
 - (void) addTopLevelTreeItems:(const TArray<I<CTreeItem> >&) topLevelTreeItems;
-
-- (TArray<I<CTreeItem> >) getTopLevelTreeItems;
-- (TArray<I<CTreeItem> >) getSelectedTreeItems;
 
 @end
 

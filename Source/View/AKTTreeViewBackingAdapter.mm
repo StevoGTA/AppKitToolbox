@@ -22,6 +22,29 @@
 
 @implementation AKTTreeViewBackingAdapter
 
+// MARK: Property methods
+
+//----------------------------------------------------------------------------------------------------------------------
+- (TArray<I<CTreeItem> >) topLevelTreeItems
+//----------------------------------------------------------------------------------------------------------------------
+{
+	return self.treeViewBacking->getTopLevelTreeItems();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (TArray<I<CTreeItem> >) selectedTreeItems
+//----------------------------------------------------------------------------------------------------------------------
+{
+	// Collect view item IDs
+	__block	TNArray<CString>	viewItemIDs;
+	[self.outlineView.selectedRowIndexes enumerateIndexesUsingBlock:^(NSUInteger index, BOOL* stop) {
+		// Add view item ID
+		viewItemIDs += CString((__bridge CFStringRef) [self.outlineView itemAtRow:index]);
+	}];
+
+	return self.treeViewBacking->getTreeItems(viewItemIDs);
+}
+
 // MARK: Lifecycle methods
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -146,27 +169,6 @@ return item == nil;
 
 	// Update UI
 	[self.outlineView reloadData];
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-- (TArray<I<CTreeItem> >) getTopLevelTreeItems
-//----------------------------------------------------------------------------------------------------------------------
-{
-	return self.treeViewBacking->getTopLevelTreeItems();
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-- (TArray<I<CTreeItem> >) getSelectedTreeItems
-//----------------------------------------------------------------------------------------------------------------------
-{
-	// Collect view item IDs
-	__block	TNArray<CString>	viewItemIDs;
-	[self.outlineView.selectedRowIndexes enumerateIndexesUsingBlock:^(NSUInteger index, BOOL* stop) {
-		// Add view item ID
-		viewItemIDs += CString((__bridge CFStringRef) [self.outlineView itemAtRow:index]);
-	}];
-
-	return self.treeViewBacking->getTreeItems(viewItemIDs);
 }
 
 // MARK: Private methods
