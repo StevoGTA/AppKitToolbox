@@ -13,32 +13,6 @@
 @implementation NSViewController (Cpp)
 
 //----------------------------------------------------------------------------------------------------------------------
-- (void) presentAlertWithStyle:(NSAlertStyle) alertStyle message:(const CString&) message
-		information:(const CString&) information buttonTitles:(const TArray<CString>&) buttonTitles
-		completionProc:(AlertCompletionProc) completionProc
-{
-	// Setup
-	NSAlert*	alert = [[NSAlert alloc] init];
-	alert.alertStyle = alertStyle;
-	alert.messageText = [NSString stringForCString:message];
-	alert.informativeText = [NSString stringForCString:information];
-	for (TIteratorD<CString> iterator = buttonTitles.getIterator(); iterator.hasValue(); iterator.advance())
-		// Add Button
-		[alert addButtonWithTitle:[NSString stringForCString:*iterator]];
-
-	// Present
-	[alert beginSheetModalForWindow:self.view.window completionHandler:completionProc];
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-- (void) presentAlertWithStyle:(NSAlertStyle) alertStyle message:(const CString&) message
-		information:(const CString&) information buttonTitles:(const TArray<CString>&) buttonTitles
-{
-	[self presentAlertWithStyle:alertStyle message:message information:information buttonTitles:buttonTitles
-			completionProc:nil];
-}
-
-//----------------------------------------------------------------------------------------------------------------------
 - (void) performWithProgressViewController:(AKTProgressViewController*) progressViewController
 		progress:(const I<CProgress>&) progress procDispatchQueue:(dispatch_queue_t) procDispatchQueue
 		proc:(ProgressProc) proc cancelProc:(ProgressCancelProc) cancelProc

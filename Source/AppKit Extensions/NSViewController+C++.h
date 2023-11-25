@@ -16,7 +16,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 // MARK: Types
 
-typedef	void				(^ _Nullable AlertCompletionProc)(NSModalResponse modalResponse);
 
 typedef	void*	_Nullable	(^ProgressProc)(__unsafe_unretained NSViewController* viewController,
 									const I<CProgress>& progress);
@@ -26,11 +25,6 @@ typedef	void				(^ProgressCompletionProc)(__unsafe_unretained NSViewController* 
 
 // MARK: Instance methods
 
-- (void) presentAlertWithStyle:(NSAlertStyle) alertStyle message:(const CString&) message
-		information:(const CString&) information buttonTitles:(const TArray<CString>&) buttonTitles
-		completionProc:(AlertCompletionProc) completionProc;
-- (void) presentAlertWithStyle:(NSAlertStyle) alertStyle message:(const CString&) message
-		information:(const CString&) information buttonTitles:(const TArray<CString>&) buttonTitles;
 
 - (void) performWithProgressViewController:(AKTProgressViewController*) progressViewController
 		progress:(const I<CProgress>&) progress procDispatchQueue:(dispatch_queue_t) procDispatchQueue

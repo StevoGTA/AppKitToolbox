@@ -22,7 +22,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 - (void) setString:(CString) string
 {
-	self.stringValue = [NSString stringForCString:string];
+	self.stringValue = [(__bridge NSString*) string.getOSString() copy];
 }
 
 @end

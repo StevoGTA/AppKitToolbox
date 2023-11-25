@@ -52,7 +52,7 @@ void sProc(const CProgress& progress, AKTProgressViewController* progressViewCon
 //----------------------------------------------------------------------------------------------------------------------
 {
 	// Setup
-	NSString*	message = [NSString stringForCString:progress.getMessage()];
+	NSString*	message = (__bridge NSString*) progress.getMessage().getOSString();
 
 	OV<Float32>	value = progress.getValue();
 	BOOL	isIndeterminate = !value.hasValue();

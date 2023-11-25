@@ -134,12 +134,44 @@ extension NSView {
 
 	//------------------------------------------------------------------------------------------------------------------
 	@discardableResult
-	func alignTrailing(to view :NSView, constant :CGFloat = 0.0, priority :NSLayoutConstraint.Priority? = nil,
+	func alignTrailing(equalTo view :NSView, constant :CGFloat = 0.0, priority :NSLayoutConstraint.Priority? = nil,
 			activate :Bool = true) -> NSLayoutConstraint {
 		// Setup
 		self.translatesAutoresizingMaskIntoConstraints = false
 
 		let	constraint = self.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: constant)
+		if priority != nil { constraint.priority = priority! }
+
+		// Check if need to activate
+		if activate { NSLayoutConstraint.activate([constraint]) }
+
+		return constraint
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@discardableResult
+	func alignTrailing(greaterThanOrEqualTo view :NSView, constant :CGFloat = 0.0,
+			priority :NSLayoutConstraint.Priority? = nil, activate :Bool = true) -> NSLayoutConstraint {
+		// Setup
+		self.translatesAutoresizingMaskIntoConstraints = false
+
+		let	constraint = self.trailingAnchor.constraint(greaterThanOrEqualTo: view.trailingAnchor, constant: constant)
+		if priority != nil { constraint.priority = priority! }
+
+		// Check if need to activate
+		if activate { NSLayoutConstraint.activate([constraint]) }
+
+		return constraint
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@discardableResult
+	func alignTrailing(lessThanOrEqualTo view :NSView, constant :CGFloat = 0.0,
+			priority :NSLayoutConstraint.Priority? = nil, activate :Bool = true) -> NSLayoutConstraint {
+		// Setup
+		self.translatesAutoresizingMaskIntoConstraints = false
+
+		let	constraint = self.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: constant)
 		if priority != nil { constraint.priority = priority! }
 
 		// Check if need to activate

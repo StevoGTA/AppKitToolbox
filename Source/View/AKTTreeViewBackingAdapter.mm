@@ -183,7 +183,7 @@ return item == nil;
 //----------------------------------------------------------------------------------------------------------------------
 - (id) itemForViewItemID:(const CString&) viewItemID
 {
-	return [NSString stringForCString:viewItemID];
+	return [((__bridge NSString*) viewItemID.getOSString()) copy];
 }
 
 @end
