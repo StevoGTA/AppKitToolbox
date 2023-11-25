@@ -1,16 +1,16 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	AKTSidebarView.swift			©2022 Stevo Brock		All rights reserved.
+//	AKTSectionView.swift			©2022 Stevo Brock		All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
 import AppKit
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: AKTSidebarView
-public class AKTSidebarView : NSView {
+// MARK: AKTSectionView
+public class AKTSectionView : NSView {
 
 	// MARK: Group
 	//------------------------------------------------------------------------------------------------------------------
-	@objc (AKTSidebarViewGroupView)
+	@objc (AKTSectionViewGroupView)
 	class GroupView : NSView {
 
 		// MARK: Properties
@@ -67,10 +67,32 @@ public class AKTSidebarView : NSView {
 				// Align with view
 				self.titleLabel.alignLeading(to: self)
 			}
-			self.titleLabel.alignTrailing(to: self)
+			self.titleLabel.alignTrailing(lessThanOrEqualTo: self)
 
 			// Update
 			self.bottomView = self.titleLabel
+		}
+
+		//--------------------------------------------------------------------------------------------------------------
+		@objc init(view :NSView, leadingInset :CGFloat = 20.0, trailingInset :CGFloat = 0.0) {
+			// Store
+			self.itemLeadingInset = leadingInset
+			self.itemTrailingInset = trailingInset
+
+			// Do super
+			super.init(frame: .zero)
+
+			// Setup for content
+			self.translatesAutoresizingMaskIntoConstraints = false
+
+			// Add view
+			addSubview(view)
+			view.alignTop(to: self)
+			view.alignLeading(to: self, constant: self.itemLeadingInset)
+			view.alignTrailing(lessThanOrEqualTo: self, constant: self.itemTrailingInset)
+
+			// Update
+			self.bottomView = view
 		}
 
 		//--------------------------------------------------------------------------------------------------------------
@@ -108,7 +130,7 @@ public class AKTSidebarView : NSView {
 			addSubview(view)
 			view.spaceVertically(from: self.bottomView)
 			view.alignLeading(to: self, constant: self.itemLeadingInset + leadingInset)
-			view.alignTrailing(to: self, constant: self.itemTrailingInset + trailingInset)
+			view.alignTrailing(lessThanOrEqualTo: self, constant: self.itemTrailingInset + trailingInset)
 			view.setContentHuggingPriority(NSLayoutConstraint.Priority(rawValue: 1), for: .horizontal)
 			view.setContentCompressionResistancePriority(NSLayoutConstraint.Priority(rawValue: 1), for: .horizontal)
 
@@ -205,7 +227,7 @@ public class AKTSidebarView : NSView {
 		let contentView = NSView()
 		scrollView.documentView = contentView
 		contentView.alignLeading(to: clipView)
-		let	layoutConstraint = contentView.alignTrailing(to: clipView)
+		let	layoutConstraint = contentView.alignTrailing(equalTo: clipView)
 		contentView.alignTop(to: clipView)
 
 		// Iterate groups
@@ -217,7 +239,7 @@ public class AKTSidebarView : NSView {
 			// Add GroupView
 			contentView.addSubview($0)
 			$0.alignLeading(to: contentView, constant: self.contentInsets.left)
-			$0.alignTrailing(to: contentView, constant: -self.contentInsets.right)
+			$0.alignTrailing(equalTo: contentView, constant: -self.contentInsets.right)
 			if previousView != nil {
 				// Have previous view
 				$0.spaceVertically(from: previousView!, constant: self.groupSpacing)
