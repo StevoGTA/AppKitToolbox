@@ -2,8 +2,10 @@
 //	AKTURLControl+C++.h			©2021 Stevo Brock		All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
-#include "CString.h"
-#include "Swift.h"		// AKTURLControl is defined in Swift so must include its interface somehow
+#import "CString.h"
+
+#import <AppKit/AppKit.h>
+#import "Swift.h"		// AKTURLControl is defined in Swift so must include its interface somehow
 
 NS_ASSUME_NONNULL_BEGIN
 
