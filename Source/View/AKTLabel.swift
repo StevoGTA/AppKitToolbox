@@ -30,4 +30,35 @@ public class AKTLabel : NSTextField {
 		self.drawsBackground = false
 		self.isEditable = false
 	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	public init(string :String, font :NSFont? = nil, alignment :NSTextAlignment? = nil, isSelectable :Bool = false) {
+		// Do super
+		super.init(frame: .zero)
+
+		// Setup
+		self.isBordered = false
+		self.drawsBackground = false
+		self.isEditable = false
+
+		// Store
+		self.stringValue = string
+		if (font != nil) { self.font = font }
+		if (alignment != nil) { self.alignment = alignment! }
+		self.isSelectable = isSelectable
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc public init(string :String) {
+		// Do super
+		super.init(frame: .zero)
+
+		// Setup
+		self.isBordered = false
+		self.drawsBackground = false
+		self.isEditable = false
+
+		// Store
+		self.stringValue = string
+	}
 }

@@ -104,24 +104,16 @@ public class AKTGroupView : NSView {
 
 	//------------------------------------------------------------------------------------------------------------------
 	@objc convenience init(title :String, itemLeadingInset :CGFloat = 20.0, itemTrailingInset :CGFloat = 0.0) {
-		// Setup title
-		let	label = AKTLabel()
-		label.stringValue = title
-		label.font = NSFont.boldSystemFont(ofSize: 12.0)
-
 		// Init
-		self.init(titleView: label, itemLeadingInset: itemLeadingInset, itemTrailingInset: itemTrailingInset)
+		self.init(titleView: AKTLabel(string: title, font: NSFont.boldSystemFont(ofSize: 12.0)),
+				itemLeadingInset: itemLeadingInset, itemTrailingInset: itemTrailingInset)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	@objc convenience init(title :String, itemLeadingInset :CGFloat = 20.0) {
-		// Setup title
-		let	label = AKTLabel()
-		label.stringValue = title
-		label.font = NSFont.boldSystemFont(ofSize: 12.0)
-
 		// Init
-		self.init(titleView: label, itemLeadingInset: itemLeadingInset)
+		self.init(titleView: AKTLabel(string: title, font: NSFont.boldSystemFont(ofSize: 12.0)),
+				itemLeadingInset: itemLeadingInset)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -179,9 +171,7 @@ public class AKTGroupView : NSView {
 	@objc func addItem(title :String, view :NSView, viewLeadingInset :CGFloat = 20.0,
 			viewTrailingInset :CGFloat = 0.0) {
 		// Add title
-		let	titleLabel = AKTLabel()
-		titleLabel.stringValue = title
-		add(view: titleLabel)
+		add(view: AKTLabel(string: title))
 
 		// Add view
 		add(view: view, leadingInset: viewLeadingInset, trailingInset: viewTrailingInset)
@@ -191,15 +181,11 @@ public class AKTGroupView : NSView {
 	@objc func addItem(title :String, string :String, valueLeadingInset :CGFloat = 20.0,
 			valueTrailingInset :CGFloat = 0.0) {
 		// Add title
-		let	titleLabel = AKTLabel()
-		titleLabel.stringValue = title
-		add(view: titleLabel)
+		add(view: AKTLabel(string: title))
 
 		// Add value
-		let	valueLabel = AKTLabel()
-		valueLabel.stringValue = string
-		valueLabel.isSelectable = true
-		add(view: valueLabel, leadingInset: valueLeadingInset, trailingInset: valueTrailingInset)
+		add(view: AKTLabel(string: string, isSelectable: true), leadingInset: valueLeadingInset,
+				trailingInset: valueTrailingInset)
 	}
 
 	//--------------------------------------------------------------------------------------------------------------
@@ -227,9 +213,7 @@ public class AKTCollapsibleGroupView : AKTGroupView {
 		button.state = .on
 
 		// Compose title
-		self.titleLabel = AKTLabel()
-		self.titleLabel.stringValue = title
-		self.titleLabel.font = NSFont.boldSystemFont(ofSize: 12.0)
+		self.titleLabel = AKTLabel(string: title, font: NSFont.boldSystemFont(ofSize: 12.0))
 
 		// Compose title view
 		let	view = NSView()
@@ -274,9 +258,7 @@ public class AKTCollapsibleGroupView : AKTGroupView {
 		button.state = .on
 
 		// Compose title
-		self.titleLabel = AKTLabel()
-		self.titleLabel.stringValue = title
-		self.titleLabel.font = NSFont.boldSystemFont(ofSize: 12.0)
+		self.titleLabel = AKTLabel(string: title, font: NSFont.boldSystemFont(ofSize: 12.0))
 
 		// Compose title view
 		let	view = NSView()

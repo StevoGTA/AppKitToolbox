@@ -89,9 +89,7 @@ public class AKTSectionView : NSView {
 		self.subviews.forEach() { $0.removeFromSuperview() }
 
 		// Display string centered
-		let	label = AKTLabel()
-		label.stringValue = string
-		label.alignment = .center
+		let	label = AKTLabel(string: string, alignment: .center)
 
 		self.addSubview(label)
 		label.center(in: self)
