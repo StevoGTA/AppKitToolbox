@@ -30,7 +30,14 @@ public class AKTProgressViewController : NSViewController {
 		// Do super
 		super.viewDidLoad()
 
-		// Setup UI
+		// Reset
+		reset()
+	}
+
+	// MARK: Instance methods
+	//------------------------------------------------------------------------------------------------------------------
+	@objc func reset() {
+		// Update UI
 		self.messageLabel.stringValue = ""
 
 		self.progressIndicator.isIndeterminate = true

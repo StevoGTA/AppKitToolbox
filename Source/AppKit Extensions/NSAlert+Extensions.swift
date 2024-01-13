@@ -6,7 +6,7 @@ import AppKit
 
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: Local data
-var	sReplacements = [(fromString :String, toString :String)]()
+var	sGlobalReplacements = [(fromString :String, toString :String)]()
 
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: NSAlert extensions
@@ -43,9 +43,9 @@ extension NSAlert {
 
 	// MARK: Class methods
 	//------------------------------------------------------------------------------------------------------------------
-	@objc static func addReplacement(from fromString :String, to toString :String) {
+	@objc static func addGlobalReplacement(from fromString :String, to toString :String) {
 		// Add
-		sReplacements.append((fromString, toString))
+		sGlobalReplacements.append((fromString, toString))
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -81,8 +81,8 @@ extension NSAlert {
 
 		// Setup
 		self.alertStyle = alertStyle
-		self.messageText = message.applying(sReplacements)
-		self.informativeText = information.applying(sReplacements)
+		self.messageText = message.applying(sGlobalReplacements)
+		self.informativeText = information.applying(sGlobalReplacements)
 		buttonTitles.forEach() { self.addButton(withTitle: $0) }
 	}
 }
