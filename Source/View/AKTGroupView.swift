@@ -13,33 +13,12 @@ public class AKTGroupView : NSView {
 	private		let	itemTrailingInset :CGFloat?
 
 	private		var	bottomView :NSView!
-	fileprivate	var	bottomViewAsBottomLayoutConstraint :NSLayoutConstraint!
+
+	fileprivate	var	bottomViewBottomLayoutConstraint :NSLayoutConstraint!
 
 	// MARK: Lifecycle methods
 	//------------------------------------------------------------------------------------------------------------------
-	@objc init(view :NSView, leadingInset :CGFloat = 20.0, trailingInset :CGFloat = 0.0) {
-		// Store
-		self.itemLeadingInset = leadingInset
-		self.itemTrailingInset = trailingInset
-
-		// Do super
-		super.init(frame: .zero)
-
-		// Setup for content
-		self.translatesAutoresizingMaskIntoConstraints = false
-
-		// Add view
-		addSubview(view)
-		view.alignTop(to: self)
-		view.alignLeading(to: self, constant: self.itemLeadingInset)
-		view.alignTrailing(lessThanOrEqualTo: self, constant: self.itemTrailingInset!)
-
-		// Update
-		self.bottomView = view
-	}
-
-	//------------------------------------------------------------------------------------------------------------------
-	@objc init(view :NSView, leadingInset :CGFloat = 20.0) {
+	@objc init(view :NSView, leadingInset :CGFloat = 0.0) {
 		// Store
 		self.itemLeadingInset = leadingInset
 		self.itemTrailingInset = nil
@@ -57,10 +36,11 @@ public class AKTGroupView : NSView {
 
 		// Update
 		self.bottomView = view
+		self.bottomViewBottomLayoutConstraint = self.bottomView.alignBottom(to: self)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc init(titleView :NSView, itemLeadingInset :CGFloat = 20.0, itemTrailingInset :CGFloat = 0.0) {
+	init(titleView :NSView, itemLeadingInset :CGFloat = 0.0, itemTrailingInset :CGFloat? = nil) {
 		// Store
 		self.itemLeadingInset = itemLeadingInset
 		self.itemTrailingInset = itemTrailingInset
@@ -79,41 +59,7 @@ public class AKTGroupView : NSView {
 
 		// Update
 		self.bottomView = titleView
-	}
-
-	//------------------------------------------------------------------------------------------------------------------
-	@objc init(titleView :NSView, itemLeadingInset :CGFloat = 20.0) {
-		// Store
-		self.itemLeadingInset = itemLeadingInset
-		self.itemTrailingInset = nil
-
-		// Do super
-		super.init(frame: .zero)
-
-		// Setup for content
-		self.translatesAutoresizingMaskIntoConstraints = false
-
-		// Add view
-		addSubview(titleView)
-		titleView.alignTop(to: self)
-		titleView.alignLeading(to: self)
-
-		// Update
-		self.bottomView = titleView
-	}
-
-	//------------------------------------------------------------------------------------------------------------------
-	@objc convenience init(title :String, itemLeadingInset :CGFloat = 20.0, itemTrailingInset :CGFloat = 0.0) {
-		// Init
-		self.init(titleView: AKTLabel(string: title, font: NSFont.boldSystemFont(ofSize: 12.0)),
-				itemLeadingInset: itemLeadingInset, itemTrailingInset: itemTrailingInset)
-	}
-
-	//------------------------------------------------------------------------------------------------------------------
-	@objc convenience init(title :String, itemLeadingInset :CGFloat = 20.0) {
-		// Init
-		self.init(titleView: AKTLabel(string: title, font: NSFont.boldSystemFont(ofSize: 12.0)),
-				itemLeadingInset: itemLeadingInset)
+		self.bottomViewBottomLayoutConstraint = self.bottomView.alignBottom(to: self)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -138,18 +84,9 @@ public class AKTGroupView : NSView {
 
 		// Update
 		self.bottomView = view
-	}
 
-	//------------------------------------------------------------------------------------------------------------------
-	@objc (addView:leadingInset:)
-	func add(view :NSView, leadingInset :CGFloat) {
-		// Add
-		addSubview(view)
-		view.spaceVertically(from: self.bottomView)
-		view.alignLeading(to: self, constant: self.itemLeadingInset + leadingInset)
-
-		// Update
-		self.bottomView = view
+		NSLayoutConstraint.deactivate([self.bottomViewBottomLayoutConstraint])
+		self.bottomViewBottomLayoutConstraint = self.bottomView.alignBottom(to: self)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -165,33 +102,18 @@ public class AKTGroupView : NSView {
 
 		// Update
 		self.bottomView = view
+
+		NSLayoutConstraint.deactivate([self.bottomViewBottomLayoutConstraint])
+		self.bottomViewBottomLayoutConstraint = self.bottomView.alignBottom(to: self)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc func addItem(title :String, view :NSView, viewLeadingInset :CGFloat = 20.0,
-			viewTrailingInset :CGFloat = 0.0) {
+	@objc func addItem(title :String, view :NSView, viewLeadingInset :CGFloat, viewTrailingInset :CGFloat) {
 		// Add title
 		add(view: AKTLabel(string: title))
 
 		// Add view
 		add(view: view, leadingInset: viewLeadingInset, trailingInset: viewTrailingInset)
-	}
-
-	//------------------------------------------------------------------------------------------------------------------
-	@objc func addItem(title :String, string :String, valueLeadingInset :CGFloat = 20.0,
-			valueTrailingInset :CGFloat = 0.0) {
-		// Add title
-		add(view: AKTLabel(string: title))
-
-		// Add value
-		add(view: AKTLabel(string: string, isSelectable: true), leadingInset: valueLeadingInset,
-				trailingInset: valueTrailingInset)
-	}
-
-	//--------------------------------------------------------------------------------------------------------------
-	func finalizeLayout() {
-		// Add final layout constraint
-		self.bottomViewAsBottomLayoutConstraint = self.bottomView.alignBottom(to: self)
 	}
 }
 
@@ -204,7 +126,7 @@ public class AKTCollapsibleGroupView : AKTGroupView {
 
 	// MARK: Lifecycle methods
 	//------------------------------------------------------------------------------------------------------------------
-	@objc init(title :String, itemLeadingInset :CGFloat = 20.0, itemTrailingInset :CGFloat = 0.0) {
+	@objc init(title :String, itemLeadingInset :CGFloat, itemTrailingInset :CGFloat) {
 		// Compose button
 		let	button = NSButton(frame: NSRect(x: 0.0, y: 0.0, width: 13.0, height: 13.0))
 		button.bezelStyle = .disclosure
@@ -239,17 +161,17 @@ public class AKTCollapsibleGroupView : AKTGroupView {
 			// Update
 			if button.state == .on {
 				// Show
-				self.bottomViewAsBottomLayoutConstraint.animator().constant = 0.0
+				self.bottomViewBottomLayoutConstraint.animator().constant = 0.0
 			} else {
 				// Hide
-				self.bottomViewAsBottomLayoutConstraint.animator().constant =
+				self.bottomViewBottomLayoutConstraint.animator().constant =
 						self.bounds.height - self.titleLabel.bounds.height
 			}
 		}
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc init(title :String, itemLeadingInset :CGFloat = 20.0) {
+	@objc init(title :String, itemLeadingInset :CGFloat) {
 		// Compose button
 		let	button = NSButton(frame: NSRect(x: 0.0, y: 0.0, width: 13.0, height: 13.0))
 		button.bezelStyle = .disclosure
@@ -284,10 +206,55 @@ public class AKTCollapsibleGroupView : AKTGroupView {
 			// Update
 			if button.state == .on {
 				// Show
-				self.bottomViewAsBottomLayoutConstraint.animator().constant = 0.0
+				self.bottomViewBottomLayoutConstraint.animator().constant = 0.0
 			} else {
 				// Hide
-				self.bottomViewAsBottomLayoutConstraint.animator().constant =
+				self.bottomViewBottomLayoutConstraint.animator().constant =
+						self.bounds.height - self.titleLabel.bounds.height
+			}
+		}
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc init(title :String) {
+		// Compose button
+		let	button = NSButton(frame: NSRect(x: 0.0, y: 0.0, width: 13.0, height: 13.0))
+		button.bezelStyle = .disclosure
+		button.setButtonType(.pushOnPushOff)
+		button.title = ""
+		button.state = .on
+
+		// Compose title
+		self.titleLabel = AKTLabel(string: title, font: NSFont.boldSystemFont(ofSize: 12.0))
+
+		// Compose title view
+		let	view = NSView()
+		view.addSubview(button)
+		view.addSubview(self.titleLabel)
+
+		button.alignLeading(to: view)
+		self.titleLabel.spaceHorizontally(from: button, constant: 8.0)
+		self.titleLabel.alignTrailing(equalTo: view)
+
+		self.titleLabel.alignCenterY(to: button)
+		self.titleLabel.alignTop(to: view)
+		self.titleLabel.alignBottom(to: view)
+
+		// Do super
+		super.init(titleView: view)
+
+		// Finish setup
+		button.actionProc = { [unowned self, button] _ in
+			// Update Layout Constraints
+			NSAnimationContext.current.duration = 0.1
+
+			// Update
+			if button.state == .on {
+				// Show
+				self.bottomViewBottomLayoutConstraint.animator().constant = 0.0
+			} else {
+				// Hide
+				self.bottomViewBottomLayoutConstraint.animator().constant =
 						self.bounds.height - self.titleLabel.bounds.height
 			}
 		}

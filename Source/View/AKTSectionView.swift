@@ -23,7 +23,7 @@ public class AKTSectionView : NSView {
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
-	@objc func setContent(groupViews :[AKTGroupView]) {
+	@objc func setContent(views :[NSView]) {
 		// Remove all subviews
 		self.subviews.forEach() { $0.removeFromSuperview() }
 
@@ -50,10 +50,7 @@ public class AKTSectionView : NSView {
 
 		// Iterate groups
 		var	previousView :NSView? = nil
-		groupViews.forEach() {
-			// Finalize layout of GroupView
-			$0.finalizeLayout()
-
+		views.forEach() {
 			// Add GroupView
 			contentView.addSubview($0)
 			$0.alignLeading(to: contentView, constant: self.contentInsets.left)
