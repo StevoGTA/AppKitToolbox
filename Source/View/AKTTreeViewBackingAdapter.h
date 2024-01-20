@@ -15,8 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: AKTTreeViewBackingAdapter
 
-typedef	NSView*	_Nullable	(^AKTTreeViewBackingAdapterViewProc)(NSTableColumn* _Nullable tableColumn,
-									const I<CTreeItem>& treeItem);
+typedef	NSView*	_Nullable	(^AKTTreeViewBackingAdapterViewProc)(NSOutlineView* outlineView,
+									NSTableColumn* _Nullable tableColumn, const I<CTreeItem>& treeItem);
 typedef	void				(^AKTTreeViewBackingAdapterSelectionDidChangeProc)();
 
 @interface AKTTreeViewBackingAdapter : NSObject <AKTTreeViewBackingInterface>

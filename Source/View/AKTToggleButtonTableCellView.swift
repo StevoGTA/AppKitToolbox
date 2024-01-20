@@ -1,22 +1,22 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	AKTCheckBoxTableCellView.swift		©2023 Stevo Brock		All rights reserved.
+//	AKTToggleButtonTableCellView.swift		©2023 Stevo Brock		All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
 import AppKit
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: AKTCheckBoxTableCellView
-public class AKTCheckBoxTableCellView : NSTableCellView {
+// MARK: AKTToggleButtonTableCellView
+public class AKTToggleButtonTableCellView : NSTableCellView {
 
 	// MARK: Properties
-	public				var	state :NSControl.StateValue {
-									get { self.checkBox.state }
-									set { self.checkBox.state = newValue }
-								}
+	@objc	public				var	state :NSControl.StateValue {
+											get { self.button.state }
+											set { self.button.state = newValue }
+										}
 
-	public				var	stateChangedProc :(_ state :NSControl.StateValue) -> Void = { _ in }
+	@objc	public				var	stateChangedProc :(_ state :NSControl.StateValue) -> Void = { _ in }
 
-			@IBOutlet	var	checkBox :NSButton!
+					@IBOutlet	var	button :NSButton!
 
 	// MARK: IBActions
 	//------------------------------------------------------------------------------------------------------------------

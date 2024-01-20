@@ -114,7 +114,8 @@ return item == nil;
 //----------------------------------------------------------------------------------------------------------------------
 - (NSView*) outlineView:(NSOutlineView*) outlineView viewForTableColumn:(NSTableColumn*) tableColumn item:(id) item
 {
-	return self.viewProc(tableColumn, self.treeViewBacking->getTreeItem([self viewItemIDForItem:item]));
+	return self.viewProc(self.outlineView, tableColumn,
+			self.treeViewBacking->getTreeItem([self viewItemIDForItem:item]));
 }
 
 ////----------------------------------------------------------------------------------------------------------------------
