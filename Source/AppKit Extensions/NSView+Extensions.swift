@@ -9,7 +9,7 @@ import AppKit
 
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: NSView extension
-extension NSView {
+public extension NSView {
 
 	// MARK: Properties
 	@objc	var aktBackgroundColor :NSColor? {
