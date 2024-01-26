@@ -9,6 +9,10 @@ import AppKit
 public class AKTToggleButtonTableCellView : NSTableCellView {
 
 	// MARK: Properties
+	@objc	public				var	isEnabled :Bool {
+											get { self.button.isEnabled }
+											set { self.button.isEnabled = newValue }
+										}
 	@objc	public				var	state :NSControl.StateValue {
 											get { self.button.state }
 											set { self.button.state = newValue }
