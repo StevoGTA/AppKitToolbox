@@ -12,27 +12,24 @@ public extension AKTProgressViewController {
 	//------------------------------------------------------------------------------------------------------------------
 	func setup(progress :Progress, cancelProc :CancelProc? = nil) {
 		// Setup
-		progress.messageUpdatedProc = { [unowned self] in self.updateMessage($0) }
-		progress.valueUpdatedProc = { [unowned self] in self.updateValue($0) }
+		progress.updatedProc = { [unowned self] in self.updateUI($0) }
 
 		// Set cancel proc
 		self.cancelProc = cancelProc
 
 		// Update UI
-		updateMessage(progress.message)
-		updateValue(progress.value)
+		updateUI(progress)
 	}
 
 	// MARK: Private methods
 	//------------------------------------------------------------------------------------------------------------------
-	private func updateMessage(_ message :String) { self.messageLabel.stringValue = message }
+	private func updateUI(_ progress :Progress) {
+		// Update UI
+		self.messageLabel.stringValue = progress.message
 
-	//------------------------------------------------------------------------------------------------------------------
-	private func updateValue(_ value :Float?) {
-		// Update progress indicator view
-		self.progressIndicator.isIndeterminate = value == nil
-		self.progressIndicator.doubleValue = Double(value ?? 0.0)
-		if value != nil {
+		self.progressIndicator.isIndeterminate = progress.value == nil
+		self.progressIndicator.doubleValue = progress.value ?? 0.0
+		if progress.value != nil {
 			// Have value
 			self.progressIndicator.stopAnimation(self)
 		} else {
