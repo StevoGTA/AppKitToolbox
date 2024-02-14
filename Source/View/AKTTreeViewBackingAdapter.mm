@@ -57,7 +57,7 @@
 		// Setup
 		self.treeViewBacking =
 				new CTreeViewBacking(
-						CTreeViewBacking::Info(treeViewBackingInfoGetChildTreeItemsProc, nil, nil,
+						CTreeViewBacking::Info(treeViewBackingInfoGetChildTreeItemsProc, nil,
 								(__bridge void*) self));
 
 		// Setup NSOutlineView
@@ -81,7 +81,7 @@
 		// Setup
 		self.treeViewBacking =
 				new CTreeViewBacking(
-						CTreeViewBacking::Info(nil, treeViewBackingInfoLoadChildTreeItemsProc, nil,
+						CTreeViewBacking::Info(treeViewBackingInfoLoadChildTreeItemsProc, nil,
 								(__bridge void*) self));
 
 		// Setup NSOutlineView
@@ -139,6 +139,7 @@
 - (void) outlineViewSelectionDidChange:(NSNotification*) notification
 {
 	// Call proc
+	self.selectionDidChangeProc();
 }
 
 // MARK: Instance methods

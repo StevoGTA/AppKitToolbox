@@ -40,8 +40,10 @@
 
 		// Jump to main queue
 		dispatch_async(dispatch_get_main_queue(), ^{
-			// Dismiss
-			[unsafeUnretainedSelf dismissViewController:progressViewController];
+			// Check if still presented.  It may have been previously dismissed and then not presented again.
+			if (unsafeUnretainedSelf.presentedViewControllers.count > 0)
+				// Dismiss
+				[unsafeUnretainedSelf dismissViewController:progressViewController];
 
 			// Check cancelled
 			if (!isCancelled)
