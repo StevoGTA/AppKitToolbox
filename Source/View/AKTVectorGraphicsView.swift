@@ -10,9 +10,13 @@ public class AKTVectorGraphicsView : NSView {
 
 	// MARK: Content
 	public enum Content {
-		case color(color :NSColor)
-		case oval(color :NSColor)
-		case shape(path :NSBezierPath, color :NSColor)
+		case color(_ color :NSColor)
+		case filledOval(color :NSColor, lineWidth :CGFloat = 1.0)
+		case strokedOval(color :NSColor, lineWidth :CGFloat = 1.0)
+		case filledRoundedRect(color :NSColor, radius :CGFloat = 10.0, lineWidth :CGFloat = 1.0)
+		case strokedRoundedRect(color :NSColor, radius :CGFloat = 10.0, lineWidth :CGFloat = 1.0)
+		case filledShape(path :NSBezierPath, color :NSColor)
+		case strokedShape(path :NSBezierPath, color :NSColor)
 	}
 
 	// MARK: Properties
@@ -28,18 +32,56 @@ public class AKTVectorGraphicsView : NSView {
 		switch content {
 			case let .color(color):
 				// Color
-				color.set()
+				color.setFill()
 				dirtyRect.fill()
 
-			case let .oval(color: color):
+			case let .filledOval(color: color, lineWidth: lineWidth):
 				// Oval
-				color.set()
-				NSBezierPath(ovalIn: self.bounds).fill()
+				color.setFill()
 
-			case let .shape(path, color):
-				// Shape
-				color.set()
+				let	path = NSBezierPath(ovalIn: self.bounds.insetBy(dx: lineWidth * 0.5, dy: lineWidth * 0.5))
+				path.lineWidth = lineWidth
 				path.fill()
+
+			case let .strokedOval(color: color, lineWidth: lineWidth):
+				// Oval
+				color.setStroke()
+
+				let	path = NSBezierPath(ovalIn: self.bounds.insetBy(dx: lineWidth * 0.5, dy: lineWidth * 0.5))
+				path.lineWidth = lineWidth
+				path.stroke()
+
+			case let .filledRoundedRect(color: color, radius: radius, lineWidth: lineWidth):
+				// Oval
+				color.setFill()
+
+				let	path =
+							NSBezierPath(
+									roundedRect: self.bounds.insetBy(dx: lineWidth * 0.5, dy: lineWidth * 0.5),
+											xRadius: radius, yRadius: radius)
+				path.lineWidth = lineWidth
+				path.fill()
+
+			case let .strokedRoundedRect(color: color, radius: radius, lineWidth: lineWidth):
+				// Oval
+				color.setStroke()
+
+				let	path =
+							NSBezierPath(
+									roundedRect: self.bounds.insetBy(dx: lineWidth * 0.5, dy: lineWidth * 0.5),
+											xRadius: radius, yRadius: radius)
+				path.lineWidth = lineWidth
+				path.stroke()
+
+			case let .filledShape(path, color):
+				// Shape
+				color.setFill()
+				path.fill()
+
+			case let .strokedShape(path, color):
+				// Shape
+				color.setStroke()
+				path.stroke()
 		}
 	}
 }
