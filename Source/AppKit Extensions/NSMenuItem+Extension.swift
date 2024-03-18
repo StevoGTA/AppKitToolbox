@@ -1,29 +1,28 @@
 //
-//  NSControl+Extensions.swift
+//  NSMenuItem+Extension.swift
 //  AppKit Toolbox
 //
-//  Created by Stevo on 1/13/23.
+//  Created by Stevo on 3/18/24.
+//  Copyright © 2024 Stevo Brock. All rights reserved.
 //
 
-import AppKit
-
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: NSControl extension
-extension NSControl {
+// MARK: NSMenuItem extension
+public extension NSMenuItem {
 
 	// MARK: Types
-	typealias ActionProc = (_ control :NSControl) -> Void
+	typealias ActionProc = (_ item :NSMenuItem) -> Void
 
 	// MARK: Properties
 	static			private	var	actionProcKey :Void?
 
 			@objc			var	actionProc :ActionProc {
-										get { (objc_getAssociatedObject(self, &NSControl.actionProcKey) as!
+										get { (objc_getAssociatedObject(self, &NSMenuItem.actionProcKey) as!
 												ActionProcObject).actionProc }
 										set {
 											// Setup
 											let	actionProcObject = ActionProcObject(newValue)
-											objc_setAssociatedObject(self, &NSControl.actionProcKey, actionProcObject,
+											objc_setAssociatedObject(self, &NSMenuItem.actionProcKey, actionProcObject,
 													.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 
 											self.action = #selector(ActionProcObject.callActionProc(_:))
@@ -46,6 +45,6 @@ extension NSControl {
 
 		// MARK: Instance methods
 		//--------------------------------------------------------------------------------------------------------------
-		@objc func callActionProc(_ sender :NSControl) { self.actionProc(sender) }
+		@objc func callActionProc(_ sender :NSMenuItem) { self.actionProc(sender) }
 	}
 }

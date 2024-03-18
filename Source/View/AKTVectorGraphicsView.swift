@@ -11,9 +11,9 @@ public class AKTVectorGraphicsView : NSView {
 	// MARK: Content
 	public enum Content {
 		case color(_ color :NSColor)
-		case filledOval(color :NSColor, lineWidth :CGFloat = 1.0)
+		case filledOval(color :NSColor)
 		case strokedOval(color :NSColor, lineWidth :CGFloat = 1.0)
-		case filledRoundedRect(color :NSColor, radius :CGFloat = 10.0, lineWidth :CGFloat = 1.0)
+		case filledRoundedRect(color :NSColor, radius :CGFloat = 10.0)
 		case strokedRoundedRect(color :NSColor, radius :CGFloat = 10.0, lineWidth :CGFloat = 1.0)
 		case filledShape(path :NSBezierPath, color :NSColor)
 		case strokedShape(path :NSBezierPath, color :NSColor)
@@ -35,13 +35,11 @@ public class AKTVectorGraphicsView : NSView {
 				color.setFill()
 				dirtyRect.fill()
 
-			case let .filledOval(color: color, lineWidth: lineWidth):
+			case let .filledOval(color: color):
 				// Oval
 				color.setFill()
 
-				let	path = NSBezierPath(ovalIn: self.bounds.insetBy(dx: lineWidth * 0.5, dy: lineWidth * 0.5))
-				path.lineWidth = lineWidth
-				path.fill()
+				NSBezierPath(ovalIn: self.bounds).fill()
 
 			case let .strokedOval(color: color, lineWidth: lineWidth):
 				// Oval
@@ -51,16 +49,11 @@ public class AKTVectorGraphicsView : NSView {
 				path.lineWidth = lineWidth
 				path.stroke()
 
-			case let .filledRoundedRect(color: color, radius: radius, lineWidth: lineWidth):
+			case let .filledRoundedRect(color: color, radius: radius):
 				// Oval
 				color.setFill()
 
-				let	path =
-							NSBezierPath(
-									roundedRect: self.bounds.insetBy(dx: lineWidth * 0.5, dy: lineWidth * 0.5),
-											xRadius: radius, yRadius: radius)
-				path.lineWidth = lineWidth
-				path.fill()
+				NSBezierPath(roundedRect: self.bounds, xRadius: radius, yRadius: radius).fill()
 
 			case let .strokedRoundedRect(color: color, radius: radius, lineWidth: lineWidth):
 				// Oval
