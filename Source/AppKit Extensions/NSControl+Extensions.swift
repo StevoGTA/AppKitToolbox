@@ -19,20 +19,20 @@ extension NSControl {
 
 			@objc			var	actionProc :ActionProc {
 										get { (objc_getAssociatedObject(self, &NSControl.actionProcKey) as!
-												ActionProcObject).actionProc }
+												NSControlActionProcObject).actionProc }
 										set {
 											// Setup
-											let	actionProcObject = ActionProcObject(newValue)
+											let	actionProcObject = NSControlActionProcObject(newValue)
 											objc_setAssociatedObject(self, &NSControl.actionProcKey, actionProcObject,
 													.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 
-											self.action = #selector(ActionProcObject.callActionProc(_:))
+											self.action = #selector(NSControlActionProcObject.callActionProc(_:))
 											self.target = actionProcObject
 										}
 									}
 
-	// MARK: ActionProcObject
-	@objc class ActionProcObject : NSObject {
+	// MARK: NSControlActionProcObject
+	@objc class NSControlActionProcObject : NSObject {
 
 		// MARK: Properties
 		let	actionProc :ActionProc

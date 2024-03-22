@@ -6,6 +6,8 @@
 //  Copyright © 2024 Stevo Brock. All rights reserved.
 //
 
+import AppKit
+
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: NSMenuItem extension
 public extension NSMenuItem {
@@ -18,20 +20,20 @@ public extension NSMenuItem {
 
 			@objc			var	actionProc :ActionProc {
 										get { (objc_getAssociatedObject(self, &NSMenuItem.actionProcKey) as!
-												ActionProcObject).actionProc }
+												NSMenuItemActionProcObject).actionProc }
 										set {
 											// Setup
-											let	actionProcObject = ActionProcObject(newValue)
+											let	actionProcObject = NSMenuItemActionProcObject(newValue)
 											objc_setAssociatedObject(self, &NSMenuItem.actionProcKey, actionProcObject,
 													.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 
-											self.action = #selector(ActionProcObject.callActionProc(_:))
+											self.action = #selector(NSMenuItemActionProcObject.callActionProc(_:))
 											self.target = actionProcObject
 										}
 									}
 
-	// MARK: ActionProcObject
-	@objc class ActionProcObject : NSObject {
+	// MARK: NSMenuItemActionProcObject
+	@objc class NSMenuItemActionProcObject : NSObject {
 
 		// MARK: Properties
 		let	actionProc :ActionProc

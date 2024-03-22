@@ -13,6 +13,8 @@ public class AKTVectorGraphicsView : NSView {
 		case color(_ color :NSColor)
 		case filledOval(color :NSColor)
 		case strokedOval(color :NSColor, lineWidth :CGFloat = 1.0)
+		case filledPill(color :NSColor)
+		case strokedPill(color :NSColor, lineWidth :CGFloat = 1.0)
 		case filledRoundedRect(color :NSColor, radius :CGFloat = 10.0)
 		case strokedRoundedRect(color :NSColor, radius :CGFloat = 10.0, lineWidth :CGFloat = 1.0)
 		case filledShape(path :NSBezierPath, color :NSColor)
@@ -46,6 +48,23 @@ public class AKTVectorGraphicsView : NSView {
 				color.setStroke()
 
 				let	path = NSBezierPath(ovalIn: self.bounds.insetBy(dx: lineWidth * 0.5, dy: lineWidth * 0.5))
+				path.lineWidth = lineWidth
+				path.stroke()
+
+			case let .filledPill(color: color):
+				// Pill
+				color.setFill()
+
+				let	radius = min(self.bounds.size.width, self.bounds.size.height) / 2.0
+				NSBezierPath(roundedRect: self.bounds, xRadius: radius, yRadius: radius).fill()
+
+			case let .strokedPill(color: color, lineWidth: lineWidth):
+				// Pill
+				color.setStroke()
+
+				let	rect = self.bounds.insetBy(dx: lineWidth * 0.5, dy: lineWidth * 0.5)
+				let	radius = min(rect.size.width, rect.size.height) / 2.0
+				let	path = NSBezierPath(roundedRect: rect, xRadius: radius, yRadius: radius)
 				path.lineWidth = lineWidth
 				path.stroke()
 
