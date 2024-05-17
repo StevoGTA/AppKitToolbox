@@ -18,9 +18,9 @@ public class AKTGroupView : NSView {
 
 	// MARK: Lifecycle methods
 	//------------------------------------------------------------------------------------------------------------------
-	@objc init(view :NSView, leadingInset :CGFloat = 0.0) {
+	@objc init(view :NSView, itemLeadingInset :CGFloat = 0.0) {
 		// Store
-		self.itemLeadingInset = leadingInset
+		self.itemLeadingInset = itemLeadingInset
 		self.itemTrailingInset = nil
 
 		// Do super
@@ -75,12 +75,27 @@ public class AKTGroupView : NSView {
 		view.alignLeading(to: self, constant: self.itemLeadingInset)
 		if let itemTrailingInset = self.itemTrailingInset {
 			// Add trailing constraint
-			view.alignTrailing(lessThanOrEqualTo: self, constant: itemTrailingInset)
+			view.alignTrailing(equalTo: self, constant: itemTrailingInset)
 
 			// Set priorities
 			view.setContentHuggingPriority(NSLayoutConstraint.Priority(rawValue: 1), for: .horizontal)
 			view.setContentCompressionResistancePriority(NSLayoutConstraint.Priority(rawValue: 1), for: .horizontal)
 		}
+
+		// Update
+		self.bottomView = view
+
+		NSLayoutConstraint.deactivate([self.bottomViewBottomLayoutConstraint])
+		self.bottomViewBottomLayoutConstraint = self.bottomView.alignBottom(to: self)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc (addViewIgnoringItemTrailingInset:)
+	func add(viewIgnoringItemTrailingInset view :NSView) {
+		// Add
+		addSubview(view)
+		view.spaceVertically(from: self.bottomView)
+		view.alignLeading(to: self, constant: self.itemLeadingInset)
 
 		// Update
 		self.bottomView = view
@@ -96,7 +111,7 @@ public class AKTGroupView : NSView {
 		addSubview(view)
 		view.spaceVertically(from: self.bottomView)
 		view.alignLeading(to: self, constant: self.itemLeadingInset + leadingInset)
-		view.alignTrailing(lessThanOrEqualTo: self, constant: (self.itemTrailingInset ?? 0.0) + trailingInset)
+		view.alignTrailing(equalTo: self, constant: (self.itemTrailingInset ?? 0.0) + trailingInset)
 		view.setContentHuggingPriority(NSLayoutConstraint.Priority(rawValue: 1), for: .horizontal)
 		view.setContentCompressionResistancePriority(NSLayoutConstraint.Priority(rawValue: 1), for: .horizontal)
 
