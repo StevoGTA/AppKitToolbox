@@ -15,6 +15,8 @@ public class AKTTextField : NSTextField {
 	@objc	public	var	textDidChangeProc :(_ string :String) -> Void = { _ in }
 	@objc	public	var	textDidEndEditingProc :(_ string :String) -> Void = { _ in }
 
+	@objc	public	var	cancelProc :() -> Void = {}
+
 	// MARK: NSTextField methods
 	//------------------------------------------------------------------------------------------------------------------
 	override public func textDidBeginEditing(_ notification :Notification) {
@@ -42,4 +44,7 @@ public class AKTTextField : NSTextField {
 		// Call proc
 		self.textDidEndEditingProc(self.stringValue)
 	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	override public func cancelOperation(_ sender :Any?) { self.cancelProc() }
 }

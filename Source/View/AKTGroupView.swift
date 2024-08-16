@@ -9,12 +9,14 @@ import AppKit
 public class AKTGroupView : NSView {
 
 	// MARK: Properties
-	private		let	itemLeadingInset :CGFloat
-	private		let	itemTrailingInset :CGFloat?
+	@objc	public		var	isEmpty :Bool { self.subviews.count == 1 }
 
-	private		var	bottomView :NSView!
+			private		let	itemLeadingInset :CGFloat
+			private		let	itemTrailingInset :CGFloat?
 
-	fileprivate	var	bottomViewBottomLayoutConstraint :NSLayoutConstraint!
+			private		var	bottomView :NSView!
+
+			fileprivate	var	bottomViewBottomLayoutConstraint :NSLayoutConstraint!
 
 	// MARK: Lifecycle methods
 	//------------------------------------------------------------------------------------------------------------------
@@ -123,12 +125,59 @@ public class AKTGroupView : NSView {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc func addItem(title :String, view :NSView, viewLeadingInset :CGFloat, viewTrailingInset :CGFloat) {
-		// Add title
-		add(view: AKTLabel(string: title))
+	@discardableResult
+	@objc func addView(title :String, view :NSView, viewLeadingInset :CGFloat, viewTrailingInset :CGFloat) -> NSView {
+		// Make composite view
+		let	containerView = NSView()
+		add(view: containerView)
+
+		// Add label
+		let	label = AKTLabel(string: title)
+		containerView.addSubview(label)
+		label.alignTop(to: containerView)
+		label.alignLeading(to: containerView)
+		if let itemTrailingInset = self.itemTrailingInset {
+			// Add trailing constraint
+			label.alignTrailing(equalTo: containerView, constant: itemTrailingInset)
+
+			// Set priorities
+			label.setContentHuggingPriority(NSLayoutConstraint.Priority(rawValue: 1), for: .horizontal)
+			label.setContentCompressionResistancePriority(NSLayoutConstraint.Priority(rawValue: 1), for: .horizontal)
+		}
 
 		// Add view
-		add(view: view, leadingInset: viewLeadingInset, trailingInset: viewTrailingInset)
+		containerView.addSubview(view)
+		view.spaceVertically(from: label)
+		view.alignBottom(to: containerView)
+		view.alignLeading(to: containerView, constant: viewLeadingInset)
+		view.alignTrailing(equalTo: containerView, constant: viewTrailingInset)
+		view.setContentHuggingPriority(NSLayoutConstraint.Priority(rawValue: 1), for: .horizontal)
+		view.setContentCompressionResistancePriority(NSLayoutConstraint.Priority(rawValue: 1), for: .horizontal)
+
+		return containerView
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc (removeView:)
+	func remove(_ view :NSView) {
+		// Setup
+		guard let index = self.subviews.firstIndex(of: view) else { return }
+
+		// Remove view
+		view.removeFromSuperview()
+
+		// Check position
+		if index == 0 {
+			// Top view
+			self.subviews[0].alignTop(to: self)
+		} else if view != self.bottomView {
+			// Middle view
+			self.subviews[index].spaceVertically(from: self.subviews[index - 1])
+		} else {
+			// Bottom view
+			self.bottomView = self.subviews[index - 1]
+			self.bottomView.alignBottom(to: self)
+		}
 	}
 }
 

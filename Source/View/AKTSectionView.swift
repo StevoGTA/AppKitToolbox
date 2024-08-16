@@ -12,6 +12,7 @@ public class AKTSectionView : NSView {
 	@objc			var	contentInsets = NSEdgeInsets(top: 4.0, left: 4.0, bottom: 4.0, right: 4.0)
 	@objc			var	groupSpacing :CGFloat = 8.0
 
+			private	var	contentView :NSView?
 			private	var	notifcationObserver :NSObjectProtocol?
 
 	// MARK: Lifecycle methods
@@ -42,25 +43,25 @@ public class AKTSectionView : NSView {
 		scrollView.contentView = clipView
 		clipView.match(scrollView)
 
-		let contentView = NSView()
-		scrollView.documentView = contentView
-		contentView.alignLeading(to: clipView)
-		let	layoutConstraint = contentView.alignTrailing(equalTo: clipView)
-		contentView.alignTop(to: clipView)
+		self.contentView = NSView()
+		scrollView.documentView = self.contentView!
+		self.contentView!.alignLeading(to: clipView)
+		let	layoutConstraint = self.contentView!.alignTrailing(equalTo: clipView)
+		self.contentView!.alignTop(to: clipView)
 
 		// Iterate groups
 		var	previousView :NSView? = nil
 		views.forEach() {
 			// Add GroupView
-			contentView.addSubview($0)
-			$0.alignLeading(to: contentView, constant: self.contentInsets.left)
-			$0.alignTrailing(equalTo: contentView, constant: -self.contentInsets.right)
+			self.contentView!.addSubview($0)
+			$0.alignLeading(to: self.contentView!, constant: self.contentInsets.left)
+			$0.alignTrailing(equalTo: self.contentView!, constant: -self.contentInsets.right)
 			if previousView != nil {
 				// Have previous view
 				$0.spaceVertically(from: previousView!, constant: self.groupSpacing)
 			} else {
 				// Don't have previous view
-				$0.alignTop(to: contentView, constant: self.contentInsets.top)
+				$0.alignTop(to: self.contentView!, constant: self.contentInsets.top)
 			}
 
 			// Update
@@ -68,7 +69,7 @@ public class AKTSectionView : NSView {
 		}
 
 		// Finalize
-		previousView?.alignBottom(to: contentView, constant: -self.contentInsets.bottom)
+		previousView?.alignBottom(to: self.contentView!, constant: -self.contentInsets.bottom)
 		updateLayoutConstraint(scrollView: scrollView, layoutConstraint: layoutConstraint)
 
 		// Setup Notifications
@@ -91,6 +92,29 @@ public class AKTSectionView : NSView {
 		self.addSubview(label)
 		label.center(in: self)
 		label.match(widthOf: self)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc (removeView:)
+	func remove(_ view :NSView) {
+		// Setup
+		guard let contentView = self.contentView else { return }
+		guard let index = contentView.subviews.firstIndex(of: view) else { return }
+
+		// Remove view
+		view.removeFromSuperview()
+
+		// Check position
+		if index == 0 {
+			// Top view
+			contentView.subviews[0].alignTop(to: contentView, constant: self.contentInsets.top)
+		} else if index == (self.subviews.count - 1) {
+			// Middle view
+			contentView.subviews[index].spaceVertically(from: contentView.subviews[index - 1])
+		} else {
+			// Bottom view
+			contentView.subviews[index - 1].alignBottom(to: contentView, constant: -self.contentInsets.bottom)
+		}
 	}
 
 	// MARK: Private methods
