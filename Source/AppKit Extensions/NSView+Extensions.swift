@@ -437,4 +437,12 @@ public extension NSView {
 
 		return constraint
 	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	func constraints(between view1 :NSView, and view2 :NSView) -> [NSLayoutConstraint] {
+		// Filter all constraints
+		return self.constraints.filter(
+				{ (($0.firstItem === view1) && ($0.secondItem === view2)) ||
+						(($0.firstItem === view2) && ($0.secondItem === view1)) })
+	}
 }
