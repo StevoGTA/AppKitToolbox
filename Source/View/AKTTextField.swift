@@ -41,8 +41,11 @@ public class AKTTextField : NSTextField {
 		// Do super
 		super.textDidEndEditing(notification)
 
-		// Call proc
-		self.textDidEndEditingProc(self.stringValue)
+		// Check if hidden
+		if !self.isHidden {
+			// Call proc
+			self.textDidEndEditingProc(self.stringValue)
+		}
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
