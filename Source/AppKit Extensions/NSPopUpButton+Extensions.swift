@@ -17,7 +17,7 @@ public extension NSPopUpButton {
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
-	@objc func add(item :NSMenuItem) { self.menu?.addItem(item) }
+	@objc(addItem:) func add(item :NSMenuItem) { self.menu?.addItem(item) }
 
 	//------------------------------------------------------------------------------------------------------------------
 	@objc func addDisabledItem(withTitle title :String) {
@@ -53,6 +53,12 @@ public extension NSPopUpButton {
 		// Add item and set associated value
 		addItem(withTitle: title)
 		self.lastItem!.actionProc = proc
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc func addSeparatorItem() {
+		// Add item
+		self.menu?.addItem(NSMenuItem.separator())
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
