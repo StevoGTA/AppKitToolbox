@@ -49,6 +49,7 @@
 		treeViewBackingInfoGetChildTreeItemsProc:
 				(CTreeViewBacking::Info::GetChildTreeItemsProc) treeViewBackingInfoGetChildTreeItemsProc
 {
+	// Do super
 	self = [super init];
 	if (self != nil) {
 		// Store
@@ -73,6 +74,7 @@
 		treeViewBackingInfoLoadChildTreeItemsProc:
 				(CTreeViewBacking::Info::LoadChildTreeItemsProc) treeViewBackingInfoLoadChildTreeItemsProc
 {
+	// Do super
 	self = [super init];
 	if (self != nil) {
 		// Store

@@ -38,6 +38,16 @@ public extension NSMenu {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
+	@objc func addDisabledItem(title :String) {
+		// Setup
+		let	menuItem = NSMenuItem(title: title, action: nil, keyEquivalent: "")
+		menuItem.isEnabled = false
+
+		// Add item
+		addItem(menuItem)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
 	@objc func addItem(title :String, target :AnyObject? = nil, action :Selector? = nil,
 			representedObject :Any? = nil) {
 		// Setup
@@ -54,16 +64,6 @@ public extension NSMenu {
 		// Setup
 		let	menuItem = NSMenuItem(title: title, action: nil, keyEquivalent: "")
 		menuItem.submenu = menu
-
-		// Add item
-		addItem(menuItem)
-	}
-
-	//------------------------------------------------------------------------------------------------------------------
-	@objc func addDisabledItem(title :String) {
-		// Setup
-		let	menuItem = NSMenuItem(title: title, action: nil, keyEquivalent: "")
-		menuItem.isEnabled = false
 
 		// Add item
 		addItem(menuItem)

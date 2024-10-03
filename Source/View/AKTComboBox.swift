@@ -1,12 +1,12 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	AKTTextField.swift		©2021 Stevo Brock		All rights reserved.
+//	AKTComboBox.swift		©2024 Stevo Brock		All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
 import AppKit
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: AKTTextField
-public class AKTTextField : NSTextField {
+// MARK: AKTComboBox
+public class AKTComboBox : NSComboBox {
 
 	// MARK: Properties
 			public	var	isEmpty :Bool { self.stringValue.isEmpty }
@@ -14,8 +14,6 @@ public class AKTTextField : NSTextField {
 	@objc	public	var	textDidBeginEditingProc :(_ string :String) -> Void = { _ in }
 	@objc	public	var	textDidChangeProc :(_ string :String) -> Void = { _ in }
 	@objc	public	var	textDidEndEditingProc :(_ string :String) -> Void = { _ in }
-
-	@objc	public	var	cancelProc :() -> Void = {}
 
 	// MARK: NSTextField methods
 	//------------------------------------------------------------------------------------------------------------------
@@ -47,7 +45,4 @@ public class AKTTextField : NSTextField {
 			self.textDidEndEditingProc(self.stringValue)
 		}
 	}
-
-	//------------------------------------------------------------------------------------------------------------------
-	override public func cancelOperation(_ sender :Any?) { self.cancelProc() }
 }

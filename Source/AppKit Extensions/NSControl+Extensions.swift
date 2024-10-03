@@ -3,6 +3,7 @@
 //  AppKit Toolbox
 //
 //  Created by Stevo on 1/13/23.
+//  Copyright © 2023 Stevo Brock. All rights reserved.
 //
 
 import AppKit
