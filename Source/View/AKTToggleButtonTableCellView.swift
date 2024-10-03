@@ -13,6 +13,10 @@ public class AKTToggleButtonTableCellView : NSTableCellView {
 											get { self.button.isEnabled }
 											set { self.button.isEnabled = newValue }
 										}
+	@objc	public				var	allowsMixedState :Bool {
+											get { self.button.allowsMixedState }
+											set { self.button.allowsMixedState = newValue }
+										}
 	@objc	public				var	state :NSControl.StateValue {
 											get { self.button.state }
 											set { self.button.state = newValue }

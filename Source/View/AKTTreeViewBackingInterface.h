@@ -15,7 +15,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 // MARK: Properties
 
+@property (nonatomic, readonly)	NSString*	rootItemID;
+
 // MARK: Instance methods
+
+- (BOOL) hasChildrenOfItemID:(NSString*) itemID;
+- (NSInteger) childCountOfItemID:(NSString*) itemID;
+- (NSString*) childItemIDOfItemID:(NSString*) itemID atIndex:(NSInteger) index;
 
 @end
 

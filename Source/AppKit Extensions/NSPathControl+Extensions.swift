@@ -10,7 +10,7 @@ import AppKit
 
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: NSPathControl extension
-extension NSPathControl {
+public extension NSPathControl {
 
 	// MARK: Properties
 	var	file :File? {
