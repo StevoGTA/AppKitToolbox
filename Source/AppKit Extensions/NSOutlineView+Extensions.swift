@@ -14,5 +14,9 @@ extension NSOutlineView {
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
-	func select(_ item :Any? = nil) { select(row(forItem: item)) }
+	func select(_ item :Any? = nil) {
+		// Select
+		selectRowIndexes((item != nil) ? IndexSet(integer: row(forItem: item)) : IndexSet(),
+				byExtendingSelection: false)
+	}
 }

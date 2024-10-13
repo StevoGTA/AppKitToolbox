@@ -48,13 +48,13 @@ public class AKTTreeViewBackingAdapter : NSObject, NSOutlineViewDataSource, NSOu
 	}
 
 	// MARK: NSOutlineViewDelegate methods
-	//----------------------------------------------------------------------------------------------------------------------
+	//------------------------------------------------------------------------------------------------------------------
 	public func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
 		// Return view
 		return self.viewProc(outlineView, tableColumn, self.itemID(for: item))
 	}
 
-	//----------------------------------------------------------------------------------------------------------------------
+	//------------------------------------------------------------------------------------------------------------------
 	public func outlineViewSelectionDidChange(_ notification: Notification) {
 		// Call proc
 		self.selectionDidChangeProc();
