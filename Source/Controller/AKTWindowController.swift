@@ -8,8 +8,6 @@ import AppKit
 // MARK: AKTWindowController
 open class AKTWindowController : NSWindowController, NSWindowDelegate {
 
-	// MARK: Types
-
 	// MARK: Properties
 	public	var	willCloseProc :() -> Void = {}
 
