@@ -49,33 +49,33 @@ extension NSAlert {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	static func with(alertStyle :NSAlert.Style, message :String, information :String, buttonTitles :[String]) ->
+	static func with(style :Style, message :String, information :String, buttonTitles :[String]) ->
 			NSAlert {
 		// Return NSAlert
-		return NSAlert(with: alertStyle, message: message, information: information, buttonTitles: buttonTitles)
+		return NSAlert(style: style, message: message, information: information, buttonTitles: buttonTitles)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	@objc static func informational(message :String, information :String, buttonTitles :[String]) -> NSAlert {
 		// Return NSAlert
-		return NSAlert(with: .informational, message: message, information: information, buttonTitles: buttonTitles)
+		return NSAlert(style: .informational, message: message, information: information, buttonTitles: buttonTitles)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	@objc static func warning(message :String, information :String, buttonTitles :[String]) -> NSAlert {
 		// Return NSAlert
-		return NSAlert(with: .warning, message: message, information: information, buttonTitles: buttonTitles)
+		return NSAlert(style: .warning, message: message, information: information, buttonTitles: buttonTitles)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	@objc static func critical(message :String, information :String, buttonTitles :[String]) -> NSAlert {
 		// Return NSAlert
-		return NSAlert(with: .critical, message: message, information: information, buttonTitles: buttonTitles)
+		return NSAlert(style: .critical, message: message, information: information, buttonTitles: buttonTitles)
 	}
 
 	// MARK: Lifecycle methods
 	//------------------------------------------------------------------------------------------------------------------
-	convenience init(with alertStyle :NSAlert.Style, message :String, information :String, buttonTitles :[String]) {
+	convenience init(style :Style, message :String, information :String, buttonTitles :[String]) {
 		// Do super
 		self.init()
 
