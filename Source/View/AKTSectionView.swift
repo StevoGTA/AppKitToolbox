@@ -102,7 +102,7 @@ public class AKTSectionView : NSView {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc (insertView:atIndex:)
+	@objc(insertView:atIndex:)
 	func insert(_ view :NSView, atIndex index :Int) {
 		// Setup
 		guard let contentViewSubviewsOrderedVertically =
@@ -152,7 +152,7 @@ public class AKTSectionView : NSView {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc (removeView:)
+	@objc(removeView:)
 	func remove(_ view :NSView) {
 		// Setup
 		guard let contentView = self.contentView else { return }

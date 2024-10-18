@@ -118,35 +118,35 @@ public class AKTVectorGraphicsView : NSView {
 	@objc func setContent(_ color :NSColor) { self.content = .color(color) }
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc (setContentAsOvalFilledWithColor:)
+	@objc(setContentAsOvalFilledWithColor:)
 	func setContent(filledOvalWithColor color :NSColor) {
 		// Set content
 		self.content = .filledOval(color: color)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc (setContentAsOvalStrokedWithColor:lineWidth:)
+	@objc(setContentAsOvalStrokedWithColor:lineWidth:)
 	func setContent(strokedOvalWithColor color :NSColor, lineWidth :CGFloat = 1.0) {
 		// Set content
 		self.content = .strokedOval(color: color, lineWidth: lineWidth)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc (setContentAsPillFilledWithColor:)
+	@objc(setContentAsPillFilledWithColor:)
 	func setContent(filledPillWithColor color :NSColor) {
 		// Set content
 		self.content = .filledPill(color: color)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc (setContentAsPillStrokedWithColor:lineWidth:)
+	@objc(setContentAsPillStrokedWithColor:lineWidth:)
 	func setContent(strokedPillWithColor color :NSColor, lineWidth :CGFloat = 1.0) {
 		// Set content
 		self.content = .strokedPill(color: color, lineWidth: lineWidth)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc (setContentAsPillFilledWithColor:strokedWithColor:lineWidth:)
+	@objc(setContentAsPillFilledWithColor:strokedWithColor:lineWidth:)
 	func setContentAsPill(filledWithColor fillColor :NSColor, strokedWithColor strokeColor :NSColor,
 			lineWidth :CGFloat = 1.0) {
 		// Set content
@@ -154,28 +154,28 @@ public class AKTVectorGraphicsView : NSView {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc (setContentAsRoundedRectFilledWithColor:radius:)
+	@objc(setContentAsRoundedRectFilledWithColor:radius:)
 	func setContent(filledRoundedRectWithColor color :NSColor, radius :CGFloat = 10.0) {
 		// Set content
 		self.content = .filledRoundedRect(color: color, radius: radius)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc (setContentAsRoundedRectStrokedWithColor:radius:lineWidth:)
+	@objc(setContentAsRoundedRectStrokedWithColor:radius:lineWidth:)
 	func setContent(strokedRoundedRectWithColor color :NSColor, radius :CGFloat = 10.0,
 			lineWidth :CGFloat = 1.0) {
 		// Set content
 		self.content = .strokedRoundedRect(color: color, radius: radius, lineWidth: lineWidth)
 	}
 	//------------------------------------------------------------------------------------------------------------------
-	@objc (setContentAsShapeFilledWithPath:color:)
+	@objc(setContentAsShapeFilledWithPath:color:)
 	func setContent(filledShapeWithPath path :NSBezierPath, color :NSColor) {
 		// Set content
 		self.content = .filledShape(path: path, color: color)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc (setContentAsShapeStrokedWithPath:color:)
+	@objc(setContentAsShapeStrokedWithPath:color:)
 	func setContent(strokedShapeWithPath path :NSBezierPath, color :NSColor) {
 		// Set content
 		self.content = .strokedShape(path: path, color: color)

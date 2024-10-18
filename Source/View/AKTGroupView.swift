@@ -75,14 +75,14 @@ public class AKTGroupView : NSView {
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
-	@objc (addView:)
+	@objc(addView:)
 	func add(view :NSView) {
 		// Insert view
 		insert(view: view, atIndex: self.hasTitle ? self.subviews.count - 1 : self.subviews.count)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc (addViewIgnoringItemTrailingInset:)
+	@objc(addViewIgnoringItemTrailingInset:)
 	func add(viewIgnoringItemTrailingInset view :NSView) {
 		// Insert view
 		insert(viewIgnoringItemTrailingInset: view,
@@ -90,7 +90,7 @@ public class AKTGroupView : NSView {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc (addView:leadingInset:trailingInset:)
+	@objc(addView:leadingInset:trailingInset:)
 	func add(view :NSView, leadingInset :CGFloat, trailingInset :CGFloat) {
 		// Insert
 		insert(view: view, atIndex: self.hasTitle ? self.subviews.count - 1: self.subviews.count,
@@ -131,7 +131,7 @@ public class AKTGroupView : NSView {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc (insertView:atIndex:)
+	@objc(insertView:atIndex:)
 	func insert(view :NSView, atIndex index :Int) {
 		// Setup
 		let	subviewsOrderedVertically = self.subviewsOrderedVertically
@@ -153,7 +153,7 @@ public class AKTGroupView : NSView {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc (addViewIgnoringItemTrailingInset:atIndex:)
+	@objc(addViewIgnoringItemTrailingInset:atIndex:)
 	func insert(viewIgnoringItemTrailingInset view :NSView, atIndex index :Int) {
 		// Setup
 		let	subviewsOrderedVertically = self.subviewsOrderedVertically
@@ -167,7 +167,7 @@ public class AKTGroupView : NSView {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc (addView:atIndex:leadingInset:trailingInset:)
+	@objc(addView:atIndex:leadingInset:trailingInset:)
 	func insert(view :NSView, atIndex index :Int, leadingInset :CGFloat, trailingInset :CGFloat) {
 		// Setup
 		let	subviewsOrderedVertically = self.subviewsOrderedVertically
@@ -218,7 +218,7 @@ public class AKTGroupView : NSView {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc (removeView:)
+	@objc(removeView:)
 	func remove(_ view :NSView) {
 		// Get index
 		let	subviewsOrderedVertically = self.subviewsOrderedVertically
@@ -415,7 +415,7 @@ public class AKTCollapsibleGroupView : AKTGroupView {
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
-	@objc (setCollapsed:completionProc:)
+	@objc(setCollapsed:completionProc:)
 	func set(collapsed :Bool, completionProc :@escaping () -> Void = {}) {
 		// Check if changing
 		if collapsed != self.isCollapsed {

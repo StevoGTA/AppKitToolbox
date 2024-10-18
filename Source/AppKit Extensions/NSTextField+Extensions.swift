@@ -12,7 +12,7 @@ import AppKit
 extension NSTextField {
 
 	// MARK: OnlyFloatValueFormatter
-	@objc class OnlyFloatValueFormatter : NumberFormatter {
+	@objc class OnlyFloatValueFormatter : NumberFormatter, @unchecked Sendable {
 
 		// MARK: NumberFormatter methods
 		override func isPartialStringValid(_ partialString :String,

@@ -7,6 +7,11 @@
 #import "NSURL+C++.h"
 
 //----------------------------------------------------------------------------------------------------------------------
+// MARK: Local data
+static	NSString*	NSPasteboardTypeFilenames = @"NSFilenamesPboardType";
+
+//----------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 // MARK :AKTFolderFileDropTargetView
 
 @implementation AKTFolderFileDropTargetView
@@ -20,7 +25,7 @@
 	[super awakeFromNib];
 
 	// Register for dragged types
-	[self registerForDraggedTypes:@[NSURLPboardType, NSFilenamesPboardType]];
+	[self registerForDraggedTypes:@[NSPasteboardTypeURL, NSPasteboardTypeFilenames]];
 }
 
 // MARK: NSDraggingDestination methods
@@ -41,13 +46,13 @@
 	NSMutableArray*	urls = [NSMutableArray array];
 
 	// Retrieve URLs
-	if ([pasteboard.types containsObject:NSURLPboardType]) {
+	if ([pasteboard.types containsObject:NSPasteboardTypeURL]) {
 		// URLs on pasteboard
 		NSDictionary<NSString*, id>*	options = @{NSPasteboardURLReadingFileURLsOnlyKey: @YES};
 		[urls addObjectsFromArray:[pasteboard readObjectsForClasses:@[[NSURL class]] options:options]];
-	} else if ([pasteboard.types containsObject:NSFilenamesPboardType]) {
+	} else if ([pasteboard.types containsObject:NSPasteboardTypeFilenames]) {
 		// Paths on pasteboard
-		NSArray<NSString*>*	paths = [pasteboard propertyListForType:NSFilenamesPboardType];
+		NSArray<NSString*>*	paths = [pasteboard propertyListForType:NSPasteboardTypeFilenames];
 		for (NSString* path in paths)
 			// Add url
 			[urls addObject:[NSURL fileURLWithPath:path]];

@@ -19,7 +19,9 @@
 
 @implementation AKTTreeViewBackingAdapter
 
-// MARK: Property methods
+// MARK: Properties
+
+@synthesize rootItemID;
 
 //----------------------------------------------------------------------------------------------------------------------
 - (TArray<I<CTreeItem> >) topLevelTreeItems
