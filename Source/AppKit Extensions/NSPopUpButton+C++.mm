@@ -85,4 +85,11 @@
 	self.lastItem.submenu = submenu;
 }
 
+//----------------------------------------------------------------------------------------------------------------------
+- (void) selectItemWithString:(const CString&) string
+{
+	// Select item
+	[self selectItemWithTitle:(__bridge NSString*) string.getOSString()];
+}
+
 @end

@@ -29,6 +29,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void) addSubmenu:(NSMenu*) submenu withString:(const CString&) string;
 
+- (void) selectItemWithString:(const CString&) string;
+
 @end
 
 NS_ASSUME_NONNULL_END

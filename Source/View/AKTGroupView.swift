@@ -11,6 +11,8 @@ public class AKTGroupView : NSView {
 	// MARK: Properties
 	override	public		var	isFlipped: Bool { true }
 
+	@objc		public		var	viewTitleControlSize :UInt = UInt(NSControl.ControlSize.regular.rawValue)
+
 				private		let	hasTitle :Bool
 				private		let	itemLeadingInset :CGFloat
 				private		let	itemTrailingInset :CGFloat?
@@ -104,8 +106,10 @@ public class AKTGroupView : NSView {
 		let	containerView = NSView()
 		add(view: containerView)
 
-		// Add label
+		// Add title label
 		let	label = AKTLabel(string: title)
+		label.controlSize = NSControl.ControlSize(rawValue: self.viewTitleControlSize)!
+		label.font = NSFont.systemFont(ofSize: NSFont.systemFontSize(for: label.controlSize))
 		containerView.addSubview(label)
 		label.alignTop(to: containerView)
 		label.alignLeading(to: containerView)
@@ -191,8 +195,10 @@ public class AKTGroupView : NSView {
 		let	containerView = NSView()
 		insert(view: containerView, atIndex: index)
 
-		// Add label
+		// Add title label
 		let	label = AKTLabel(string: title)
+		label.controlSize = NSControl.ControlSize(rawValue: self.viewTitleControlSize)!
+		label.font = NSFont.systemFont(ofSize: NSFont.systemFontSize(for: label.controlSize))
 		containerView.addSubview(label)
 		label.alignTop(to: containerView)
 		label.alignLeading(to: containerView)
