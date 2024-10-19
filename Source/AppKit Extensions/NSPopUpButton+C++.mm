@@ -14,6 +14,14 @@
 
 @implementation NSPopUpButton (Cpp)
 
+// MARK: Properties
+
+//----------------------------------------------------------------------------------------------------------------------
+- (SLocalization::Language) selectedLocalizationLanguage
+{
+	return *SLocalization::Language::getFor((OSType) self.selectedTag);
+}
+
 // MARK: Instance methods
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -90,6 +98,39 @@
 {
 	// Select item
 	[self selectItemWithTitle:(__bridge NSString*) string.getOSString()];
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) setupWithLocalizationLanguages
+{
+	[self removeAllItems];
+	for (TIteratorD<SLocalization::Language> iterator1 = SLocalization::Language::getAll().getIterator();
+			iterator1.hasValue(); iterator1.advance()) {
+		// Check if common
+		if (iterator1->isCommon())
+			// Found common
+			[self addItemWithString:iterator1->getDisplayName() tag:iterator1->getISO639_2_Code()];
+	}
+	[self.menu addItem:NSMenuItem.separatorItem];
+	for (TIteratorD<SLocalization::Language> iterator2 = SLocalization::Language::getAll().getIterator();
+			iterator2.hasValue(); iterator2.advance()) {
+		// Check if common
+		if (!iterator2->isCommon())
+			// Found not common
+			[self addItemWithString:iterator2->getDisplayName() tag:iterator2->getISO639_2_Code()];
+	}
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) selectedLocalizationLanguage:(const OV<SLocalization::Language>&) localizationLanguage
+{
+	// Check if have value
+	if (localizationLanguage.hasValue())
+		// All have the same value
+		[self selectItemWithTag:localizationLanguage->getISO639_2_Code()];
+	else
+		// Start with first one
+		[self selectItemAtIndex:0];
 }
 
 @end

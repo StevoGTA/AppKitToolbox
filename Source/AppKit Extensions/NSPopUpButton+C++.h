@@ -5,7 +5,7 @@
 //  Created by Stevo on 5/12/23.
 //
 
-#include "CString.h"
+#import "SLocalization.h"
 
 #import <AppKit/AppKit.h>
 
@@ -15,6 +15,10 @@ NS_ASSUME_NONNULL_BEGIN
 // MARK: NSPopUpButton extension
 
 @interface NSPopUpButton (Cpp)
+
+// MARK: Properties
+
+@property (nonatomic, readonly)	SLocalization::Language	selectedLocalizationLanguage;
 
 // MARK: Instance methods
 
@@ -30,6 +34,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void) addSubmenu:(NSMenu*) submenu withString:(const CString&) string;
 
 - (void) selectItemWithString:(const CString&) string;
+
+- (void) setupWithLocalizationLanguages;
+- (void) selectedLocalizationLanguage:(const OV<SLocalization::Language>&) localizationLanguage;
 
 @end
 
