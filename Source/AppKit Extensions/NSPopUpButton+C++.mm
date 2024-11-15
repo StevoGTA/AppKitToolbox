@@ -86,6 +86,14 @@
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+- (void) addDisabledItemWithString:(const CString&) string
+{
+	// Add item
+	[self addItemWithTitle:(__bridge NSString*) string.getOSString()];
+	self.lastItem.enabled = false;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 - (void) addSubmenu:(NSMenu*) submenu withString:(const CString&) string
 {
 	// Add submenu
