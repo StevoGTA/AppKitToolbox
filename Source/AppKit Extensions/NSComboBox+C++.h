@@ -1,23 +1,23 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	NSDatePicker+C++.h			©2024 Stevo Brock	All rights reserved.
+//	NSComboBox+C++.h			©2024 Stevo Brock	All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
 #pragma once
 
-#include "TimeAndDate.h"
+#import "CString.h"
 
 #import <AppKit/AppKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: NSDatePicker extension
+// MARK: NSComboBox extension
 
-@interface NSDatePicker (Cpp)
+@interface NSComboBox (Cpp)
 
-// MARK: Properties
+// MARK: Instance methods
 
-@property (nonatomic)	SGregorianDate	gregorianDate;
+- (void) addString:(const CString&) string;
 
 @end
 
