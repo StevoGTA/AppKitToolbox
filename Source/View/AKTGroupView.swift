@@ -107,9 +107,7 @@ public class AKTGroupView : NSView {
 		add(view: containerView)
 
 		// Add title label
-		let	label = AKTLabel(string: title)
-		label.controlSize = NSControl.ControlSize(rawValue: self.viewTitleControlSize)!
-		label.font = NSFont.systemFont(ofSize: NSFont.systemFontSize(for: label.controlSize))
+		let	label = AKTLabel(string: title, controlSize: self.viewTitleControlSize)
 		containerView.addSubview(label)
 		label.alignTop(to: containerView)
 		label.alignLeading(to: containerView)
@@ -196,9 +194,7 @@ public class AKTGroupView : NSView {
 		insert(view: containerView, atIndex: index)
 
 		// Add title label
-		let	label = AKTLabel(string: title)
-		label.controlSize = NSControl.ControlSize(rawValue: self.viewTitleControlSize)!
-		label.font = NSFont.systemFont(ofSize: NSFont.systemFontSize(for: label.controlSize))
+		let	label = AKTLabel(string: title, controlSize: self.viewTitleControlSize)
 		containerView.addSubview(label)
 		label.alignTop(to: containerView)
 		label.alignLeading(to: containerView)

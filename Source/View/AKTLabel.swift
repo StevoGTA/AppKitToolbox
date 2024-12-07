@@ -61,4 +61,20 @@ public class AKTLabel : NSTextField {
 		// Store
 		self.stringValue = string
 	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc public init(string :String, controlSize :UInt) {
+		// Do super
+		super.init(frame: .zero)
+
+		// Setup
+		self.isBordered = false
+		self.drawsBackground = false
+		self.isEditable = false
+		self.controlSize = NSControl.ControlSize(rawValue: controlSize)!
+		self.font = NSFont.systemFont(ofSize: NSFont.systemFontSize(for: self.controlSize))
+
+		// Store
+		self.stringValue = string
+	}
 }
