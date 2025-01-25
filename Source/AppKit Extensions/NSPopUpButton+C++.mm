@@ -94,6 +94,15 @@
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+- (void) addSubmenu:(NSMenu*) submenu withString:(const CString&) string tag:(NSInteger) tag
+{
+	// Add submenu
+	[self addItemWithTitle:(__bridge NSString*) string.getOSString()];
+	self.lastItem.submenu = submenu;
+	self.lastItem.tag = tag;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 - (void) addSubmenu:(NSMenu*) submenu withString:(const CString&) string
 {
 	// Add submenu

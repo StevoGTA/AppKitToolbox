@@ -25,6 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype) menuItemWithString:(const CString&) string tag:(NSInteger) tag
 		representedObject:(NSObject*) representedObject;
 + (instancetype) menuItemWithString:(const CString&) string tag:(NSInteger) tag;
++ (instancetype) menuItemWithString:(const CString&) string representedObject:(NSObject*) representedObject;
 + (instancetype) menuItemWithString:(const CString&) string;
 
 @end

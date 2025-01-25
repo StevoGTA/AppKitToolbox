@@ -33,6 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void) addDisabledItemWithString:(const CString&) string;
 
+- (void) addSubmenu:(NSMenu*) submenu withString:(const CString&) string tag:(NSInteger) tag;
 - (void) addSubmenu:(NSMenu*) submenu withString:(const CString&) string;
 
 - (void) selectItemWithString:(const CString&) string;

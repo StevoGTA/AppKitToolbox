@@ -72,6 +72,18 @@
 }
 
 //----------------------------------------------------------------------------------------------------------------------
++ (instancetype) menuItemWithString:(const CString&) string representedObject:(NSObject*) representedObject
+{
+	// Setup
+	NSMenuItem*	menuItem =
+						[[NSMenuItem alloc] initWithTitle:(__bridge NSString*) string.getOSString() action:nil
+								keyEquivalent:@""];
+	menuItem.representedObject = representedObject;
+
+	return menuItem;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 + (instancetype) menuItemWithString:(const CString&) string
 {
 	return [[NSMenuItem alloc] initWithTitle:(__bridge NSString*) string.getOSString() action:nil keyEquivalent:@""];
