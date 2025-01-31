@@ -15,10 +15,11 @@ extension NSTextField {
 	@objc class OnlyFloatValueFormatter : NumberFormatter, @unchecked Sendable {
 
 		// MARK: NumberFormatter methods
+		//--------------------------------------------------------------------------------------------------------------
 		override func isPartialStringValid(_ partialString :String,
 				newEditingString newString :AutoreleasingUnsafeMutablePointer<NSString?>?,
 				errorDescription error :AutoreleasingUnsafeMutablePointer<NSString?>?) -> Bool {
-			//
+			// Check if valid
 			return partialString.isEmpty || (Float(partialString) != nil)
 		}
 	}
