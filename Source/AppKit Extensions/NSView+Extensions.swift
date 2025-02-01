@@ -439,6 +439,150 @@ public extension NSView {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
+	@discardableResult
+	@objc(constrainWidthToMaximum:priority:activate:)
+	func constrain(widthToMaximum value :CGFloat, priority :NSLayoutConstraint.Priority, activate :Bool = true) ->
+			NSLayoutConstraint {
+		// Setup
+		self.translatesAutoresizingMaskIntoConstraints = false
+
+		let	constraint =
+					NSLayoutConstraint(item: self, attribute: .width, relatedBy: .lessThanOrEqual, toItem: nil,
+							attribute: .notAnAttribute, multiplier: 1.0, constant: value)
+		constraint.priority = priority
+
+		// Check if need to activate
+		if activate { NSLayoutConstraint.activate([constraint]) }
+
+		return constraint
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@discardableResult
+	@objc(constrainWidthToMaximum:activate:)
+	func constrain(widthToMaximum value :CGFloat, activate :Bool = true) -> NSLayoutConstraint {
+		// Setup
+		self.translatesAutoresizingMaskIntoConstraints = false
+
+		let	constraint =
+					NSLayoutConstraint(item: self, attribute: .width, relatedBy: .lessThanOrEqual, toItem: nil,
+							attribute: .notAnAttribute, multiplier: 1.0, constant: value)
+
+		// Check if need to activate
+		if activate { NSLayoutConstraint.activate([constraint]) }
+
+		return constraint
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@discardableResult
+	@objc(constrainWidthToMinimum:priority:activate:)
+	func constrain(widthToMinimum value :CGFloat, priority :NSLayoutConstraint.Priority, activate :Bool = true) ->
+			NSLayoutConstraint {
+		// Setup
+		self.translatesAutoresizingMaskIntoConstraints = false
+
+		let	constraint =
+					NSLayoutConstraint(item: self, attribute: .width, relatedBy: .greaterThanOrEqual, toItem: nil,
+							attribute: .notAnAttribute, multiplier: 1.0, constant: value)
+		constraint.priority = priority
+
+		// Check if need to activate
+		if activate { NSLayoutConstraint.activate([constraint]) }
+
+		return constraint
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@discardableResult
+	@objc(constrainWidthToMinimum:activate:)
+	func constrain(widthToMinimum value :CGFloat, activate :Bool = true) -> NSLayoutConstraint {
+		// Setup
+		self.translatesAutoresizingMaskIntoConstraints = false
+
+		let	constraint =
+					NSLayoutConstraint(item: self, attribute: .width, relatedBy: .greaterThanOrEqual, toItem: nil,
+							attribute: .notAnAttribute, multiplier: 1.0, constant: value)
+
+		// Check if need to activate
+		if activate { NSLayoutConstraint.activate([constraint]) }
+
+		return constraint
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@discardableResult
+	@objc(constrainHeightToMaximum:priority:activate:)
+	func constrain(heightToMaximum value :CGFloat, priority :NSLayoutConstraint.Priority, activate :Bool = true) ->
+			NSLayoutConstraint {
+		// Setup
+		self.translatesAutoresizingMaskIntoConstraints = false
+
+		let	constraint =
+					NSLayoutConstraint(item: self, attribute: .height, relatedBy: .lessThanOrEqual, toItem: nil,
+							attribute: .notAnAttribute, multiplier: 1.0, constant: value)
+		constraint.priority = priority
+
+		// Check if need to activate
+		if activate { NSLayoutConstraint.activate([constraint]) }
+
+		return constraint
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@discardableResult
+	@objc(constrainHeightToMaximum:activate:)
+	func constrain(heightToMaximum value :CGFloat, activate :Bool = true) -> NSLayoutConstraint {
+		// Setup
+		self.translatesAutoresizingMaskIntoConstraints = false
+
+		let	constraint =
+					NSLayoutConstraint(item: self, attribute: .height, relatedBy: .lessThanOrEqual, toItem: nil,
+							attribute: .notAnAttribute, multiplier: 1.0, constant: value)
+
+		// Check if need to activate
+		if activate { NSLayoutConstraint.activate([constraint]) }
+
+		return constraint
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@discardableResult
+	@objc(constrainHeightToMinimum:priority:activate:)
+	func constrain(heightToMinimum value :CGFloat, priority :NSLayoutConstraint.Priority, activate :Bool = true) ->
+			NSLayoutConstraint {
+		// Setup
+		self.translatesAutoresizingMaskIntoConstraints = false
+
+		let	constraint =
+					NSLayoutConstraint(item: self, attribute: .height, relatedBy: .greaterThanOrEqual, toItem: nil,
+							attribute: .notAnAttribute, multiplier: 1.0, constant: value)
+		constraint.priority = priority
+
+		// Check if need to activate
+		if activate { NSLayoutConstraint.activate([constraint]) }
+
+		return constraint
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@discardableResult
+	@objc(constrainHeightToMinimum:activate:)
+	func constrain(heightToMinimum value :CGFloat, activate :Bool = true) -> NSLayoutConstraint {
+		// Setup
+		self.translatesAutoresizingMaskIntoConstraints = false
+
+		let	constraint =
+					NSLayoutConstraint(item: self, attribute: .height, relatedBy: .greaterThanOrEqual, toItem: nil,
+							attribute: .notAnAttribute, multiplier: 1.0, constant: value)
+
+		// Check if need to activate
+		if activate { NSLayoutConstraint.activate([constraint]) }
+
+		return constraint
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
 	func constraints(between view1 :NSView, and view2 :NSView) -> [NSLayoutConstraint] {
 		// Filter all constraints
 		return self.constraints.filter(
