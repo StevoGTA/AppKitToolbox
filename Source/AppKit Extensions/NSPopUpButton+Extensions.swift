@@ -24,6 +24,7 @@ public extension NSPopUpButton {
 		// Add item and set isEnabled
 		self.addItem(withTitle: title)
 		self.lastItem!.isEnabled = false
+		self.lastItem!.set(validationProc: { _ in false }, actionProc: { _ in })
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -49,7 +50,24 @@ public extension NSPopUpButton {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc func addItem(withTitle title :String, proc :@escaping (_ item :NSMenuItem) -> Void) {
+	@objc func addItem(withTitle title :String, tag :Int, validationProc :@escaping NSMenuItem.ValidationProc,
+			actionProc :@escaping NSMenuItem.ActionProc) {
+		// Add item and set associated value
+		addItem(withTitle: title)
+		self.lastItem!.tag = tag
+		self.lastItem!.set(validationProc: validationProc, actionProc: actionProc)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc func addItem(withTitle title :String, tag :Int, proc :@escaping NSMenuItem.ActionProc) {
+		// Add item and set associated value
+		addItem(withTitle: title)
+		self.lastItem!.tag = tag
+		self.lastItem!.actionProc = proc
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc func addItem(withTitle title :String, proc :@escaping NSMenuItem.ActionProc) {
 		// Add item and set associated value
 		addItem(withTitle: title)
 		self.lastItem!.actionProc = proc
