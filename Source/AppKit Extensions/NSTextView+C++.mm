@@ -1,28 +1,28 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	NSTextField+C++.mm			©2021 Stevo Brock	All rights reserved.
+//	NSTextView+C++.mm			©2025 Stevo Brock	All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
-#import "NSTextField+C++.h"
+#import "NSTextView+C++.h"
 
 #import "NSString+C++.h"
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: NSTextField extension
+// MARK: NSTextView extension
 
-@implementation NSTextField (Cpp)
+@implementation NSTextView (Cpp)
 
 // MARK: Properties
 
 //----------------------------------------------------------------------------------------------------------------------
-- (CString) string
+- (CString) stringContent
 {
-	return CString((__bridge CFStringRef) self.stringValue);
+	return CString((__bridge CFStringRef) self.textStorage.string);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-- (void) setString:(CString) string
+- (void) setStringContent:(CString) string
 {
-	self.stringValue = [(__bridge NSString*) string.getOSString() copy];
+	[self setString:[(__bridge NSString*) string.getOSString() copy]];
 }
 
 @end
