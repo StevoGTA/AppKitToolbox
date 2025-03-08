@@ -89,6 +89,7 @@ public class AKTTextFieldStepperHelper : NSObject {
 	@objc(setIntegerMinValue:maxValue:)
 	public func set(minValue :Int, maxValue :Int) {
 		// Setup
+		self.stringForValueProc = { "\(Int($0))" }
 		self.stepper.minValue = Double(minValue)
 		self.stepper.maxValue = Double(maxValue)
 	}
