@@ -18,6 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 // MARK: Properties
 
+@property (nonatomic, readonly)	SLocalization::Currency	selectedLocalizationCurrency;
 @property (nonatomic, readonly)	SLocalization::Language	selectedLocalizationLanguage;
 
 // MARK: Instance methods
@@ -38,8 +39,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void) selectItemWithString:(const CString&) string;
 
+- (void) setupWithLocalizationCurrencies;
+- (void) selectLocalizationCurrency:(const OV<SLocalization::Currency>&) localizationCurrency;
+
 - (void) setupWithLocalizationLanguages;
-- (void) selectedLocalizationLanguage:(const OV<SLocalization::Language>&) localizationLanguage;
+- (void) selectLocalizationLanguage:(const OV<SLocalization::Language>&) localizationLanguage;
 
 @end
 

@@ -45,6 +45,16 @@ public class AKTTextFieldStepperHelper : NSObject {
 	@objc
 	public		var	valueForStringProc :(_ string :String) -> Double = { Double($0) ?? 0.0 }
 
+	@objc(hidden)
+	public		var	isHidden :Bool {
+							get { self.textField!.isHidden }
+							set {
+								// Update UI
+								self.textField!.isHidden = newValue
+								self.stepper!.isHidden = newValue
+							}
+						}
+
 	@IBOutlet	var	textField :AKTTextField! {
 							didSet {
 								// Setup
@@ -85,6 +95,7 @@ public class AKTTextFieldStepperHelper : NSObject {
 		self.stepper.minValue = minValue
 		self.stepper.maxValue = maxValue
 	}
+
 	//------------------------------------------------------------------------------------------------------------------
 	@objc(setIntegerMinValue:maxValue:)
 	public func set(minValue :Int, maxValue :Int) {
@@ -92,5 +103,13 @@ public class AKTTextFieldStepperHelper : NSObject {
 		self.stringForValueProc = { "\(Int($0))" }
 		self.stepper.minValue = Double(minValue)
 		self.stepper.maxValue = Double(maxValue)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc(setHiddenAnimated:)
+	public func set(isHiddenAnimated isHidden :Bool) {
+		// Update UI
+		self.textField!.animator().isHidden = isHidden
+		self.stepper!.animator().isHidden = isHidden
 	}
 }

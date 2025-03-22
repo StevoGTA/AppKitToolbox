@@ -17,10 +17,12 @@ public extension NSPopUpButton {
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
-	@objc(addItem:) func add(item :NSMenuItem) { self.menu?.addItem(item) }
+	@objc(addItem:)
+	func add(item :NSMenuItem) { self.menu?.addItem(item) }
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc func addDisabledItem(withTitle title :String) {
+	@objc
+	func addDisabledItem(withTitle title :String) {
 		// Add item and set isEnabled
 		self.addItem(withTitle: title)
 		self.lastItem!.isEnabled = false
@@ -28,21 +30,24 @@ public extension NSPopUpButton {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc func addItem(withTitle title :String, tag :Int) {
+	@objc
+	func addItem(withTitle title :String, tag :Int) {
 		// Add item and set tag
 		addItem(withTitle: title)
 		self.lastItem!.tag = tag
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc func addItem(withTitle title :String, representedObject :Any) {
+	@objc
+	func addItem(withTitle title :String, representedObject :Any) {
 		// Add item and set associated value
 		addItem(withTitle: title)
 		self.lastItem!.representedObject = representedObject
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc func addItem(withTitle title :String, target :AnyObject, action :Selector) {
+	@objc
+	func addItem(withTitle title :String, target :AnyObject, action :Selector) {
 		// Add item and set associated value
 		addItem(withTitle: title)
 		self.lastItem!.target = target
@@ -50,7 +55,8 @@ public extension NSPopUpButton {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc func addItem(withTitle title :String, tag :Int, validationProc :@escaping NSMenuItem.ValidationProc,
+	@objc
+	func addItem(withTitle title :String, tag :Int, validationProc :@escaping NSMenuItem.ValidationProc,
 			actionProc :@escaping NSMenuItem.ActionProc) {
 		// Add item and set associated value
 		addItem(withTitle: title)
@@ -59,7 +65,8 @@ public extension NSPopUpButton {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc func addItem(withTitle title :String, tag :Int, proc :@escaping NSMenuItem.ActionProc) {
+	@objc
+	func addItem(withTitle title :String, tag :Int, proc :@escaping NSMenuItem.ActionProc) {
 		// Add item and set associated value
 		addItem(withTitle: title)
 		self.lastItem!.tag = tag
@@ -67,34 +74,46 @@ public extension NSPopUpButton {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc func addItem(withTitle title :String, proc :@escaping NSMenuItem.ActionProc) {
+	@objc
+	func addItem(withTitle title :String, proc :@escaping NSMenuItem.ActionProc) {
 		// Add item and set associated value
 		addItem(withTitle: title)
 		self.lastItem!.actionProc = proc
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc func addSeparatorItem() {
+	@objc
+	func addSeparatorItem() {
 		// Add item
 		self.menu?.addItem(NSMenuItem.separator())
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc func addSubmenu(_ submenu :NSMenu, withTitle title :String) {
+	@objc
+	func addSubmenu(_ submenu :NSMenu, withTitle title :String) {
 		// Add submenu
 		addItem(withTitle: title)
 		self.lastItem!.submenu = submenu
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc func menuItem(matchingProc :(_ menuItem :NSMenuItem) -> Bool, deep :Bool = false) -> NSMenuItem? {
+	@objc
+	func menuItem(matchingProc :(_ menuItem :NSMenuItem) -> Bool, deep :Bool = false) -> NSMenuItem? {
 		// Call through to menu
 		return self.menu?.menuItem(matchingProc: matchingProc, deep: deep)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc func menuItem(representedObject :Any, deep :Bool = false) -> NSMenuItem? {
+	@objc
+	func menuItem(withRepresentedObject representedObject :Any, deep :Bool = false) -> NSMenuItem? {
 		// Call through to menu
 		return self.menu?.menuItem(representedObject: representedObject, deep: deep)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc
+	func selectItem(withRepresentedObject representedObject :Any) {
+		// Select
+		select(menuItem(withRepresentedObject: representedObject))
 	}
 }

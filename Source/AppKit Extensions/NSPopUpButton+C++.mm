@@ -17,6 +17,13 @@
 // MARK: Properties
 
 //----------------------------------------------------------------------------------------------------------------------
+- (SLocalization::Currency) selectedLocalizationCurrency
+{
+	return *SLocalization::Currency::getFor(
+			CString((CFStringRef) CFBridgingRetain(self.selectedItem.representedObject)));
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 - (SLocalization::Language) selectedLocalizationLanguage
 {
 	return *SLocalization::Language::getFor((OSType) self.selectedTag);
@@ -118,8 +125,56 @@
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+- (void) setupWithLocalizationCurrencies
+{
+	// Setup
+	[self removeAllItems];
+	for (TIteratorD<SLocalization::Currency> iterator1 = SLocalization::Currency::getAll().getIterator();
+			iterator1.hasValue(); iterator1.advance()) {
+		// Check if common
+		if (iterator1->isCommon())
+			// Found common
+			[self addItemWithString:iterator1->getCodeAndDisplayName()
+					representedObject:(__bridge NSString*) iterator1->getISO4217Code().getOSString()];
+	}
+	[self.menu addItem:NSMenuItem.separatorItem];
+	for (TIteratorD<SLocalization::Currency> iterator2 = SLocalization::Currency::getAll().getIterator();
+			iterator2.hasValue(); iterator2.advance()) {
+		// Check if common
+		if (!iterator2->isCommon())
+			// Found not common
+			[self addItemWithString:iterator2->getCodeAndDisplayName()
+					representedObject:(__bridge NSString*) iterator2->getISO4217Code().getOSString()];
+	}
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) selectLocalizationCurrency:(const OV<SLocalization::Currency>&) localizationCurrency
+{
+	// Check if have value
+	if (localizationCurrency.hasValue()) {
+		// Select item
+		for (NSMenuItem* menuItem in self.itemArray) {
+			// Get represented object
+			id	representedObject = menuItem.representedObject;
+			if ((representedObject != nil) &&
+				[((NSString*) representedObject)
+						isEqualToString:(__bridge NSString*) localizationCurrency->getISO4217Code().getOSString()]) {
+				// Select this one
+				[self selectItem:menuItem];
+
+				return;
+			}
+		}
+	} else
+		// Select first one
+		[self selectItemAtIndex:0];
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 - (void) setupWithLocalizationLanguages
 {
+	// Setup
 	[self removeAllItems];
 	for (TIteratorD<SLocalization::Language> iterator1 = SLocalization::Language::getAll().getIterator();
 			iterator1.hasValue(); iterator1.advance()) {
@@ -139,14 +194,14 @@
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-- (void) selectedLocalizationLanguage:(const OV<SLocalization::Language>&) localizationLanguage
+- (void) selectLocalizationLanguage:(const OV<SLocalization::Language>&) localizationLanguage
 {
 	// Check if have value
 	if (localizationLanguage.hasValue())
-		// All have the same value
+		// Select item
 		[self selectItemWithTag:localizationLanguage->getISO639_2_Code()];
 	else
-		// Start with first one
+		// Select first one
 		[self selectItemAtIndex:0];
 }
 
