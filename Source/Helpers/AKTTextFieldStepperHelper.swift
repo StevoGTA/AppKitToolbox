@@ -59,11 +59,11 @@ public class AKTTextFieldStepperHelper : NSObject {
 							didSet {
 								// Setup
 								self.textField.formatter = MultiFormatter(allowedCharacterSet: .decimalDigits)
-								self.textField.textDidChangeProc = { [unowned self] in
+								self.textField.didChangeProc = { [unowned self] in
 									// Update UI
 									self.stepper.doubleValue = self.valueForStringProc($0)
 								}
-								self.textField.textDidEndEditingProc = { [unowned self] in
+								self.textField.didEndEditingProc = { [unowned self] in
 									// Setup
 									let	value = self.valueForStringProc($0)
 
@@ -106,10 +106,18 @@ public class AKTTextFieldStepperHelper : NSObject {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc(setHiddenAnimated:)
-	public func set(isHiddenAnimated isHidden :Bool) {
+	@objc(setHidden:animated:)
+	public func set(isHidden :Bool, animated :Bool = false) {
 		// Update UI
-		self.textField!.animator().isHidden = isHidden
-		self.stepper!.animator().isHidden = isHidden
+		self.textField.set(isHidden: isHidden, animated: animated)
+		self.stepper.set(isHidden: isHidden, animated: animated)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc(setEnabled:animated:)
+	public func set(isEnabled :Bool, animated :Bool = false) {
+		// Update UI
+		self.textField.set(isEnabled: isEnabled, animated: animated)
+		self.stepper.set(isEnabled: isEnabled, animated: animated)
 	}
 }

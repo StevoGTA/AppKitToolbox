@@ -11,9 +11,10 @@ public class AKTSecureTextField : NSSecureTextField {
 	// MARK: Properties
 	public	var	isEmpty :Bool { self.stringValue.isEmpty }
 
-	public	var	textDidBeginEditingProc :() -> Void = {}
-	public	var	textDidChangeProc :(_ string :String) -> Void = { _ in }
-	public	var	textDidEndEditingProc :() -> Void = {}
+	public	var	didBeginEditingProc :() -> Void = {}
+	public	var	didChangeProc :(_ string :String) -> Void = { _ in }
+	public	var	didEndEditingProc :() -> Void = {}
+	public	var	didCancelEditingProc :() -> Void = {}
 
 	// MARK: NSTextField methods
 	//------------------------------------------------------------------------------------------------------------------
@@ -22,7 +23,7 @@ public class AKTSecureTextField : NSSecureTextField {
 		super.textDidBeginEditing(notification)
 
 		// Call proc
-		self.textDidBeginEditingProc()
+		self.didBeginEditingProc()
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -31,7 +32,7 @@ public class AKTSecureTextField : NSSecureTextField {
 		super.textDidChange(notification)
 
 		// Call proc
-		self.textDidChangeProc(self.stringValue)
+		self.didChangeProc(self.stringValue)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -39,7 +40,13 @@ public class AKTSecureTextField : NSSecureTextField {
 		// Do super
 		super.textDidEndEditing(notification)
 
-		// Call proc
-		self.textDidEndEditingProc()
+		// Check if actually editing
+		if self.currentEditor() != nil {
+			// Call proc
+			self.didEndEditingProc(self.stringValue)
+		}
 	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	override public func cancelOperation(_ sender :Any?) { self.didCancelEditingProc() }
 }

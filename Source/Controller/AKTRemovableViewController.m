@@ -1,42 +1,42 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	NSTextField+C++.mm			©2021 Stevo Brock	All rights reserved.
+//	AKTRemovableViewController.m			©2025 Stevo Brock	All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
-#import "NSTextField+C++.h"
-
-#import "NSString+C++.h"
+#import "AKTRemovableViewController.h"
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: NSTextField extension
+// MARK: AKTRemovableViewController
 
-@implementation NSTextField (Cpp)
+@implementation AKTRemovableViewController
 
-// MARK: Properties
+// MARK: NSObject methods
 
 //----------------------------------------------------------------------------------------------------------------------
-- (CString) string
+- (void) awakeFromNib
 {
-	return CString((__bridge CFStringRef) self.stringValue);
-}
+	// Do super
+	[super awakeFromNib];
 
-//----------------------------------------------------------------------------------------------------------------------
-- (void) setString:(CString) string
-{
-	self.stringValue = [(__bridge NSString*) string.getOSString() copy];
+	// Setup
+	[self.removeButton setTarget:self];
+	[self.removeButton setAction:@selector(remove:)];
 }
 
 // MARK: Instance methods
 
 //----------------------------------------------------------------------------------------------------------------------
-- (void) setString:(const CString&) string animated:(BOOL) animated
+- (void) setRemoveButtonEnabled:(BOOL) enabled
 {
-	// Check animated
-	if (animated)
-		// Animated
-		self.animator.stringValue = [(__bridge NSString*) string.getOSString() copy];
-	else
-		// Update
-		self.stringValue = [(__bridge NSString*) string.getOSString() copy];
+	self.removeButton.enabled = enabled;
+}
+
+// MARK: IBAction methods
+
+//----------------------------------------------------------------------------------------------------------------------
+- (IBAction) remove:(NSButton*) sender
+{
+	// Call proc
+	self.removeProc();
 }
 
 @end

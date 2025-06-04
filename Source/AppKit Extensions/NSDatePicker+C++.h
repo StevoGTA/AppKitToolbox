@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 // MARK: Properties
 
-@property (nonatomic)	SGregorianDate	gregorianDate;
+@property (nonatomic, assign)	SGregorianDate	gregorianDate;
 
 @end
 

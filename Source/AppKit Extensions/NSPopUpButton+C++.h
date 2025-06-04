@@ -1,9 +1,6 @@
-//
-//  NSPopUpButton+C++.h
-//  AppKit Toolbox
-//
-//  Created by Stevo on 5/12/23.
-//
+//----------------------------------------------------------------------------------------------------------------------
+//	NSPopUpButton+C++.h			©2023 Stevo Brock		All rights reserved.
+//----------------------------------------------------------------------------------------------------------------------
 
 #import "SLocalization.h"
 
@@ -40,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void) selectItemWithString:(const CString&) string;
 
 - (void) setupWithLocalizationCurrencies;
-- (void) selectLocalizationCurrency:(const OV<SLocalization::Currency>&) localizationCurrency;
+- (void) selectLocalizationCurrency:(const SLocalization::Currency&) localizationCurrency;
 
 - (void) setupWithLocalizationLanguages;
 - (void) selectLocalizationLanguage:(const OV<SLocalization::Language>&) localizationLanguage;

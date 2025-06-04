@@ -1,9 +1,6 @@
-//
-//  NSView+Extensions.swift
-//  AppKit Toolbox
-//
-//  Created by Stevo on 5/28/21.
-//
+//----------------------------------------------------------------------------------------------------------------------
+//	NSView+Extensions.swift			©2021 Stevo Brock		All rights reserved.
+//----------------------------------------------------------------------------------------------------------------------
 
 import AppKit
 
@@ -26,7 +23,7 @@ public extension NSView {
 						}
 					}
 
-	// MARK: Instance methods
+	// MARK: Constraint methods
 	//------------------------------------------------------------------------------------------------------------------
 	@discardableResult
 	@objc
@@ -588,5 +585,19 @@ public extension NSView {
 		return self.constraints.filter(
 				{ (($0.firstItem === view1) && ($0.secondItem === view2)) ||
 						(($0.firstItem === view2) && ($0.secondItem === view1)) })
+	}
+
+	// MARK: Instance methods
+	//------------------------------------------------------------------------------------------------------------------
+	@objc(setHidden:animated:)
+	func set(isHidden :Bool, animated :Bool = false) {
+		// Check animated
+		if animated {
+			// Animated
+			self.animator().isHidden = isHidden
+		} else {
+			// Not animated
+			self.isHidden = isHidden
+		}
 	}
 }

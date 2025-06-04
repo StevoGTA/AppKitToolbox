@@ -1,10 +1,6 @@
-//
-//  NSMenuItem+Extension.swift
-//  AppKit Toolbox
-//
-//  Created by Stevo on 3/18/24.
-//  Copyright © 2024 Stevo Brock. All rights reserved.
-//
+//----------------------------------------------------------------------------------------------------------------------
+//	NSMenuItem+Extensions.swift			©2024 Stevo Brock		All rights reserved.
+//----------------------------------------------------------------------------------------------------------------------
 
 import AppKit
 

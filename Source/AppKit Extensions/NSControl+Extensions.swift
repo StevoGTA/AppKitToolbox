@@ -1,10 +1,6 @@
-//
-//  NSControl+Extensions.swift
-//  AppKit Toolbox
-//
-//  Created by Stevo on 1/13/23.
-//  Copyright © 2023 Stevo Brock. All rights reserved.
-//
+//----------------------------------------------------------------------------------------------------------------------
+//	NSControl+Extensions.swift			©2023 Stevo Brock		All rights reserved.
+//----------------------------------------------------------------------------------------------------------------------
 
 import AppKit
 
@@ -45,8 +41,34 @@ extension NSControl {
 			self.actionProc = actionProc
 		}
 
-		// MARK: Instance methods
 		//--------------------------------------------------------------------------------------------------------------
 		@objc func callActionProc(_ sender :NSControl) { self.actionProc(sender) }
+	}
+
+	// MARK: Instance methods
+	//------------------------------------------------------------------------------------------------------------------
+	@objc(setEnabled:animated:)
+	func set(isEnabled :Bool, animated :Bool = false) {
+		// Check animated
+		if animated {
+			// Animated
+			self.animator().isEnabled = isEnabled
+		} else {
+			// Not animated
+			self.isEnabled = isEnabled
+		}
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc(setIntegerValue:animatd:)
+	func set(integerValue :Int, animated :Bool = false) {
+		// Check animated
+		if animated {
+			// Animated
+			self.animator().integerValue = integerValue
+		} else {
+			// Not animated
+			self.integerValue = integerValue
+		}
 	}
 }

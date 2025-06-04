@@ -1,9 +1,6 @@
-//
-//  NSPopUpButton+C++.mm
-//  AppKit Toolbox
-//
-//  Created by Stevo on 5/12/23.
-//
+//----------------------------------------------------------------------------------------------------------------------
+//	NSPopUpButton+C++.mm			©2023 Stevo Brock		All rights reserved.
+//----------------------------------------------------------------------------------------------------------------------
 
 #import "NSPopUpButton+C++.h"
 
@@ -149,26 +146,21 @@
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-- (void) selectLocalizationCurrency:(const OV<SLocalization::Currency>&) localizationCurrency
+- (void) selectLocalizationCurrency:(const SLocalization::Currency&) localizationCurrency
 {
-	// Check if have value
-	if (localizationCurrency.hasValue()) {
-		// Select item
-		for (NSMenuItem* menuItem in self.itemArray) {
-			// Get represented object
-			id	representedObject = menuItem.representedObject;
-			if ((representedObject != nil) &&
-				[((NSString*) representedObject)
-						isEqualToString:(__bridge NSString*) localizationCurrency->getISO4217Code().getOSString()]) {
-				// Select this one
-				[self selectItem:menuItem];
+	// Select item
+	for (NSMenuItem* menuItem in self.itemArray) {
+		// Get represented object
+		id	representedObject = menuItem.representedObject;
+		if ((representedObject != nil) &&
+			[((NSString*) representedObject)
+					isEqualToString:(__bridge NSString*) localizationCurrency.getISO4217Code().getOSString()]) {
+			// Select this one
+			[self selectItem:menuItem];
 
-				return;
-			}
+			return;
 		}
-	} else
-		// Select first one
-		[self selectItemAtIndex:0];
+	}
 }
 
 //----------------------------------------------------------------------------------------------------------------------

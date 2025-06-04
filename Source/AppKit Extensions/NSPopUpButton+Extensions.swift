@@ -1,10 +1,6 @@
-//
-//  NSPopUpButton+Extensions.swift
-//  AppKit Toolbox
-//
-//  Created by Stevo on 4/14/23.
-//  Copyright © 2023 Stevo Brock. All rights reserved.
-//
+//----------------------------------------------------------------------------------------------------------------------
+//	NSPopUpButton+Extensions.swift			©2023 Stevo Brock		All rights reserved.
+//----------------------------------------------------------------------------------------------------------------------
 
 import AppKit
 

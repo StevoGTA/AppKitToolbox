@@ -23,12 +23,12 @@ public class AKTTextView : NSTextView, NSTextStorageDelegate {
 						}
 					}
 
-	public	var	textDidChangeProc :(_ string :String) -> Void = { _ in }
+	public	var	didChangeProc :(_ string :String) -> Void = { _ in }
 
 	// MARK: NSTextView methods
 	//------------------------------------------------------------------------------------------------------------------
 	override public func didChangeText() {
 		// Call proc
-		self.textDidChangeProc(self.textStorage!.string)
+		self.didChangeProc(self.textStorage!.string)
 	}
 }

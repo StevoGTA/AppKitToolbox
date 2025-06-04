@@ -11,20 +11,18 @@ public class AKTTextField : NSTextField {
 	// MARK: Properties
 			public	var	isEmpty :Bool { self.stringValue.isEmpty }
 	
-	@objc	public	var	textDidBeginEditingProc :(_ string :String) -> Void = { _ in }
-	@objc	public	var	textDidChangeProc :(_ string :String) -> Void = { _ in }
-	@objc	public	var	textDidEndEditingProc :(_ string :String) -> Void = { _ in }
+	@objc	public	var	didBeginEditingProc :(_ string :String) -> Void = { _ in }
+	@objc	public	var	didChangeProc :(_ string :String) -> Void = { _ in }
+	@objc	public	var	didEndEditingProc :(_ string :String) -> Void = { _ in }
+	@objc	public	var	didCancelEditingProc :() -> Void = {}
 
-	@objc	public	var	cancelProc :() -> Void = {}
-
-	// MARK: NSTextField methods
 	//------------------------------------------------------------------------------------------------------------------
 	override public func textDidBeginEditing(_ notification :Notification) {
 		// Do super
 		super.textDidBeginEditing(notification)
 
 		// Call proc
-		self.textDidBeginEditingProc(self.stringValue)
+		self.didBeginEditingProc(self.stringValue)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -33,7 +31,7 @@ public class AKTTextField : NSTextField {
 		super.textDidChange(notification)
 
 		// Call proc
-		self.textDidChangeProc(self.stringValue)
+		self.didChangeProc(self.stringValue)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -41,13 +39,13 @@ public class AKTTextField : NSTextField {
 		// Do super
 		super.textDidEndEditing(notification)
 
-		// Check if hidden
-		if !self.isHidden {
+		// Check if actually editing
+		if self.currentEditor() != nil {
 			// Call proc
-			self.textDidEndEditingProc(self.stringValue)
+			self.didEndEditingProc(self.stringValue)
 		}
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	override public func cancelOperation(_ sender :Any?) { self.cancelProc() }
+	override public func cancelOperation(_ sender :Any?) { self.didCancelEditingProc() }
 }
