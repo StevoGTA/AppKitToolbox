@@ -1,12 +1,12 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	AKTDynamicStackedViewHelper.swift			©2025 Stevo Brock		All rights reserved.
+//	AKTDynamicStackViewHelper.swift			©2025 Stevo Brock		All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
 import AppKit
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: AKTDynamicStackedViewHelper
-public class AKTDynamicStackedViewHelper : NSObject {
+// MARK: AKTDynamicStackViewHelper
+public class AKTDynamicStackViewHelper : NSObject {
 
 	// MARK: Procs
 	public typealias CreateRemovableViewControllerProc = () -> AKTRemovableViewController
@@ -19,7 +19,7 @@ public class AKTDynamicStackedViewHelper : NSObject {
 	public		var	maxViewControllers = 10
 
 	@objc
-	public		var	viewControllers :[NSViewController] { self.stackView.viewControllers }
+	public		var	viewControllers :[NSViewController] { self.stackView?.viewControllers ?? [] }
 
 	@objc
 	public		var	createRemovableViewControllerProc :CreateRemovableViewControllerProc!
