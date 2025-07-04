@@ -8,6 +8,9 @@ import AppKit
 // MARK: NSTextField extension
 public extension NSTextField {
 
+	// MARK: Properties
+	@objc	var	isEmpty :Bool { self.stringValue.isEmpty }
+
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
 	@objc(setEditable:animated:)

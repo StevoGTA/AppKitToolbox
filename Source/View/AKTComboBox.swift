@@ -9,8 +9,6 @@ import AppKit
 public class AKTComboBox : NSComboBox {
 
 	// MARK: Properties
-			public	var	isEmpty :Bool { self.stringValue.isEmpty }
-
 	@objc	public	var	selectedItem :Any? {
 								// Preflight
 								guard let title = self.objectValueOfSelectedItem as? String else { return nil }

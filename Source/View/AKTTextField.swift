@@ -9,8 +9,6 @@ import AppKit
 public class AKTTextField : NSTextField {
 
 	// MARK: Properties
-			public	var	isEmpty :Bool { self.stringValue.isEmpty }
-	
 	@objc	public	var	didBeginEditingProc :(_ string :String) -> Void = { _ in }
 	@objc	public	var	didChangeProc :(_ string :String) -> Void = { _ in }
 	@objc	public	var	didEndEditingProc :(_ string :String) -> Void = { _ in }
