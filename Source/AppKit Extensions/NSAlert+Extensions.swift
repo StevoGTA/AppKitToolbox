@@ -68,7 +68,7 @@ extension NSAlert {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc static func critical(message :String, information :String, buttonTitles :[String]) -> NSAlert {
+	@objc static public func critical(message :String, information :String, buttonTitles :[String]) -> NSAlert {
 		// Return NSAlert
 		return NSAlert(style: .critical, message: message, information: information, buttonTitles: buttonTitles)
 	}

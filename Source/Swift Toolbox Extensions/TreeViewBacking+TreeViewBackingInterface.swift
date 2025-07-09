@@ -7,9 +7,12 @@
 extension TreeViewBacking : AKTTreeViewBackingInterface {
 
 	// MRK: Properties
-	public	var	rootItemID :String { type(of: self).rootItemID }
+	public var	rootItemID :String { type(of: self).rootItemID }
 
 	// MARK: Instance methods
+	//------------------------------------------------------------------------------------------------------------------
+	public func items(forItemIDs itemIDs :[String]) -> [Any] { treeItems(for: itemIDs) }
+
 	//------------------------------------------------------------------------------------------------------------------
 	public func hasChildren(ofItemID itemID :String) -> Bool { hasChildren(of: itemID) }
 

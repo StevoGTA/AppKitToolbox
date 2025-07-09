@@ -10,7 +10,7 @@ import AppKit
 
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: NSControl extension
-extension NSControl {
+public extension NSControl {
 
 	// MARK: Types
 	typealias ActionProc = (_ control :NSControl) -> Void
