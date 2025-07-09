@@ -9,8 +9,6 @@ import AppKit
 public class AKTComboBox : NSComboBox {
 
 	// MARK: Properties
-			public	var	isEmpty :Bool { self.stringValue.isEmpty }
-
 	@objc	public	var	selectedItem :Any? {
 								// Preflight
 								guard let title = self.objectValueOfSelectedItem as? String else { return nil }
@@ -18,9 +16,9 @@ public class AKTComboBox : NSComboBox {
 								return self.itemByTitle[title]
 							}
 
-	@objc	public	var	textDidBeginEditingProc :(_ string :String) -> Void = { _ in }
-	@objc	public	var	textDidChangeProc :(_ string :String) -> Void = { _ in }
-	@objc	public	var	textDidEndEditingProc :(_ string :String) -> Void = { _ in }
+	@objc	public	var	didBeginEditingProc :(_ string :String) -> Void = { _ in }
+	@objc	public	var	didChangeProc :(_ string :String) -> Void = { _ in }
+	@objc	public	var	didEndEditingProc :(_ string :String) -> Void = { _ in }
 
 			private	var	itemByTitle = [String : Any]()
 
@@ -31,7 +29,7 @@ public class AKTComboBox : NSComboBox {
 		super.textDidBeginEditing(notification)
 
 		// Call proc
-		self.textDidBeginEditingProc(self.stringValue)
+		self.didBeginEditingProc(self.stringValue)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -40,7 +38,7 @@ public class AKTComboBox : NSComboBox {
 		super.textDidChange(notification)
 
 		// Call proc
-		self.textDidChangeProc(self.stringValue)
+		self.didChangeProc(self.stringValue)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -51,7 +49,7 @@ public class AKTComboBox : NSComboBox {
 		// Check if hidden
 		if !self.isHidden {
 			// Call proc
-			self.textDidEndEditingProc(self.stringValue)
+			self.didEndEditingProc(self.stringValue)
 		}
 	}
 

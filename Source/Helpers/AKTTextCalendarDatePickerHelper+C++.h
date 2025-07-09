@@ -1,27 +1,25 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	NSTextField+C++.h			©2021 Stevo Brock		All rights reserved.
+//	AKTTextCalendarDatePickerHelper+C++.h			©2025 Stevo Brock		All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
 #pragma once
 
-#import "CString.h"
+#include "TimeAndDate.h"
 
 #import <AppKit/AppKit.h>
+
+#import "Swift.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: NSTextField extension
+// MARK: AKTTextCalendarDatePickerHelper extension
 
-@interface NSTextField (Cpp)
+@interface AKTTextCalendarDatePickerHelper (Cpp)
 
 // MARK: Properties
 
-@property (nonatomic, assign) CString	string;
-
-// MARK: Instance methods
-
-- (void) setString:(const CString&) string animated:(BOOL) animated;
+@property (nonatomic, assign)	SGregorianDate	gregorianDate;
 
 @end
 

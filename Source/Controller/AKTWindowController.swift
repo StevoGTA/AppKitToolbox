@@ -13,7 +13,7 @@ open class AKTWindowController : NSWindowController, NSWindowDelegate {
 
 	// MARK: Lifecycle methods
 	//------------------------------------------------------------------------------------------------------------------
-	override public func windowDidLoad() {
+	override open func windowDidLoad() {
 		// Do super
 		super.windowDidLoad()
 

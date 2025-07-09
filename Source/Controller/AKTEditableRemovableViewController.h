@@ -1,27 +1,20 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	NSTextField+C++.h			©2021 Stevo Brock		All rights reserved.
+//	AKTEditableRemovableViewController.h			©2025 Stevo Brock	All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
 #pragma once
 
-#import "CString.h"
-
-#import <AppKit/AppKit.h>
+#import "AKTRemovableViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: NSTextField extension
-
-@interface NSTextField (Cpp)
-
-// MARK: Properties
-
-@property (nonatomic, assign) CString	string;
+// MARK: AKTEditableRemovableViewController
+@interface AKTEditableRemovableViewController : AKTRemovableViewController
 
 // MARK: Instance methods
 
-- (void) setString:(const CString&) string animated:(BOOL) animated;
+- (void) setEditing:(BOOL) editing animated:(BOOL) animated;
 
 @end
 

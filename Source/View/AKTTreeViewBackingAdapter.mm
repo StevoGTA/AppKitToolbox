@@ -100,7 +100,7 @@
 - (void) dealloc
 {
 	// Cleanup
-	Delete(self.treeViewBacking);
+	delete self.treeViewBacking;
 }
 
 // MARK: AKTTreeViewBackingInterface methods

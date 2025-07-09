@@ -1,9 +1,6 @@
-//
-//  NSMenuItem+C++.cpp
-//  AppKit Toolbox
-//
-//  Created by Stevo on 5/12/23.
-//
+//----------------------------------------------------------------------------------------------------------------------
+//	NSMenuItem+C++.mm			©2023 Stevo Brock		All rights reserved.
+//----------------------------------------------------------------------------------------------------------------------
 
 #import "NSMenuItem+C++.h"
 
@@ -67,6 +64,18 @@
 						[[NSMenuItem alloc] initWithTitle:(__bridge NSString*) string.getOSString() action:nil
 								keyEquivalent:@""];
 	menuItem.tag = tag;
+
+	return menuItem;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
++ (instancetype) menuItemWithString:(const CString&) string representedObject:(NSObject*) representedObject
+{
+	// Setup
+	NSMenuItem*	menuItem =
+						[[NSMenuItem alloc] initWithTitle:(__bridge NSString*) string.getOSString() action:nil
+								keyEquivalent:@""];
+	menuItem.representedObject = representedObject;
 
 	return menuItem;
 }
