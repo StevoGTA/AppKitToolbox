@@ -9,8 +9,6 @@ import AppKit
 public class AKTSecureTextField : NSSecureTextField {
 
 	// MARK: Properties
-	public	var	isEmpty :Bool { self.stringValue.isEmpty }
-
 	public	var	didBeginEditingProc :() -> Void = {}
 	public	var	didChangeProc :(_ string :String) -> Void = { _ in }
 	public	var	didEndEditingProc :() -> Void = {}
@@ -43,7 +41,7 @@ public class AKTSecureTextField : NSSecureTextField {
 		// Check if actually editing
 		if self.currentEditor() != nil {
 			// Call proc
-			self.didEndEditingProc(self.stringValue)
+			self.didEndEditingProc()
 		}
 	}
 

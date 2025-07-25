@@ -9,7 +9,10 @@ import AppKit
 public class AKTTreeViewBackingAdapter : NSObject, NSOutlineViewDataSource, NSOutlineViewDelegate {
 
 	// MARK: Properties
-	@objc		public			var	selectionDidChangeProc :() -> Void = {}
+	@objc		public			var	selectionDidChangeProc :(_ items :[Any]) -> Void = { _ in }
+	@objc		public			var	sortDescriptorsDidChangeProc
+										:(_ outlineView :NSOutlineView, _ sortDescriptors :[NSSortDescriptor]) -> Void =
+												{ _,_ in }
 	@objc		public			var	viewProc
 										:(_ outlineView :NSOutlineView, _ tableColumn :NSTableColumn?, _ itemID :String)
 												-> NSView? = { _,_,_ in nil }
@@ -30,34 +33,43 @@ public class AKTTreeViewBackingAdapter : NSObject, NSOutlineViewDataSource, NSOu
 
 	// MARK: NSOutlineViewDataSource methods
 	//------------------------------------------------------------------------------------------------------------------
-	public func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
+	public func outlineView(_ outlineView :NSOutlineView, numberOfChildrenOfItem item :Any?) -> Int {
 		// Return child count
 		return self.treeViewBackingInterface.childCount(ofItemID: self.itemID(for: item))
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	public func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
+	public func outlineView(_ outlineView :NSOutlineView, child index :Int, ofItem item :Any?) -> Any {
 		// Return child
 		return self.treeViewBackingInterface.childItemID(ofItemID: self.itemID(for: item), at: index)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	public func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
+	public func outlineView(_ outlineView :NSOutlineView, isItemExpandable item :Any) -> Bool {
 		// Return if child count > 0
 		return self.treeViewBackingInterface.hasChildren(ofItemID: self.itemID(for: item))
 	}
 
 	// MARK: NSOutlineViewDelegate methods
 	//------------------------------------------------------------------------------------------------------------------
-	public func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
+	public func outlineView(_ outlineView :NSOutlineView, viewFor tableColumn :NSTableColumn?, item :Any) -> NSView? {
 		// Return view
 		return self.viewProc(outlineView, tableColumn, self.itemID(for: item))
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	public func outlineViewSelectionDidChange(_ notification: Notification) {
+	public func outlineViewSelectionDidChange(_ notification :Notification) {
+		// Setup
+		let	itemIDs = self.outlineView.selectedItems.map({ $0 as! String })
+
 		// Call proc
-		self.selectionDidChangeProc();
+		self.selectionDidChangeProc(self.treeViewBackingInterface.items(forItemIDs: itemIDs));
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	public func outlineView(_ outlineView :NSOutlineView, sortDescriptorsDidChange oldDescriptors :[NSSortDescriptor]) {
+		// Call proc
+		self.sortDescriptorsDidChangeProc(outlineView, outlineView.sortDescriptors)
 	}
 
 	// MARK: Instance methods

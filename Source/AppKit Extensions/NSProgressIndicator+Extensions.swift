@@ -6,7 +6,7 @@ import AppKit
 
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: NSProgressIndicator extension
-extension NSProgressIndicator {
+public extension NSProgressIndicator {
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------

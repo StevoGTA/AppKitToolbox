@@ -19,6 +19,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 // MARK: Instance methods
 
+- (NSArray<id>*) itemsForItemIDs:(NSArray<NSString*>*) itemIDs;
+
 - (BOOL) hasChildrenOfItemID:(NSString*) itemID;
 - (NSInteger) childCountOfItemID:(NSString*) itemID;
 - (NSString*) childItemIDOfItemID:(NSString*) itemID atIndex:(NSInteger) index;

@@ -8,7 +8,13 @@ import AppKit
 // MARK: NSOutlineView extension
 extension NSOutlineView {
 
+	// MARK: Properties
+	var	selectedItems :[Any] { items(for: self.selectedRowIndexes) }
+
 	// MARK: Instance methods
+	//------------------------------------------------------------------------------------------------------------------
+	func items(for rowIndexes :IndexSet) -> [Any] { rowIndexes.map({ item(atRow: $0)! }) }
+
 	//------------------------------------------------------------------------------------------------------------------
 	func select(_ item :Any? = nil) {
 		// Select
