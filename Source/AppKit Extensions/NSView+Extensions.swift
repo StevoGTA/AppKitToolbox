@@ -589,6 +589,28 @@ public extension NSView {
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
+	@objc(setEnabled:animated:)
+	func set(isEnabled :Bool, animated :Bool = false) {
+		// Iterate subviews
+		self.subviews.forEach() {
+			// Check if is NSControl
+			if let control = $0 as? NSControl {
+				// Update enabled
+				if animated {
+					// Animated
+					control.animator().isEnabled = isEnabled
+				} else {
+					// Not animated
+					control.isEnabled = isEnabled
+				}
+			} else {
+				// Assume NSView
+				$0.set(isEnabled: isEnabled, animated: animated)
+			}
+		}
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
 	@objc(setHidden:animated:)
 	func set(isHidden :Bool, animated :Bool = false) {
 		// Check animated

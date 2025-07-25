@@ -10,13 +10,20 @@ extension NSBox {
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
-	@objc(setEnabled:) func set(enabled :Bool) {
+	@objc(setEnabled:animated:)
+	public override func set(isEnabled :Bool, animated :Bool = false) {
 		// Iterate subviews
 		self.contentView?.subviews.forEach() {
 			// Check if is NSControl
 			if let control = $0 as? NSControl {
 				// Update enabled
-				control.isEnabled = enabled
+				if animated {
+					// Animated
+					control.animator().isEnabled = isEnabled
+				} else {
+					// Not animated
+					control.isEnabled = isEnabled
+				}
 			}
 		}
 	}
