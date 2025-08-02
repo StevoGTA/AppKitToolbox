@@ -14,6 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 // MARK: Properties
 
+@property (nonatomic, copy)				void		(^contentChangedProc)();
 @property (nonatomic, copy) 			void 		(^removeProc)(void);
 
 @property (nonatomic, weak)	IBOutlet	NSButton*	removeButton;

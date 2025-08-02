@@ -19,6 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 		tag:(NSInteger) tag representedObject:(NSObject*) representedObject;
 - (void) addItemWithString:(const CString&) string target:(NSObject*) target action:(SEL) action
 		representedObject:(NSObject*) representedObject;
+- (void) addItemWithString:(const CString&) string menu:(NSMenu*) menu;
 
 @end
 

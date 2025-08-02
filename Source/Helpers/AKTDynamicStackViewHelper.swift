@@ -22,6 +22,9 @@ public class AKTDynamicStackViewHelper : NSObject {
 	public		var	viewControllers :[NSViewController] { self.stackView?.viewControllers ?? [] }
 
 	@objc
+	public		var	contentChangedProc :() -> Void = {}
+
+	@objc
 	public		var	createRemovableViewControllerProc :CreateRemovableViewControllerProc!
 
 	@IBOutlet	var	stackView :AKTStackView!
@@ -42,12 +45,16 @@ public class AKTDynamicStackViewHelper : NSObject {
 	@objc
 	public func add(_ removableViewController :AKTRemovableViewController) {
 		// Setup
+		removableViewController.contentChangedProc = { [unowned self] in self.contentChangedProc() }
 		removableViewController.removeProc = { [unowned self] in
 			// Remove
 			self.stackView.remove(viewController: removableViewController)
 
 			// Update UI
 			self.updateUI()
+
+			// Call proc
+			self.contentChangedProc()
 		}
 
 		// Add
@@ -55,6 +62,9 @@ public class AKTDynamicStackViewHelper : NSObject {
 
 		// Update UI
 		self.updateUI()
+
+		// Call proc
+		self.contentChangedProc()
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -75,6 +85,9 @@ public class AKTDynamicStackViewHelper : NSObject {
 
 		// Update UI
 		updateUI()
+
+		// Call proc
+		self.contentChangedProc()
 	}
 
 	// MARK: Private methods

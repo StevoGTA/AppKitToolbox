@@ -9,7 +9,10 @@ import AppKit
 class AKTSliderHelper : NSObject {
 
 	// MARK: Properties
-	@objc		var	integerValue :Int { self.slider.integerValue }
+	@objc		var	integerValue :Int {
+							get { self.slider.integerValue }
+							set { self.slider.integerValue = newValue }
+						}
 
 	@IBOutlet	var	leadingLabel :NSTextField?
 	@IBOutlet	var	slider :NSSlider!

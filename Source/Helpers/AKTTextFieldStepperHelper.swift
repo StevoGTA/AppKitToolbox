@@ -39,12 +39,6 @@ public class AKTTextFieldStepperHelper : NSObject {
 							set { self.stepper.maxValue = newValue }
 						}
 
-	@objc
-	public		var	stringForValueProc :(_ value :Double) -> String = { "\($0)" }
-
-	@objc
-	public		var	valueForStringProc :(_ string :String) -> Double = { Double($0) ?? 0.0 }
-
 	@objc(hidden)
 	public		var	isHidden :Bool {
 							get { self.textField!.isHidden }
@@ -54,22 +48,54 @@ public class AKTTextFieldStepperHelper : NSObject {
 								self.stepper!.isHidden = newValue
 							}
 						}
+	@objc
+	public		var	isValid :Bool {
+							// Get value
+							let	value = self.valueForStringProc(self.textField.stringValue)
+
+							return !self.textField.stringValue.isEmpty && (value >= self.stepper.minValue) &&
+									(value <= self.stepper.maxValue)
+						}
+
+	@objc
+	public		var	stringForValueProc :(_ value :Double) -> String = { "\($0)" }
+
+	@objc
+	public		var	valueForStringProc :(_ string :String) -> Double = { Double($0) ?? 0.0 }
+
+	@objc
+				var	actionProc :(_ valueIsValid :Bool) -> Void = { _ in }
 
 	@IBOutlet	var	textField :AKTTextField! {
 							didSet {
 								// Setup
 								self.textField.formatter = MultiFormatter(allowedCharacterSet: .decimalDigits)
 								self.textField.didChangeProc = { [unowned self] in
+									// Get value
+									let	value = self.valueForStringProc($0)
+									let	isValid =
+												!$0.isEmpty && (value >= self.stepper.minValue) &&
+														(value <= self.stepper.maxValue)
+
 									// Update UI
-									self.stepper.doubleValue = self.valueForStringProc($0)
+									self.textField.isValueValid = isValid
+									self.stepper.doubleValue = value
+
+									// Call action proc
+									self.actionProc(isValid)
 								}
 								self.textField.didEndEditingProc = { [unowned self] in
 									// Setup
 									let	value = self.valueForStringProc($0)
 
 									// Update UI
+									self.textField.isValueValid = true
 									self.textField.stringValue = self.stringForValueProc(value)
+
 									self.stepper.doubleValue = value
+
+									// Call action proc
+									self.actionProc(true)
 								}
 							}
 						}
@@ -79,6 +105,10 @@ public class AKTTextFieldStepperHelper : NSObject {
 								self.stepper.actionProc = { [unowned self] in
 									// Update UI
 									self.textField.stringValue = self.stringForValueProc($0.doubleValue)
+									self.textField.isValueValid = true
+
+									// Call action proc
+									self.actionProc(true)
 								}
 							}
 						}
