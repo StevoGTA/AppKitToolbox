@@ -9,7 +9,7 @@ import AppKit
 open class AKTWindowController : NSWindowController, NSWindowDelegate {
 
 	// MARK: Properties
-	public	var	willCloseProc :() -> Void = {}
+	public	var	willCloseProc :(_ windowController :AKTWindowController) -> Void = { _ in }
 
 	// MARK: Lifecycle methods
 	//------------------------------------------------------------------------------------------------------------------
@@ -25,6 +25,6 @@ open class AKTWindowController : NSWindowController, NSWindowDelegate {
 	//------------------------------------------------------------------------------------------------------------------
 	public func windowWillClose(_ notification :Notification) {
 		// Call proc
-		self.willCloseProc()
+		self.willCloseProc(self)
 	}
 }
