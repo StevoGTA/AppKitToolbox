@@ -28,6 +28,15 @@ public extension NSTableView {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
+	func reloadColumn(for identifier :NSUserInterfaceItemIdentifier) {
+		// Retrieve index
+		guard let index = self.tableColumns.firstIndex(where: { $0.identifier == identifier }) else { return }
+
+		// Reload
+		reloadColumn(at: index)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
 	func reloadRows(at indexSet :IndexSet) {
 		// Reload data
 		reloadData(forRowIndexes: indexSet, columnIndexes: IndexSet(0..<self.numberOfColumns))

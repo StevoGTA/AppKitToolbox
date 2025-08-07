@@ -9,6 +9,7 @@ import AppKit
 public extension NSPopUpButton {
 
 	// MARK: Properties
+	@objc	var	selectedIdentifier :NSUserInterfaceItemIdentifier? { self.selectedItem?.identifier }
 	@objc	var	selectedRepresentedObject :Any? { self.selectedItem?.representedObject }
 
 	// MARK: Instance methods
@@ -62,6 +63,14 @@ public extension NSPopUpButton {
 
 	//------------------------------------------------------------------------------------------------------------------
 	@objc
+	func addItem(withTitle title :String, proc :@escaping NSMenuItem.ActionProc) {
+		// Add item and set associated value
+		addItem(withTitle: title)
+		self.lastItem!.actionProc = proc
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc
 	func addItem(withTitle title :String, tag :Int, proc :@escaping NSMenuItem.ActionProc) {
 		// Add item and set associated value
 		addItem(withTitle: title)
@@ -71,9 +80,10 @@ public extension NSPopUpButton {
 
 	//------------------------------------------------------------------------------------------------------------------
 	@objc
-	func addItem(withTitle title :String, proc :@escaping NSMenuItem.ActionProc) {
+	func addItem(withTitle title :String, representedObject :Any, proc :@escaping NSMenuItem.ActionProc) {
 		// Add item and set associated value
 		addItem(withTitle: title)
+		self.lastItem!.representedObject = representedObject
 		self.lastItem!.actionProc = proc
 	}
 
@@ -101,9 +111,23 @@ public extension NSPopUpButton {
 
 	//------------------------------------------------------------------------------------------------------------------
 	@objc
+	func menuItem(withIdentifier identifier :NSUserInterfaceItemIdentifier, deep :Bool = false) -> NSMenuItem? {
+		// Call through to menu
+		return self.menu?.menuItem(identifier: identifier, deep: deep)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc
 	func menuItem(withRepresentedObject representedObject :Any, deep :Bool = false) -> NSMenuItem? {
 		// Call through to menu
 		return self.menu?.menuItem(representedObject: representedObject, deep: deep)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc
+	func selectItem(withIdentifier identifier :NSUserInterfaceItemIdentifier) {
+		// Select
+		select(menuItem(withIdentifier: identifier))
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
