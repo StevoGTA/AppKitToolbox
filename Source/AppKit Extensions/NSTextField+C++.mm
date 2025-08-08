@@ -25,6 +25,12 @@
 	self.stringValue = [(__bridge NSString*) string.getOSString() copy];
 }
 
+//----------------------------------------------------------------------------------------------------------------------
+- (OV<CString>) ovString
+{
+	return  (self.stringValue.length > 0) ? OV<CString>(self.string) : OV<CString>();
+}
+
 // MARK: Instance methods
 
 //----------------------------------------------------------------------------------------------------------------------

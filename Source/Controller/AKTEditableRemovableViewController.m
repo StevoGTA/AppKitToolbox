@@ -23,4 +23,20 @@
 		super.removeButton.hidden = !editing;
 }
 
+// MARK: Instance methods for subclasses to use
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) noteContentChanged
+{
+	self.contentChangedProc();
+}
+
+// MARK: Instance methods for subclasses to implement as needed
+
+//----------------------------------------------------------------------------------------------------------------------
+- (BOOL) isContentValid
+{
+	return YES;
+}
+
 @end

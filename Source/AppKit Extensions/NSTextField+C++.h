@@ -17,7 +17,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 // MARK: Properties
 
-@property (nonatomic, assign) CString	string;
+@property (nonatomic, assign)			CString	string;
+@property (nonatomic, assign, readonly)	OV<CString>	ovString;
 
 // MARK: Class methods
 

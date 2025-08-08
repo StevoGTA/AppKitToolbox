@@ -45,7 +45,6 @@ public class AKTDynamicStackViewHelper : NSObject {
 	@objc
 	public func add(_ removableViewController :AKTRemovableViewController) {
 		// Setup
-		removableViewController.contentChangedProc = { [unowned self] in self.contentChangedProc() }
 		removableViewController.removeProc = { [unowned self] in
 			// Remove
 			self.stackView.remove(viewController: removableViewController)
