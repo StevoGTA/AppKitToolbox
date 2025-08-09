@@ -23,7 +23,7 @@ public class AKTTextView : NSTextView, NSTextStorageDelegate {
 								}
 							}
 
-	@objc	public	var	isValueValid = true
+	@objc	public	var	isValueValid = true { didSet { self.needsDisplay = true } }
 
 	@objc	public	var	didChangeProc :(_ string :String) -> Void = { _ in }
 

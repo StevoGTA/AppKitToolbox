@@ -9,7 +9,7 @@ import AppKit
 public class AKTTextField : NSTextField {
 
 	// MARK: Properties
-	@objc	public	var	isValueValid = true
+	@objc	public	var	isValueValid = true { didSet { self.needsDisplay = true } }
 
 	@objc	public	var	didBeginEditingProc :(_ string :String) -> Void = { _ in }
 	@objc	public	var	didChangeProc :(_ string :String) -> Void = { _ in }

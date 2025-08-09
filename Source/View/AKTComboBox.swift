@@ -9,7 +9,7 @@ import AppKit
 public class AKTComboBox : NSComboBox {
 
 	// MARK: Properties
-	@objc	public	var	isValueValid = true
+	@objc	public	var	isValueValid = true { didSet { self.needsDisplay = true } }
 
 	@objc	public	var	selectedItem :Any? {
 								// Preflight
