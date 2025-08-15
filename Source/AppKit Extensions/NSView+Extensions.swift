@@ -147,8 +147,8 @@ public extension NSView {
 
 	//------------------------------------------------------------------------------------------------------------------
 	@discardableResult
-	@objc(alignTrailingEqualTo:constant:activate:)
-	func alignTrailing(equalTo view :NSView, constant :CGFloat = 0.0, activate :Bool = true) -> NSLayoutConstraint {
+	@objc
+	func alignTrailing(to view :NSView, constant :CGFloat = 0.0, activate :Bool = true) -> NSLayoutConstraint {
 		// Setup
 		self.translatesAutoresizingMaskIntoConstraints = false
 
@@ -162,8 +162,8 @@ public extension NSView {
 
 	//------------------------------------------------------------------------------------------------------------------
 	@discardableResult
-	@objc(alignTrailingEqualTo:constant:priority:activate:)
-	func alignTrailing(equalTo view :NSView, constant :CGFloat = 0.0, priority :NSLayoutConstraint.Priority,
+	@objc
+	func alignTrailing(to view :NSView, constant :CGFloat = 0.0, priority :NSLayoutConstraint.Priority,
 			activate :Bool = true) -> NSLayoutConstraint {
 		// Setup
 		self.translatesAutoresizingMaskIntoConstraints = false

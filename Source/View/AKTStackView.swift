@@ -22,10 +22,38 @@ class AKTStackView : NSStackView {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
+	@objc(addViewControllerInGravityTop:)
+	func addInGravityTop(viewController :NSViewController) {
+		// Add in top gravity
+		add(viewController: viewController, in: .top)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc(addViewControllerInGravityLeading:)
+	func addInGravityLeading(viewController :NSViewController) {
+		// Add in leading gravity
+		add(viewController: viewController, in: .leading)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
 	@objc(addViewControllerInGravityCenter:)
 	func addInGravityCenter(viewController :NSViewController) {
-		// Add in center
+		// Add in center gravity
 		add(viewController: viewController, in: .center)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc(addViewControllerInGravityBottom:)
+	func addInGravityBottom(viewController :NSViewController) {
+		// Add in bottom gravity
+		add(viewController: viewController, in: .bottom)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc(addViewControllerInGravityTrailing:)
+	func addInGravityTrailing(viewController :NSViewController) {
+		// Add in trailing gravity
+		add(viewController: viewController, in: .trailing)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -38,39 +66,34 @@ class AKTStackView : NSStackView {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc(insertViewControllerInGravityCenter:atIndex:)
-	func insertInGravityCenter(viewController :NSViewController, at index :Int) {
-		// Insert
-		insert(viewController: viewController, at: index, in: .center)
-	}
-
-	//------------------------------------------------------------------------------------------------------------------
-	func insertSorted(viewContrller :NSViewController, in gravity :NSStackView.Gravity,
-			titleProc :(_ viewController :NSViewController) -> String) {
+	func insertSorted(viewController :NSViewController, in gravity :NSStackView.Gravity,
+			sortKeyProc :(_ viewController :NSViewController) -> String) {
 		// Setup
-		let	viewControllerTitle = titleProc(viewContrller)
+		let	viewControllerSortKey = sortKeyProc(viewController)
 
 		// Iterate existing view controllers
 		for info in self.viewControllers.enumerated() {
 			// Test this one
-			if viewControllerTitle < titleProc(info.element) {
+			if viewControllerSortKey < sortKeyProc(info.element) {
 				// Insert at this index
-				insert(viewController: viewContrller, at: info.offset, in: gravity)
+				insert(viewController: viewController, at: info.offset, in: gravity)
 
 				return
 			}
 		}
 
 		// Insert at the end
-		add(viewController: viewContrller, in: gravity)
+		add(viewController: viewController, in: gravity)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc(insertViewControllerSortedInGravityCenter:titleProc:)
-	func insertSortedInGravityCenter(viewContrller :NSViewController,
-			titleProc :(_ viewController :NSViewController) -> String) {
+	@objc(insertViewControllerFillingWidth:sortKeyProc:)
+	func insertFillingWidth(viewController :NSViewController,
+			sortKeyProc :(_ viewController :NSViewController) -> String) {
 		// Insert
-		insertSorted(viewContrller: viewContrller, in: .center, titleProc: titleProc)
+		insertSorted(viewController: viewController, in: .center, sortKeyProc: sortKeyProc)
+		viewController.view.alignLeading(to: self)
+		viewController.view.alignTrailing(to: self)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -100,12 +123,5 @@ class AKTStackView : NSStackView {
 
 		// Update views
 		setViews(viewControllers.map({ $0.view }), in: gravity)
-	}
-
-	//------------------------------------------------------------------------------------------------------------------
-	@objc(setViewControllersInGravityCenter:)
-	func setInGravityCenter(viewControllers :[NSViewController]) {
-		// Set in center
-		set(viewControllers: viewControllers, in: .center)
 	}
 }

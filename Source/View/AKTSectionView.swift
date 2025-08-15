@@ -53,7 +53,7 @@ public class AKTSectionView : NSView {
 		self.contentView = NSView()
 		self.contentScrollView!.documentView = self.contentView!
 		self.contentView!.alignLeading(to: self.contentClipView!)
-		self.contentViewTrailingLayoutConstraint = self.contentView!.alignTrailing(equalTo: self.contentClipView!)
+		self.contentViewTrailingLayoutConstraint = self.contentView!.alignTrailing(to: self.contentClipView!)
 		self.contentView!.alignTop(to: self.contentClipView!)
 
 		// Iterate groups
@@ -62,7 +62,7 @@ public class AKTSectionView : NSView {
 			// Add GroupView
 			self.contentView!.addSubview($0)
 			$0.alignLeading(to: self.contentView!, constant: self.contentInsets.left)
-			$0.alignTrailing(equalTo: self.contentView!, constant: -self.contentInsets.right)
+			$0.alignTrailing(to: self.contentView!, constant: -self.contentInsets.right)
 			if previousView != nil {
 				// Have previous view
 				$0.spaceVertically(from: previousView!, constant: self.groupSpacing)
@@ -111,7 +111,7 @@ public class AKTSectionView : NSView {
 		// Add view
 		self.contentView!.addSubview(view)
 		view.alignLeading(to: self.contentView!, constant: self.contentInsets.left)
-		view.alignTrailing(equalTo: self.contentView!, constant: -self.contentInsets.right)
+		view.alignTrailing(to: self.contentView!, constant: -self.contentInsets.right)
 
 		// Check index
 		if index == 0 {
