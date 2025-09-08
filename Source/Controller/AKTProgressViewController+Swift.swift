@@ -46,7 +46,7 @@ public extension AKTViewController {
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
 	func perform<T>(progress :Progress, progressViewController :AKTProgressViewController,
-			procDispatchQueue :DispatchQueue = DispatchQueue.global(),
+			procDispatchQueue :DispatchQueue = DispatchQueue.global(qos: .userInitiated),
 			proc :@escaping () throws -> T, cancelProc :(() -> Void)? = nil,
 			completionProc :@escaping (_ result :T?, _ error :Error?) -> Void = { _,_ in }) {
 		// Setup
@@ -92,7 +92,7 @@ public extension AKTViewController {
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
 	func perform(progress :Progress, progressViewController :AKTProgressViewController,
-			procDispatchQueue :DispatchQueue = DispatchQueue.global(),
+			procDispatchQueue :DispatchQueue = DispatchQueue.global(qos: .userInitiated),
 			proc :@escaping () throws -> Void, cancelProc :(() -> Void)? = nil,
 			completionProc :@escaping (_ error :Error?) -> Void = { _ in }) {
 		// Setup
