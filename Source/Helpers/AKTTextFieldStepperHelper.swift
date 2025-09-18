@@ -53,7 +53,7 @@ public class AKTTextFieldStepperHelper : NSObject {
 							// Get value
 							let	value = self.valueForStringProc(self.textField.stringValue)
 
-							return !self.textField.stringValue.isEmpty && (value >= self.stepper.minValue) &&
+							return !self.textField.isEmpty && (value >= self.stepper.minValue) &&
 									(value <= self.stepper.maxValue)
 						}
 
