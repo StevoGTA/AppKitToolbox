@@ -71,6 +71,16 @@ public extension NSTextView {
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
+	func set(attributedText :NSAttributedString) {
+		// Update text
+		self.textStorage?.replaceCharacters(in: NSRange(location: 0, length: self.textStorage?.length ?? 0),
+				with: attributedText)
+
+		// Update scrolling position
+		scrollRangeToVisible(NSRange(location: 0, length: 0))
+	}
+	
+	//------------------------------------------------------------------------------------------------------------------
 	func append(attributedText :NSAttributedString) {
 		// Get info
 		var	originalHasVerticalScroller = false
