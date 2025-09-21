@@ -44,4 +44,17 @@
 	[self addItem:menuItem];
 }
 
+//----------------------------------------------------------------------------------------------------------------------
+- (void) addItemWithString:(const CString&) string menu:(NSMenu*) menu
+{
+	// Setup
+	NSMenuItem*	menuItem =
+						[[NSMenuItem alloc] initWithTitle:(__bridge NSString*) string.getOSString() action:nil
+								keyEquivalent:@""];
+	menuItem.submenu = menu;
+
+	// Add item
+	[self addItem:menuItem];
+}
+
 @end

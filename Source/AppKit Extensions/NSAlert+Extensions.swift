@@ -73,6 +73,21 @@ extension NSAlert {
 		return NSAlert(style: .critical, message: message, information: information, buttonTitles: buttonTitles)
 	}
 
+	//------------------------------------------------------------------------------------------------------------------
+	static public func queryString(message :String, information :String, buttonTitles :[String]) ->
+			String? {
+		// Setup
+		let	alert = informational(message: message, information: information, buttonTitles: buttonTitles)
+
+		let	textField = NSTextField(frame: NSRect(x: 0.0, y: 0.0, width: 200.0, height: 24.0))
+		alert.accessoryView = textField
+
+		// Present
+		let	response = alert.runModal()
+
+		return (response == .alertFirstButtonReturn) ? textField.stringValue : nil
+	}
+
 	// MARK: Lifecycle methods
 	//------------------------------------------------------------------------------------------------------------------
 	convenience init(style :Style, message :String, information :String, buttonTitles :[String]) {

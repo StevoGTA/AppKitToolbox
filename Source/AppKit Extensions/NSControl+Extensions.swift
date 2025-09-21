@@ -48,7 +48,7 @@ public extension NSControl {
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
 	@objc(setEnabled:animated:)
-	func set(isEnabled :Bool, animated :Bool = false) {
+	override func set(isEnabled :Bool, animated :Bool = false) {
 		// Check animated
 		if animated {
 			// Animated

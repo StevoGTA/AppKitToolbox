@@ -6,7 +6,7 @@ import AppKit
 
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: NSButton extension
-extension NSButton {
+public extension NSButton {
 
 	// MARK: Lifecycle methods
 	//------------------------------------------------------------------------------------------------------------------
@@ -16,5 +16,13 @@ extension NSButton {
 
 		// Set action
 		self.actionProc = { actionProc($0 as! NSButton) }
+	}
+
+	// MARK: Instance methods
+	//------------------------------------------------------------------------------------------------------------------
+	func showMenuOnLeftClick() {
+		// Set action Proc
+		self.actionProc =
+				{ $0.menu?.popUp(positioning: $0.menu?.items.first, at: NSEvent.mouseLocation, in: nil) }
 	}
 }

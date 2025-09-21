@@ -1,23 +1,24 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	NSProgressIndicator+Extensions.swift			©2020 Stevo Brock		All rights reserved.
+//	NSImageView+Extensions.swift			©2025 Stevo Brock		All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
 import AppKit
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: NSProgressIndicator extension
-public extension NSProgressIndicator {
+// MARK: NSImageView extension
+public extension NSImageView {
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
-	func set(animating :Bool, sender :Any? = nil) {
-		// Check animating
-		if animating {
-			// Animating
-			startAnimation(sender)
+	@objc(isEditable:animated:)
+	func set(isEditable :Bool, animated :Bool = false) {
+		// Check animated
+		if animated {
+			// Animated
+			self.animator().isEditable = isEditable
 		} else {
-			// Not animating
-			stopAnimation(sender)
+			// Not animated
+			self.isEditable = isEditable
 		}
 	}
 }

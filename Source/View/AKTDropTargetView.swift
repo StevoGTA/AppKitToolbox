@@ -33,7 +33,7 @@ public class AKTDropTargetView : NSView {
 			public	var	willAcceptColor = NSColor.clear { didSet { self.updateUI() } }
 			public	var	willNotAcceptColor = NSColor.clear { didSet { self.updateUI() } }
 
-	@objc	public	var	queryAcceptItemsProc :QueryAcceptItemsProc = {  _ in false }
+	@objc	public	var	queryAcceptItemsProc :QueryAcceptItemsProc = { _ in false }
 	@objc	public	var	receiveItemsProc :ReceiveItemsProc = { _ in }
 
 			private	var	state = State.idle

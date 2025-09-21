@@ -9,6 +9,8 @@ import AppKit
 public class AKTComboBox : NSComboBox {
 
 	// MARK: Properties
+	@objc	public	var	isValueValid = true { didSet { self.needsDisplay = true } }
+
 	@objc	public	var	selectedItem :Any? {
 								// Preflight
 								guard let title = self.objectValueOfSelectedItem as? String else { return nil }
@@ -21,6 +23,32 @@ public class AKTComboBox : NSComboBox {
 	@objc	public	var	didEndEditingProc :(_ string :String) -> Void = { _ in }
 
 			private	var	itemByTitle = [String : Any]()
+
+	// MARK: NSView methods
+	//------------------------------------------------------------------------------------------------------------------
+	override public func draw(_ dirtyRect :NSRect) {
+		// Do super
+		super.draw(dirtyRect)
+
+		// Check if value is valid
+		if !self.isValueValid {
+			// Draw border indicating invalid state
+			let	bezierPath =
+						NSBezierPath(
+								roundedRect:
+										NSRect(x: 0.0, y: 0.0, width: self.bounds.width - 1.0,
+												height: self.bounds.height - 1.0),
+								xRadius: 5.5, yRadius: 5.5)
+			bezierPath.lineWidth = 4.0
+
+			NSGraphicsContext.saveGraphicsState()
+
+			NSColor.systemRed.setStroke()
+			bezierPath.stroke()
+
+			NSGraphicsContext.restoreGraphicsState()
+		}
+	}
 
 	// MARK: NSTextField methods
 	//------------------------------------------------------------------------------------------------------------------

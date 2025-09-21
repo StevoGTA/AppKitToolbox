@@ -113,7 +113,7 @@ public class AKTGroupView : NSView {
 		label.alignLeading(to: containerView)
 		if let itemTrailingInset = self.itemTrailingInset {
 			// Add trailing constraint
-			label.alignTrailing(equalTo: containerView, constant: itemTrailingInset)
+			label.alignTrailing(to: containerView, constant: itemTrailingInset)
 
 			// Set priorities
 			label.setContentHuggingPriority(NSLayoutConstraint.Priority(rawValue: 1), for: .horizontal)
@@ -125,7 +125,7 @@ public class AKTGroupView : NSView {
 		view.spaceVertically(from: label)
 		view.alignBottom(to: containerView)
 		view.alignLeading(to: containerView, constant: viewLeadingInset)
-		view.alignTrailing(equalTo: containerView, constant: viewTrailingInset)
+		view.alignTrailing(to: containerView, constant: viewTrailingInset)
 		view.setContentHuggingPriority(NSLayoutConstraint.Priority(rawValue: 1), for: .horizontal)
 		view.setContentCompressionResistancePriority(NSLayoutConstraint.Priority(rawValue: 1), for: .horizontal)
 
@@ -143,7 +143,7 @@ public class AKTGroupView : NSView {
 		view.alignLeading(to: self, constant: self.itemLeadingInset)
 		if let itemTrailingInset = self.itemTrailingInset {
 			// Add trailing constraint
-			view.alignTrailing(equalTo: self, constant: itemTrailingInset)
+			view.alignTrailing(to: self, constant: itemTrailingInset)
 
 			// Set priorities
 			view.setContentHuggingPriority(NSLayoutConstraint.Priority(rawValue: 1), for: .horizontal)
@@ -177,7 +177,7 @@ public class AKTGroupView : NSView {
 		// Add
 		addSubview(view)
 		view.alignLeading(to: self, constant: self.itemLeadingInset + leadingInset)
-		view.alignTrailing(equalTo: self, constant: (self.itemTrailingInset ?? 0.0) + trailingInset)
+		view.alignTrailing(to: self, constant: (self.itemTrailingInset ?? 0.0) + trailingInset)
 		view.setContentHuggingPriority(NSLayoutConstraint.Priority(rawValue: 1), for: .horizontal)
 		view.setContentCompressionResistancePriority(NSLayoutConstraint.Priority(rawValue: 1), for: .horizontal)
 
@@ -200,7 +200,7 @@ public class AKTGroupView : NSView {
 		label.alignLeading(to: containerView)
 		if let itemTrailingInset = self.itemTrailingInset {
 			// Add trailing constraint
-			label.alignTrailing(equalTo: containerView, constant: itemTrailingInset)
+			label.alignTrailing(to: containerView, constant: itemTrailingInset)
 
 			// Set priorities
 			label.setContentHuggingPriority(NSLayoutConstraint.Priority(rawValue: 1), for: .horizontal)
@@ -212,7 +212,7 @@ public class AKTGroupView : NSView {
 		view.spaceVertically(from: label)
 		view.alignBottom(to: containerView)
 		view.alignLeading(to: containerView, constant: viewLeadingInset)
-		view.alignTrailing(equalTo: containerView, constant: viewTrailingInset)
+		view.alignTrailing(to: containerView, constant: viewTrailingInset)
 		view.setContentHuggingPriority(NSLayoutConstraint.Priority(rawValue: 1), for: .horizontal)
 		view.setContentCompressionResistancePriority(NSLayoutConstraint.Priority(rawValue: 1), for: .horizontal)
 
@@ -287,8 +287,8 @@ public class AKTCollapsibleGroupView : AKTGroupView {
 	// MARK: Properties
 	private	let	titleView :NSView
 
-	private	var	isCollapsed = false
 	private	var	heightLayoutConstraint :NSLayoutConstraint!
+	private	var	isCollapsed = false
 
 	// MARK: Lifecycle methods
 	//------------------------------------------------------------------------------------------------------------------
@@ -310,7 +310,7 @@ public class AKTCollapsibleGroupView : AKTGroupView {
 
 		button.alignLeading(to: self.titleView)
 		titleLabel.spaceHorizontally(from: button, constant: 8.0)
-		titleLabel.alignTrailing(equalTo: self.titleView)
+		titleLabel.alignTrailing(to: self.titleView)
 
 		titleLabel.alignCenterY(to: button)
 		titleLabel.alignTop(to: self.titleView)
@@ -346,7 +346,7 @@ public class AKTCollapsibleGroupView : AKTGroupView {
 
 		button.alignLeading(to: self.titleView)
 		titleLabel.spaceHorizontally(from: button, constant: 8.0)
-		titleLabel.alignTrailing(equalTo: self.titleView)
+		titleLabel.alignTrailing(to: self.titleView)
 
 		titleLabel.alignCenterY(to: button)
 		titleLabel.alignTop(to: self.titleView)
@@ -382,7 +382,7 @@ public class AKTCollapsibleGroupView : AKTGroupView {
 
 		button.alignLeading(to: self.titleView)
 		titleLabel.spaceHorizontally(from: button, constant: 8.0)
-		titleLabel.alignTrailing(equalTo: self.titleView)
+		titleLabel.alignTrailing(to: self.titleView)
 
 		titleLabel.alignCenterY(to: button)
 		titleLabel.alignTop(to: self.titleView)

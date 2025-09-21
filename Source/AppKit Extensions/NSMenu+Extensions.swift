@@ -10,13 +10,6 @@ public extension NSMenu {
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
-	@objc func menuItem(representedObject :Any, deep :Bool = false) -> NSMenuItem? {
-		// Search for NSMenuItem by representedObject
-		return menuItem(matchingProc: { ($0.representedObject as? NSObject)?.isEqual(to: representedObject) ?? false },
-				deep: deep)
-	}
-
-	//------------------------------------------------------------------------------------------------------------------
 	@objc func menuItem(matchingProc :(_ menuItem :NSMenuItem) -> Bool, deep :Bool = false) -> NSMenuItem? {
 		// Iterate all NSMenuItems
 		for menuItem in self.items {
@@ -31,6 +24,19 @@ public extension NSMenu {
 		}
 
 		return nil
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc func menuItem(identifier :NSUserInterfaceItemIdentifier, deep :Bool = false) -> NSMenuItem? {
+		// Search for NSMenuItem by representedObject
+		return menuItem(matchingProc: { $0.identifier == identifier }, deep: deep)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc func menuItem(representedObject :Any, deep :Bool = false) -> NSMenuItem? {
+		// Search for NSMenuItem by representedObject
+		return menuItem(matchingProc: { ($0.representedObject as? NSObject)?.isEqual(to: representedObject) ?? false },
+				deep: deep)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------

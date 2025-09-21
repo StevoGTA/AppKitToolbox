@@ -18,8 +18,9 @@ class AKTTextCalendarDatePickerHelper : NSObject {
 								self.calendarDatePicker.dateValue = newValue
 							}
 						}
-	@objc
-				var	updateLayoutProc :() -> Void = {}
+
+	@objc		var	actionProc :() -> Void = {}
+	@objc		var	updateLayoutProc :() -> Void = {}
 
 	@IBOutlet	var	textDatePicker :NSDatePicker!
 	@IBOutlet	var	calendarDatePicker :NSDatePicker!
@@ -38,10 +39,16 @@ class AKTTextCalendarDatePickerHelper : NSObject {
 		self.textDatePicker?.actionProc = { [unowned self] _ in
 			// Update the other one
 			self.calendarDatePicker.dateValue = self.textDatePicker.dateValue
+
+			// Call action proc
+			self.actionProc()
 		}
 		self.calendarDatePicker?.actionProc = { [unowned self] _ in
 			// Update the other one
 			self.textDatePicker.dateValue = self.calendarDatePicker.dateValue
+
+			// Call action proc
+			self.actionProc()
 		}
 		self.segmentedControl?.actionProc = { [unowned self] _ in
 			// Update UI
