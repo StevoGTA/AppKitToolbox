@@ -56,6 +56,17 @@ public extension NSMenu {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
+	@objc
+	func addItem(withTitle title :String, proc :@escaping NSMenuItem.ActionProc) {
+		// Setup
+		let	menuItem = NSMenuItem(title: title, action: nil, keyEquivalent: "")
+		menuItem.actionProc = proc
+
+		// Add item
+		addItem(menuItem)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
 	@objc func addItem(title :String, menu :NSMenu) {
 		// Setup
 		let	menuItem = NSMenuItem(title: title, action: nil, keyEquivalent: "")
