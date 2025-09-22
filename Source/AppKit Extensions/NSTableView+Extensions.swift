@@ -11,6 +11,10 @@ public extension NSTableView {
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
 	@objc func reloadDataRetainingSelection() {
+		// Clear current delegate
+		let	delegate = self.delegate
+		self.delegate = nil
+
 		// Get current selection
 		let	selectedRowIndexes = self.selectedRowIndexes
 
@@ -19,6 +23,9 @@ public extension NSTableView {
 
 		// Reset selection
 		self.selectRowIndexes(selectedRowIndexes, byExtendingSelection: false)
+
+		// Reset delegate
+		self.delegate = delegate
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
