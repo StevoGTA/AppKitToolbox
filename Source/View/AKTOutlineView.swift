@@ -12,16 +12,25 @@ import AppKit
 // MARK: AKTOutlineView
 public class AKTOutlineView : NSOutlineView {
 
+	// MARK: Types
+	public typealias MenuProc = (_ row :Int, _ tableColumnIndex :Int, _ tableColumn :NSTableColumn?) -> NSMenu?
+
 	// MARK: Properties
-	var	menuProc :(_ row :Int, _ columnIndex :Int, _ column :NSTableColumn?) -> NSMenu? = { _,_,_ in nil }
+	public	var	menuProc :MenuProc? = nil
 
 	// MARK: NSView methods
 	//------------------------------------------------------------------------------------------------------------------
 	override public func menu(for event :NSEvent) -> NSMenu? {
-		// Setup
-		let	point = convert(event.locationInWindow, from: nil)
-		let	columnIndex = column(at: point)
+		// Check if have menuProc
+		if let menuProc = self.menuProc {
+			// Setup
+			let	point = convert(event.locationInWindow, from: nil)
+			let	columnIndex = column(at: point)
 
-		return self.menuProc(row(at: point), columnIndex, self.tableColumns[columnIndex])
+			return menuProc(row(at: point), columnIndex, self.tableColumns[columnIndex])
+		} else {
+			// No menuProc
+			return self.menu
+		}
 	}
 }
