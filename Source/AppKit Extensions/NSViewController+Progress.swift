@@ -1,18 +1,18 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	AKTViewController+Progress.swift			©2021 Stevo Brock		All rights reserved.
+//	NSViewController+Progress.swift			©2021 Stevo Brock		All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
 import Foundation
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: AKTViewController extension
-public extension AKTViewController {
+// MARK: NSViewController extension
+public extension NSViewController {
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
 	func perform<T>(progress :Progress, progressViewController :AKTProgressViewController,
 			procDispatchQueue :DispatchQueue = DispatchQueue.global(qos: .userInitiated),
-			proc :@escaping () throws -> T, cancelProc :(() -> Void)? = nil,
+			proc :@escaping (_ progressViewController :NSViewController) throws -> T, cancelProc :(() -> Void)? = nil,
 			completionProc :@escaping (_ result :T?, _ error :Error?) -> Void = { _,_ in }) {
 		// Setup
 		var	isCancelled = false
@@ -38,7 +38,7 @@ public extension AKTViewController {
 			// Call proc
 			var	result :T? = nil
 			var	procError :Error? = nil
-			do { try result = proc() } catch { procError = error }
+			do { try result = proc(progressViewController) } catch { procError = error }
 
 			// Jump to main queue
 			DispatchQueue.main.async() {
@@ -57,7 +57,7 @@ public extension AKTViewController {
 	//------------------------------------------------------------------------------------------------------------------
 	func perform<T>(progress :Progress, progressViewController :AKTProgressViewController,
 			procDispatchQueue :DispatchQueue = DispatchQueue.global(qos: .userInitiated),
-			proc :@escaping () -> (result :T?, error :Error?), cancelProc :(() -> Void)? = nil,
+			proc :@escaping (_ progressViewController :NSViewController) -> (result :T?, error :Error?), cancelProc :(() -> Void)? = nil,
 			completionProc :@escaping (_ result :T?, _ error :Error?) -> Void = { _,_ in }) {
 		// Setup
 		var	isCancelled = false
@@ -81,7 +81,7 @@ public extension AKTViewController {
 		// Jump to procs queue
 		procDispatchQueue.async() {
 			// Call proc
-			let	(result, procError) = proc()
+			let	(result, procError) = proc(progressViewController)
 
 			// Jump to main queue
 			DispatchQueue.main.async() {
@@ -100,7 +100,7 @@ public extension AKTViewController {
 	//------------------------------------------------------------------------------------------------------------------
 	func perform(progress :Progress, progressViewController :AKTProgressViewController,
 			procDispatchQueue :DispatchQueue = DispatchQueue.global(qos: .userInitiated),
-			proc :@escaping () throws -> Void, cancelProc :(() -> Void)? = nil,
+			proc :@escaping (_ progressViewController :NSViewController) throws -> Void, cancelProc :(() -> Void)? = nil,
 			completionProc :@escaping (_ error :Error?) -> Void = { _ in }) {
 		// Setup
 		var	isCancelled = false
@@ -125,7 +125,7 @@ public extension AKTViewController {
 		procDispatchQueue.async() {
 			// Call proc
 			var	procError :Error? = nil
-			do { try proc() } catch { procError = error }
+			do { try proc(progressViewController) } catch { procError = error }
 
 			// Jump to main queue
 			DispatchQueue.main.async() {
