@@ -11,6 +11,50 @@ public extension NSViewController {
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
 	func perform<T>(progress :Progress, progressViewController :AKTProgressViewController,
+			proc :@escaping (_ progressViewController :NSViewController) async throws -> T,
+			cancelProc :(() -> Void)? = nil) async throws -> T? {
+		// Setup
+		var	isCancelled = false
+		if cancelProc != nil {
+			// Have cancelProc
+			progressViewController.setup(progress: progress, cancelProc: {
+				// Cancelled
+				isCancelled = true
+
+				// Call proc
+				cancelProc!()
+			})
+		} else {
+			// Don't have cancelProc
+			progressViewController.setup(progress: progress)
+		}
+
+		// Present progress view controller as sheet
+		await MainActor.run() { [unowned self] in self.presentAsSheet(progressViewController) }
+
+		// Catch errors
+		let	result :T?
+		var	procError :Error?
+		do {
+			// Run proc
+			result = try await proc(progressViewController)
+		} catch {
+			// Error
+			result = nil
+			procError = error
+		}
+
+		// Jump to MainActor
+		await MainActor.run() { [unowned self] in self.dismiss(progressViewController) }
+
+		// Check for error
+		if procError != nil { throw procError! }
+
+		return !isCancelled ? result : nil
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	func perform<T>(progress :Progress, progressViewController :AKTProgressViewController,
 			procDispatchQueue :DispatchQueue = DispatchQueue.global(qos: .userInitiated),
 			proc :@escaping (_ progressViewController :NSViewController) throws -> T, cancelProc :(() -> Void)? = nil,
 			completionProc :@escaping (_ result :T?, _ error :Error?) -> Void = { _,_ in }) {
