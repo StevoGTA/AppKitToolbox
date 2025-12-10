@@ -1,24 +1,30 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	AKTTreeViewBackingAdapter.swift		©2024 Stevo Brock		All rights reserved.
+//	AKTOutlineViewHelper.swift		©2024 Stevo Brock		All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
 import AppKit
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: AKTTreeViewBackingAdapter
-public class AKTTreeViewBackingAdapter : NSObject, NSOutlineViewDataSource, NSOutlineViewDelegate {
+// MARK: AKTOutlineViewHelper
+public class AKTOutlineViewHelper : NSObject, NSOutlineViewDataSource, NSOutlineViewDelegate {
 
 	// MARK: Properties
-	@objc		public			var	selectionDidChangeProc :(_ items :[Any]) -> Void = { _ in }
+	@objc		public			var	selectedItemIDs :[String] { self.outlineView.selectedItems.map({ $0 as! String }) }
+
+	// If itemID is nil, then info for the top-level should be returned
+	@objc		public			var	hasChildrenProc :(_ itemID :String) -> Bool = { _ in false }
+	@objc		public			var	childCountProc :(_ itemID :String?) -> Int = { _ in 0 }
+	@objc		public			var	childItemIDProc :(_ itemID :String?, _ index :Int) -> String = { _,_ in "" }
+
+	@objc		public			var	selectionDidChangeProc :() -> Void = {}
 	@objc		public			var	sortDescriptorsDidChangeProc
 										:(_ outlineView :NSOutlineView, _ sortDescriptors :[NSSortDescriptor]) -> Void =
 												{ _,_ in }
 	@objc		public			var	viewProc
-										:(_ outlineView :NSOutlineView, _ tableColumn :NSTableColumn?, _ itemID :String)
-												-> NSView? = { _,_,_ in nil }
+										:(_ outlineView :NSOutlineView, _ tableColumn :NSTableColumn?,
+												_ itemID :String?) -> NSView? = { _,_,_ in nil }
 
 	@IBOutlet			weak	var	outlineView :NSOutlineView!
-	@IBOutlet			weak	var	treeViewBackingInterface :AKTTreeViewBackingInterface!
 
 	// MARK: Lifecycle methods
 	//------------------------------------------------------------------------------------------------------------------
@@ -35,35 +41,32 @@ public class AKTTreeViewBackingAdapter : NSObject, NSOutlineViewDataSource, NSOu
 	//------------------------------------------------------------------------------------------------------------------
 	public func outlineView(_ outlineView :NSOutlineView, numberOfChildrenOfItem item :Any?) -> Int {
 		// Return child count
-		return self.treeViewBackingInterface.childCount(ofItemID: self.itemID(for: item))
+		return self.childCountProc(item as? String)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	public func outlineView(_ outlineView :NSOutlineView, child index :Int, ofItem item :Any?) -> Any {
 		// Return child
-		return self.treeViewBackingInterface.childItemID(ofItemID: self.itemID(for: item), at: index)
+		return self.childItemIDProc(item as? String, index)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	public func outlineView(_ outlineView :NSOutlineView, isItemExpandable item :Any) -> Bool {
 		// Return if child count > 0
-		return self.treeViewBackingInterface.hasChildren(ofItemID: self.itemID(for: item))
+		return self.hasChildrenProc(item as! String)
 	}
 
 	// MARK: NSOutlineViewDelegate methods
 	//------------------------------------------------------------------------------------------------------------------
 	public func outlineView(_ outlineView :NSOutlineView, viewFor tableColumn :NSTableColumn?, item :Any) -> NSView? {
 		// Return view
-		return self.viewProc(outlineView, tableColumn, self.itemID(for: item))
+		return self.viewProc(outlineView, tableColumn, item as? String)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	public func outlineViewSelectionDidChange(_ notification :Notification) {
-		// Setup
-		let	itemIDs = self.outlineView.selectedItems.map({ $0 as! String })
-
 		// Call proc
-		self.selectionDidChangeProc(self.treeViewBackingInterface.items(forItemIDs: itemIDs));
+		self.selectionDidChangeProc()
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -80,18 +83,5 @@ public class AKTTreeViewBackingAdapter : NSObject, NSOutlineViewDataSource, NSOu
 	public func reload(itemID :String, reloadChildren :Bool = false) {
 		// Reload
 		self.outlineView.reloadItem(itemID, reloadChildren: reloadChildren)
-	}
-
-	//------------------------------------------------------------------------------------------------------------------
-	public func reload(itemIDs :[String], tableColumnIdentifiers :[NSUserInterfaceItemIdentifier]) {
-		// Reload
-//		self.outlineView.reloadData(forRowIndexes: <#T##IndexSet#>, columnIndexes: <#T##IndexSet#>)
-	}
-
-	// MARK: Private methods
-	//------------------------------------------------------------------------------------------------------------------
-	private func itemID(for item :Any?) -> String {
-		// Convert item to its corresponding id
-		return (item != nil) ? item as! String : treeViewBackingInterface.rootItemID
 	}
 }
