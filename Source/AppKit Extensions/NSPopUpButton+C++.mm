@@ -188,6 +188,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 - (void) selectLocalizationLanguage:(const OV<SLocalization::Language>&) localizationLanguage
 {
+#error Make this simpler, and also check call site to see if functionality is duplicated
 	// Check if have value
 	if (localizationLanguage.hasValue())
 		// Select item
