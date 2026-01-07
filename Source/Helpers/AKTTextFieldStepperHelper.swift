@@ -6,6 +6,7 @@ import AppKit
 
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: AKTTextFieldStepperHelper
+@MainActor
 public class AKTTextFieldStepperHelper : NSObject {
 
 	// MARK: Properties

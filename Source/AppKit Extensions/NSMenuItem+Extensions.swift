@@ -6,6 +6,7 @@ import AppKit
 
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: NSMenuItem extension
+@MainActor
 public extension NSMenuItem {
 
 	// MARK: Types

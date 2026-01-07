@@ -10,7 +10,7 @@ public extension NSViewController {
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
-	func perform<T>(progress :Progress, progressViewController :AKTProgressViewController,
+	func perform<T : Sendable>(progress :Progress, progressViewController :AKTProgressViewController,
 			proc :@escaping (_ progressViewController :NSViewController) async throws -> T,
 			cancelProc :(() -> Void)? = nil) async throws -> T? {
 		// Setup
@@ -101,7 +101,8 @@ public extension NSViewController {
 	//------------------------------------------------------------------------------------------------------------------
 	func perform<T>(progress :Progress, progressViewController :AKTProgressViewController,
 			procDispatchQueue :DispatchQueue = DispatchQueue.global(qos: .userInitiated),
-			proc :@escaping (_ progressViewController :NSViewController) -> (result :T?, error :Error?), cancelProc :(() -> Void)? = nil,
+			proc :@escaping (_ progressViewController :NSViewController) -> (result :T?, error :Error?),
+			cancelProc :(() -> Void)? = nil,
 			completionProc :@escaping (_ result :T?, _ error :Error?) -> Void = { _,_ in }) {
 		// Setup
 		var	isCancelled = false

@@ -62,6 +62,7 @@ public extension NSMenu {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
+	@MainActor
 	@objc
 	func addItem(withTitle title :String, proc :@escaping NSMenuItem.ActionProc) {
 		// Setup

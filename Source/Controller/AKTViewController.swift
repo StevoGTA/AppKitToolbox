@@ -10,6 +10,7 @@ import Carbon.HIToolbox
 open class AKTViewController : NSViewController {
 
 	// MARK: Types
+	@MainActor
 	public struct Key {
 		// Values
 		static	public	let	capsLock = Key(kVK_CapsLock)
@@ -69,42 +70,71 @@ open class AKTViewController : NSViewController {
 		init(_ value :Int) { self.value = value }
 	}
 
+	// MARK: EventMonitor
+	private class EventMonitor {
+
+		// MARK: Properties
+		private	var	opaque :Any
+
+		// MARK: Lifecycle methods
+		//--------------------------------------------------------------------------------------------------------------
+		@MainActor
+		init(view :NSView, keys :[Key], handlerProc :@escaping (_ key :Key) -> Bool) {
+			// Setup
+			weak	var	weakView = view
+			self.opaque =
+					NSEvent.addLocalMonitorForEvents(matching: .keyDown, handler: { event in
+						// Ensure we are key window
+						guard weakView?.window == NSApplication.shared.keyWindow else { return event }
+
+						// Ensure this is an event we care about
+						guard let key = keys.first(where: { $0.value == Int(event.keyCode) }) else { return event }
+
+						return handlerProc(key) ? nil : event
+					})!
+		}
+
+		//--------------------------------------------------------------------------------------------------------------
+		deinit {
+			// Cleanup
+			NSEvent.removeMonitor(self.opaque)
+		}
+	}
+
+	// MARK: NotificationObserver
+	private class NotificationObserver {
+
+		// MARK: Properties
+		private	var	opaque :NSObjectProtocol
+
+		// MARK: Lifecycle methods
+		//--------------------------------------------------------------------------------------------------------------
+		@MainActor
+		init(name :NSNotification.Name, object :Any?, queue :OperationQueue?,
+				proc :@escaping @Sendable (_ notification :Notification) -> Void) {
+			// Setup
+			self.opaque =
+					NotificationCenter.default.addObserver(forName: name, object: object, queue: queue, using: proc)
+		}
+
+		//--------------------------------------------------------------------------------------------------------------
+		deinit {
+			// Cleanup
+			NotificationCenter.default.removeObserver(self.opaque)
+		}
+	}
+
 	// MARK: Properties
 	private	var	presentErrorCompletionProc :(() -> Void)? = nil
 
-	private	var	eventMonitors = [Any]()
-	private	var	notificationObservers = [NSObjectProtocol]()
-
-	// MARK: Lifecycle methods
-	//------------------------------------------------------------------------------------------------------------------
-	deinit {
-		// Cleanup
-		self.eventMonitors.forEach() { NSEvent.removeMonitor($0) }
-		self.notificationObservers.forEach() { NotificationCenter.default.removeObserver($0) }
-	}
+	private	var	eventMonitors = [EventMonitor]()
+	private	var	notificationObservers = [NotificationObserver]()
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
 	public func addHandler(for keys :[Key], handlerProc :@escaping (_ key :Key) -> Bool) {
 		// Add handler
-		if let eventMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown, handler: { [unowned self] in
-			// Ensure we are key window
-			guard self.view.window == NSApplication.shared.keyWindow else { return $0 }
-
-			// Iterate keys
-			for key in keys {
-				// Check key
-				if key.value == Int($0.keyCode) {
-					// Match
-					return handlerProc(key) ? nil : $0
-				}
-			}
-
-			return $0
-		}) {
-			// Add
-			self.eventMonitors.append(eventMonitor)
-		}
+		self.eventMonitors.append(EventMonitor(view: self.view, keys: keys, handlerProc: handlerProc))
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -119,10 +149,9 @@ open class AKTViewController : NSViewController {
 
 	//------------------------------------------------------------------------------------------------------------------
 	public func addNotificationObserver(forName name :NSNotification.Name, object :Any? = nil,
-			queue :OperationQueue? = nil, proc :@escaping (Notification) -> Void) {
+			queue :OperationQueue? = nil, proc :@escaping @Sendable (_ notification :Notification) -> Void) {
 		// Add
-		self.notificationObservers.append(
-				NotificationCenter.default.addObserver(forName: name, object: object, queue: queue, using: proc))
+		self.notificationObservers.append(NotificationObserver(name: name, object: object, queue: queue, proc: proc))
 	}
 
 	// MARK: Private methods
