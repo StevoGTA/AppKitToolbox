@@ -101,34 +101,11 @@ open class AKTViewController : NSViewController {
 		}
 	}
 
-	// MARK: NotificationObserver
-	private class NotificationObserver {
-
-		// MARK: Properties
-		private	var	opaque :NSObjectProtocol
-
-		// MARK: Lifecycle methods
-		//--------------------------------------------------------------------------------------------------------------
-		@MainActor
-		init(name :NSNotification.Name, object :Any?, queue :OperationQueue?,
-				proc :@escaping @Sendable (_ notification :Notification) -> Void) {
-			// Setup
-			self.opaque =
-					NotificationCenter.default.addObserver(forName: name, object: object, queue: queue, using: proc)
-		}
-
-		//--------------------------------------------------------------------------------------------------------------
-		deinit {
-			// Cleanup
-			NotificationCenter.default.removeObserver(self.opaque)
-		}
-	}
-
 	// MARK: Properties
 	private	var	presentErrorCompletionProc :(() -> Void)? = nil
 
 	private	var	eventMonitors = [EventMonitor]()
-	private	var	notificationObservers = [NotificationObserver]()
+	private	var	notificationCenterObservers = [NotificationCenter.Observer]()
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
@@ -151,7 +128,8 @@ open class AKTViewController : NSViewController {
 	public func addNotificationObserver(forName name :NSNotification.Name, object :Any? = nil,
 			queue :OperationQueue? = nil, proc :@escaping @Sendable (_ notification :Notification) -> Void) {
 		// Add
-		self.notificationObservers.append(NotificationObserver(name: name, object: object, queue: queue, proc: proc))
+		self.notificationCenterObservers.append(
+				NotificationCenter.Observer(name: name, object: object, queue: queue, proc: proc))
 	}
 
 	// MARK: Private methods
