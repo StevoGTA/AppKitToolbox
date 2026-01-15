@@ -126,7 +126,7 @@ open class AKTViewController : NSViewController {
 
 	//------------------------------------------------------------------------------------------------------------------
 	public func addNotificationObserver(forName name :NSNotification.Name, object :Any? = nil,
-			queue :OperationQueue? = nil, proc :@escaping @Sendable (_ notification :Notification) -> Void) {
+			queue :OperationQueue? = nil, proc :@escaping (_ notification :Notification) -> Void) {
 		// Add
 		self.notificationCenterObservers.append(
 				NotificationCenter.Observer(name: name, object: object, queue: queue, proc: proc))
