@@ -11,7 +11,7 @@ public class AKTScrollView : NSScrollView {
 	// MARK: Properties
 	public	var	viewBoundsDidChangeProc :() -> Void = {}
 
-	private	var	viewBoundsDidChangeNotificationObserver :NSObjectProtocol!
+	private	var	viewBoundsDidChangeNotificationCenterObserver :NotificationCenter.Observer!
 
 	// MARK: Lifecycle methods
 	//------------------------------------------------------------------------------------------------------------------
@@ -20,9 +20,9 @@ public class AKTScrollView : NSScrollView {
 		super.init(frame: frame)
 
 		// Setup notifications
-		self.viewBoundsDidChangeNotificationObserver =
-				NotificationCenter.default.addObserver(forName: NSView.boundsDidChangeNotification,
-						object: self.contentView, using: { [unowned self] _ in self.viewBoundsDidChangeProc() })
+		self.viewBoundsDidChangeNotificationCenterObserver =
+				NotificationCenter.Observer(name: NSView.boundsDidChangeNotification, object: self.contentView,
+						proc: { _ in MainActor.assumeIsolated() { [unowned self] in self.viewBoundsDidChangeProc() } })
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -31,14 +31,8 @@ public class AKTScrollView : NSScrollView {
 		super.init(coder: coder)
 
 		// Setup notifications
-		self.viewBoundsDidChangeNotificationObserver =
-				NotificationCenter.default.addObserver(forName: NSView.boundsDidChangeNotification,
-						object: self.contentView, using: { [unowned self] _ in self.viewBoundsDidChangeProc() })
-	}
-
-	//------------------------------------------------------------------------------------------------------------------
-	deinit {
-		// Cleanup
-		NotificationCenter.default.removeObserver(self.viewBoundsDidChangeNotificationObserver!)
+		self.viewBoundsDidChangeNotificationCenterObserver =
+				NotificationCenter.Observer(name: NSView.boundsDidChangeNotification, object: self.contentView,
+						proc: { _ in MainActor.assumeIsolated() { [unowned self] in self.viewBoundsDidChangeProc() } })
 	}
 }

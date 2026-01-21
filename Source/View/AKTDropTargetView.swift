@@ -163,19 +163,24 @@ public class AKTFolderFileDropTargetView : AKTDropTargetView {
 		super.awakeFromNib()
 
 		// Setup
-		registerForDraggedTypes([.fileURL])
-		self.queryAcceptItemsProc = { [unowned self] in
-			// Setup
-			let	(folders, files) = self.foldersFiles(for: $0 as! [URL])
+		MainActor.assumeIsolated {
+			// Register for dragged types
+			registerForDraggedTypes([.fileURL])
 
-			return self.queryAcceptFoldersFilesProc(folders, files)
-		}
-		self.receiveItemsProc = { [unowned self] in
-			// Setup
-			let	(folders, files) = self.foldersFiles(for: $0 as! [URL])
+			// Setup procs
+			self.queryAcceptItemsProc = { [unowned self] in
+				// Setup
+				let	(folders, files) = self.foldersFiles(for: $0 as! [URL])
 
-			// Call proc
-			self.receiveFoldersFilesProc(folders, files)
+				return self.queryAcceptFoldersFilesProc(folders, files)
+			}
+			self.receiveItemsProc = { [unowned self] in
+				// Setup
+				let	(folders, files) = self.foldersFiles(for: $0 as! [URL])
+
+				// Call proc
+				self.receiveFoldersFilesProc(folders, files)
+			}
 		}
 	}
 
