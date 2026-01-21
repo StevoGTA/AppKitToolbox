@@ -19,7 +19,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 // MARK: Types
 
-
 typedef	void*	_Nullable	(^ProgressProc)(__unsafe_unretained NSViewController* viewController,
 									const I<CProgress>& progress);
 typedef	void				(^ProgressCancelProc)(__unsafe_unretained NSViewController* viewController);
@@ -27,7 +26,6 @@ typedef	void				(^ProgressCompletionProc)(__unsafe_unretained NSViewController* 
 									void* result);
 
 // MARK: Instance methods
-
 
 - (void) performWithProgressViewController:(AKTProgressViewController*) progressViewController
 		progress:(const I<CProgress>&) progress procDispatchQueue:(dispatch_queue_t) procDispatchQueue

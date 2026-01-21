@@ -12,6 +12,7 @@ var	sGlobalReplacements = [(fromString :String, toString :String)]()
 // MARK: NSAlert extensions
 extension NSAlert {
 
+	// MARK: Info
 	@objc(NSAlertInfo) class Info : NSObject {
 
 		// MARK: Properties
@@ -49,16 +50,50 @@ extension NSAlert {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	static func with(style :Style, message :String, information :String, buttonTitles :[String]) ->
-			NSAlert {
-		// Return NSAlert
-		return NSAlert(style: style, message: message, information: information, buttonTitles: buttonTitles)
-	}
-
-	//------------------------------------------------------------------------------------------------------------------
 	@objc static func informational(message :String, information :String, buttonTitles :[String]) -> NSAlert {
 		// Return NSAlert
 		return NSAlert(style: .informational, message: message, information: information, buttonTitles: buttonTitles)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc static func informationalWithSuppressionButton(message :String, information :String, buttonTitles :[String])
+			-> NSAlert {
+		// Return NSAlert
+		return NSAlert(style: .informational, message: message, information: information, buttonTitles: buttonTitles,
+				showsSuppressionButton: true)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc static func informational(message :String, information :String, buttonTitles :[String],
+			suppressionButtonTitle :String) -> NSAlert {
+		// Return NSAlert
+		return NSAlert(style: .informational, message: message, information: information, buttonTitles: buttonTitles,
+				suppressionButtonTitle: suppressionButtonTitle)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc static func informational(messageKey :String, informationKey :String, buttonTitleKeys :[String],
+			localizationTable :String) -> NSAlert {
+		// Return NSAlert
+		return NSAlert(style: .informational, messageKey: messageKey, informationKey: informationKey,
+				buttonTitleKeys: buttonTitleKeys, localizationTable: localizationTable)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc static func informationalWithSuppressionButton(messageKey :String, informationKey :String,
+			buttonTitleKeys :[String], localizationTable :String) -> NSAlert {
+		// Return NSAlert
+		return NSAlert(style: .informational, messageKey: messageKey, informationKey: informationKey,
+				buttonTitleKeys: buttonTitleKeys, showsSuppressionButton: true, localizationTable: localizationTable)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc static func informational(messageKey :String, informationKey :String, buttonTitleKeys :[String],
+			suppressionButtonTitleKey :String, localizationTable :String) -> NSAlert {
+		// Return NSAlert
+		return NSAlert(style: .informational, messageKey: messageKey, informationKey: informationKey,
+				buttonTitleKeys: buttonTitleKeys, suppressionButtonTitleKey: suppressionButtonTitleKey,
+				localizationTable: localizationTable)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -68,14 +103,37 @@ extension NSAlert {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
+	@objc static func warningWithSuppressionButton(message :String, information :String, buttonTitles :[String]) ->
+			NSAlert {
+		// Return NSAlert
+		return NSAlert(style: .warning, message: message, information: information, buttonTitles: buttonTitles,
+				showsSuppressionButton: true)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc static func warning(messageKey :String, informationKey :String, buttonTitleKeys :[String],
+			localizationTable :String) -> NSAlert {
+		// Return NSAlert
+		return NSAlert(style: .warning, messageKey: messageKey, informationKey: informationKey,
+				buttonTitleKeys: buttonTitleKeys, localizationTable: localizationTable)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
 	@objc static public func critical(message :String, information :String, buttonTitles :[String]) -> NSAlert {
 		// Return NSAlert
 		return NSAlert(style: .critical, message: message, information: information, buttonTitles: buttonTitles)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	static public func queryString(message :String, information :String, buttonTitles :[String]) ->
-			String? {
+	@objc static func critical(messageKey :String, informationKey :String, buttonTitleKeys :[String],
+			localizationTable :String) -> NSAlert {
+		// Return NSAlert
+		return NSAlert(style: .critical, messageKey: messageKey, informationKey: informationKey,
+				buttonTitleKeys: buttonTitleKeys, localizationTable: localizationTable)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	static public func queryString(message :String, information :String, buttonTitles :[String]) -> String? {
 		// Setup
 		let	alert = informational(message: message, information: information, buttonTitles: buttonTitles)
 
@@ -90,15 +148,64 @@ extension NSAlert {
 
 	// MARK: Lifecycle methods
 	//------------------------------------------------------------------------------------------------------------------
-	convenience init(style :Style, message :String, information :String, buttonTitles :[String]) {
+	convenience init(style :Style = .warning, message :String = "", information :String = "",
+			buttonTitles :[String] = [], showsSuppressionButton :Bool = false) {
 		// Do super
 		self.init()
 
 		// Setup
-		self.alertStyle = alertStyle
+		self.alertStyle = style
 		self.messageText = message.applying(sGlobalReplacements)
 		self.informativeText = information.applying(sGlobalReplacements)
 		buttonTitles.forEach() { self.addButton(withTitle: $0) }
+		self.showsSuppressionButton = showsSuppressionButton
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	convenience init(style :Style = .warning, messageKey :String? = nil, informationKey :String? = nil,
+			buttonTitleKeys :[String] = [], showsSuppressionButton :Bool = false, localizationTable :String) {
+		// Init
+		self.init(style: style,
+				message:
+						(messageKey != nil) ?
+								Bundle.main.localizedString(forKey: messageKey!, table: localizationTable) : "",
+				information:
+						(informationKey != nil) ?
+								Bundle.main.localizedString(forKey: informationKey!, table: localizationTable) : "",
+				buttonTitles:
+						buttonTitleKeys.map({ Bundle.main.localizedString(forKey: $0, table: localizationTable) }),
+				showsSuppressionButton: showsSuppressionButton)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	convenience init(style :Style, message :String, information :String, buttonTitles :[String],
+			suppressionButtonTitle :String) {
+		// Do super
+		self.init()
+
+		// Setup
+		self.alertStyle = style
+		self.messageText = message.applying(sGlobalReplacements)
+		self.informativeText = information.applying(sGlobalReplacements)
+		buttonTitles.forEach() { self.addButton(withTitle: $0) }
+		self.showsSuppressionButton = true
+		self.suppressionButton?.title = suppressionButtonTitle
+	}
+	//------------------------------------------------------------------------------------------------------------------
+	convenience init(style :Style, messageKey :String? = nil, informationKey :String? = nil,
+			buttonTitleKeys :[String] = [], suppressionButtonTitleKey :String, localizationTable :String) {
+		// Init
+		self.init(style: style,
+				message:
+						(messageKey != nil) ?
+								Bundle.main.localizedString(forKey: messageKey!, table: localizationTable) : "",
+				information:
+						(informationKey != nil) ?
+								Bundle.main.localizedString(forKey: informationKey!, table: localizationTable) : "",
+				buttonTitles:
+						buttonTitleKeys.map({ Bundle.main.localizedString(forKey: $0, table: localizationTable) }),
+				suppressionButtonTitle:
+						Bundle.main.localizedString(forKey: suppressionButtonTitleKey, table: localizationTable))
 	}
 }
 

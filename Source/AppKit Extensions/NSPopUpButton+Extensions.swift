@@ -110,30 +110,30 @@ public extension NSPopUpButton {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc
-	func menuItem(withIdentifier identifier :NSUserInterfaceItemIdentifier, deep :Bool = false) -> NSMenuItem? {
+	@objc(menuItemForIdentifier:deep:)
+	func menuItem(for identifier :NSUserInterfaceItemIdentifier, deep :Bool = false) -> NSMenuItem? {
 		// Call through to menu
-		return self.menu?.menuItem(identifier: identifier, deep: deep)
+		return self.menu?.menuItem(for: identifier, deep: deep)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc
-	func menuItem(withRepresentedObject representedObject :Any, deep :Bool = false) -> NSMenuItem? {
+	@objc(menuItemForRepresentedObject:deep:)
+	func menuItem(for representedObject :Any, deep :Bool = false) -> NSMenuItem? {
 		// Call through to menu
-		return self.menu?.menuItem(representedObject: representedObject, deep: deep)
+		return self.menu?.menuItem(for: representedObject, deep: deep)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	@objc
 	func selectItem(withIdentifier identifier :NSUserInterfaceItemIdentifier) {
 		// Select
-		select(menuItem(withIdentifier: identifier))
+		select(menuItem(for: identifier))
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	@objc
 	func selectItem(withRepresentedObject representedObject :Any) {
 		// Select
-		select(menuItem(withRepresentedObject: representedObject))
+		select(menuItem(for: representedObject))
 	}
 }

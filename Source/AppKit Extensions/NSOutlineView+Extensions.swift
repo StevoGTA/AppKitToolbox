@@ -49,6 +49,12 @@ public extension NSOutlineView {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
+	@objc func removeAllTableColumns() {
+		// Remove all but the outline table column
+		self.tableColumns.filter({ $0 != self.outlineTableColumn }).forEach({ self.removeTableColumn($0) })
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
 	func remove(_ items :[Any], parent :Any? = nil,
 			withAnimation tableViewAnimationOptions :NSTableView.AnimationOptions = [.slideUp]) {
 		// Setup

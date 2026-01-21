@@ -1,12 +1,12 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	NSViewController+Extensions.swift			©2023 Stevo Brock		All rights reserved.
+//	NSWindow+Extensions.swift			©2026 Stevo Brock		All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
 import AppKit
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: NSViewController extension
-public extension NSViewController {
+// MARK: NSWindow extension
+public extension NSWindow {
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
@@ -14,7 +14,10 @@ public extension NSViewController {
 	func present(_ alert :NSAlert,
 			completionProc :@escaping (_ modalResponse :NSApplication.ModalResponse, _ doNotShowAgain :Bool) -> Void) {
 		// Present
-		self.view.window?.present(alert, completionProc: completionProc)
+		alert.beginSheetModal(for: self) { [unowned alert] in
+			// Call proc
+			completionProc($0, alert.suppressionButton?.state == .on)
+		}
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -22,6 +25,6 @@ public extension NSViewController {
 	func present(_ alert :NSAlert,
 			completionProc :@escaping (_ modalResponse :NSApplication.ModalResponse) -> Void = { _ in }) {
 		// Present
-		self.view.window?.present(alert, completionProc: completionProc)
+		alert.beginSheetModal(for: self) { completionProc($0) }
 	}
 }

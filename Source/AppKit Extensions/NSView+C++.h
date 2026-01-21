@@ -1,20 +1,23 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	AKTWindow.h			©2021 Stevo Brock		All rights reserved.
+//	NSView+C++.h			©2026 Stevo Brock		All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
+
+#pragma once
+
+#import "CString.h"
 
 #import <AppKit/AppKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: AKTWindow
+// MARK: NSView extension
 
-@interface AKTWindow : NSWindow
+@interface NSView (Cpp)
 
-// MARK: Instance methods
+// MARK: Properties
 
-- (void) addKeyboardInputHandlerWithKeyDownProc:(BOOL (^)(NSEvent* event)) keyDownProc
-		keyUpProc:(BOOL (^)(NSEvent* event)) keyUpProc;
+@property (nonatomic, assign) CString	toolTipString;
 
 @end
 

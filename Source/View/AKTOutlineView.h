@@ -1,20 +1,20 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	AKTWindow.h			©2021 Stevo Brock		All rights reserved.
+//	AKTOutlineView.h			©2026 Stevo Brock	All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
+
+#pragma once
 
 #import <AppKit/AppKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: AKTWindow
+// MARK: AKTOutlineView
+@interface AKTOutlineView : NSOutlineView
 
-@interface AKTWindow : NSWindow
+// MARK: Properties
 
-// MARK: Instance methods
-
-- (void) addKeyboardInputHandlerWithKeyDownProc:(BOOL (^)(NSEvent* event)) keyDownProc
-		keyUpProc:(BOOL (^)(NSEvent* event)) keyUpProc;
+@property (nonatomic, assign)	BOOL	isOptionClickToBeginEditingEnabled;
 
 @end
 

@@ -5,11 +5,38 @@
 #import "AKTWindow.h"
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: AKTWindow
+// MARK: AKTWindowKeyboardHandler
+
+@interface AKTWindowKeyboardHandler : NSObject
+
+@property (nonatomic, copy)	BOOL	(^keyDownProc)(NSEvent* event);
+@property (nonatomic, copy)	BOOL	(^keyUpProc)(NSEvent* event);
+
+@end
+
+@implementation AKTWindowKeyboardHandler
+
+//----------------------------------------------------------------------------------------------------------------------
++ (instancetype) keyboardHandlerWithKeyDownProc:(BOOL (^)(NSEvent* event)) keyDownProc
+		keyUpProc:(BOOL (^)(NSEvent* event)) keyUpProc
+{
+	// Setup
+	AKTWindowKeyboardHandler*	keyboardHandler = [[AKTWindowKeyboardHandler alloc] init];
+	keyboardHandler.keyDownProc = keyDownProc;
+	keyboardHandler.keyUpProc = keyUpProc;
+
+	return keyboardHandler;
+}
+
+@end
+
+//----------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+// MARK: - AKTWindow
 
 @interface AKTWindow ()
 
-@property (nonatomic, weak)		NSResponder*	keyboardInputHandlerFirstResponder;
+@property (nonatomic, strong)	NSMutableArray<AKTWindowKeyboardHandler*>*	keyboardHandlers;
 
 @end
 
@@ -21,37 +48,49 @@
 - (void) keyDown:(NSEvent*) event
 //----------------------------------------------------------------------------------------------------------------------
 {
-	// Check if have keyboard input handler first responder
-	if (self.keyboardInputHandlerFirstResponder != nil)
-		// Have
-		[self.keyboardInputHandlerFirstResponder keyDown:event];
-	else
-		// Have not
-		[super keyDown:event];
+	// Check keyboard handlers
+	for (AKTWindowKeyboardHandler* keyboardHandler in self.keyboardHandlers) {
+		// Call handler
+		if (keyboardHandler.keyDownProc(event))
+			// Handled
+			return;
+	}
+
+	// Do super
+	[super keyDown:event];
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 - (void) keyUp:(NSEvent*) event
 //----------------------------------------------------------------------------------------------------------------------
 {
-	// Check if have keyboard input handler first responder
-	if (self.keyboardInputHandlerFirstResponder != nil)
-		// Have
-		[self.keyboardInputHandlerFirstResponder keyUp:event];
-	else
-		// Have not
-		[super keyUp:event];
+	// Check keyboard handlers
+	for (AKTWindowKeyboardHandler* keyboardHandler in self.keyboardHandlers) {
+		// Call handler
+		if (keyboardHandler.keyUpProc(event))
+			// Handled
+			return;
+	}
+
+	// Do super
+	[super keyUp:event];
 }
 
 // MARK: Instance methods
 
 //----------------------------------------------------------------------------------------------------------------------
-- (void) addKeyboardInputHandler:(NSResponder*) keyboardInputHandler
+- (void) addKeyboardInputHandlerWithKeyDownProc:(BOOL (^)(NSEvent* event)) keyDownProc
+		keyUpProc:(BOOL (^)(NSEvent* event)) keyUpProc
 //----------------------------------------------------------------------------------------------------------------------
 {
 	// Setup
-	keyboardInputHandler.nextResponder = self.keyboardInputHandlerFirstResponder;
-	self.keyboardInputHandlerFirstResponder = keyboardInputHandler;
+	if (self.keyboardHandlers == nil)
+		// Create
+		self.keyboardHandlers = [[NSMutableArray alloc] init];
+		
+	// Add keyboard handler
+	[self.keyboardHandlers
+			addObject:[AKTWindowKeyboardHandler keyboardHandlerWithKeyDownProc:keyDownProc keyUpProc:keyUpProc]];
 }
 
 @end

@@ -28,7 +28,7 @@ public extension NSTableView {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	func reloadColumn(for identifier :NSUserInterfaceItemIdentifier) {
+	@objc func reloadColumn(for identifier :NSUserInterfaceItemIdentifier) {
 		// Retrieve index
 		guard let index = self.tableColumns.firstIndex(where: { $0.identifier == identifier }) else { return }
 
@@ -46,6 +46,40 @@ public extension NSTableView {
 	@objc func select(_ rowIndex :Int, byExtendingSelection extendingSelection :Bool = false) {
 		// Select row indexes
 		selectRowIndexes(IndexSet(integer: rowIndex), byExtendingSelection: extendingSelection)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc func continueEditing(from tableColumn :NSTableColumn, in rowIndex :Int, given textMovement :NSTextMovement) {
+		// Check text movement
+		switch textMovement {
+			case .tab:
+				// Tab - move to next editable table column
+				if let tableColumnIndex = self.tableColumns.firstIndex(of: tableColumn),
+						let nextColumnIndex =
+								self.tableColumns[(tableColumnIndex + 1)...].firstIndex(where: { $0.isEditable }) {
+					// Wait a beate
+					DispatchQueue.main.async() { [weak self] in
+						// Start editing
+						self?.editColumn(nextColumnIndex, row: rowIndex, with: nil, select: true)
+					}
+				}
+
+			case .backtab:
+				// Backtab - move to previous editable table column
+				if let tableColumnIndex = self.tableColumns.firstIndex(of: tableColumn),
+						let previousColumnIndex =
+								self.tableColumns[...(tableColumnIndex - 1)].lastIndex(where: { $0.isEditable }) {
+					// Wait a beate
+					DispatchQueue.main.async() { [weak self] in
+						// Start editing
+						self?.editColumn(previousColumnIndex, row: rowIndex, with: nil, select: true)
+					}
+				}
+
+			default:
+				// Do nothing
+				break
+		}
 	}
 
 	//------------------------------------------------------------------------------------------------------------------

@@ -84,9 +84,9 @@ public class AKTTextFieldStepperHelper : NSObject {
 									// Call action proc
 									self.actionProc(isValid)
 								}
-								self.textField.didEndEditingProc = { [unowned self] in
+								self.textField.didEndEditingProc = { [unowned self] string, textMovement in
 									// Setup
-									let	value = self.valueForStringProc($0)
+									let	value = self.valueForStringProc(string)
 
 									// Update UI
 									self.textField.isValueValid = true

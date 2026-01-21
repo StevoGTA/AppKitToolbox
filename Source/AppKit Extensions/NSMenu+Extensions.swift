@@ -27,16 +27,25 @@ public extension NSMenu {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc func menuItem(identifier :NSUserInterfaceItemIdentifier, deep :Bool = false) -> NSMenuItem? {
+	@objc(menuItemForIdentifier:deep:)
+	func menuItem(for identifier :NSUserInterfaceItemIdentifier, deep :Bool = false) -> NSMenuItem? {
 		// Search for NSMenuItem by representedObject
 		return menuItem(matchingProc: { $0.identifier == identifier }, deep: deep)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc func menuItem(representedObject :Any, deep :Bool = false) -> NSMenuItem? {
+	@objc(menuItemForRepresentedObject:deep:)
+	func menuItem(for representedObject :Any, deep :Bool = false) -> NSMenuItem? {
 		// Search for NSMenuItem by representedObject
 		return menuItem(matchingProc: { ($0.representedObject as? NSObject)?.isEqual(to: representedObject) ?? false },
 				deep: deep)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc(menuItemForSelector:deep:)
+	func menuItem(for selector :Selector, deep :Bool = false) -> NSMenuItem? {
+		// Search for NSMenuItem by representedObject
+		return menuItem(matchingProc: { $0.action == selector }, deep: deep)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -63,9 +72,45 @@ public extension NSMenu {
 
 	//------------------------------------------------------------------------------------------------------------------
 	@objc
+	func addItem(withTitle title :String, validationProc :@escaping NSMenuItem.ValidationProc,
+			actionProc :@escaping NSMenuItem.ActionProc) {
+		// Setup
+		let	menuItem = NSMenuItem(title: title, action: nil, keyEquivalent: "")
+		menuItem.set(validationProc: validationProc, actionProc: actionProc)
+
+		// Add item
+		addItem(menuItem)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc
+	func addItem(withTitle title :String, state :NSControl.StateValue, proc :@escaping NSMenuItem.ActionProc) {
+		// Setup
+		let	menuItem = NSMenuItem(title: title, action: nil, keyEquivalent: "")
+		menuItem.state = state
+		menuItem.actionProc = proc
+
+		// Add item
+		addItem(menuItem)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc
 	func addItem(withTitle title :String, proc :@escaping NSMenuItem.ActionProc) {
 		// Setup
 		let	menuItem = NSMenuItem(title: title, action: nil, keyEquivalent: "")
+		menuItem.actionProc = proc
+
+		// Add item
+		addItem(menuItem)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc
+	func addItem(withTitle title :String, tag :Int, proc :@escaping NSMenuItem.ActionProc) {
+		// Setup
+		let	menuItem = NSMenuItem(title: title, action: nil, keyEquivalent: "")
+		menuItem.tag = tag
 		menuItem.actionProc = proc
 
 		// Add item

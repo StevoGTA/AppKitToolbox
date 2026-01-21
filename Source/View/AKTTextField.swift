@@ -12,9 +12,12 @@ public class AKTTextField : NSTextField {
 	@objc	public	var	isValueValid = true { didSet { self.needsDisplay = true } }
 
 	@objc	public	var	didBeginEditingProc :(_ string :String) -> Void = { _ in }
+
 	@objc	public	var	didChangeProc :(_ string :String) -> Void = { _ in }
+
 	@objc	public	var	shouldEndEditing :(_ string :String) -> Bool = { _ in true }
-	@objc	public	var	didEndEditingProc :(_ string :String) -> Void = { _ in }
+	@objc	public	var	didEndEditingProc :(_ string :String, _ textMovement :NSTextMovement) -> Void = { _,_ in }
+
 	@objc	public	var	didCancelEditingProc :() -> Void = {}
 
 	// MARK: NSView methods
@@ -70,10 +73,18 @@ public class AKTTextField : NSTextField {
 		// Do super
 		super.textDidEndEditing(notification)
 
-		// Check if actually editing
-		if self.currentEditor() != nil {
-			// Call proc
-			self.didEndEditingProc(self.stringValue)
+		// Get info
+		let	textMovement =
+					NSTextMovement(rawValue: (notification.userInfo?["NSTextMovement"] as? Int) ??
+							NSTextMovement.other.rawValue)!
+
+		// Check if cancelled
+		if textMovement != .cancel {
+			// Not cancelled
+			self.didEndEditingProc(self.stringValue, textMovement)
+		} else {
+			// Cancelled
+			self.didCancelEditingProc()
 		}
 	}
 

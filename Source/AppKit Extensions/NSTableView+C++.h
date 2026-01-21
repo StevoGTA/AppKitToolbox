@@ -1,20 +1,21 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	AKTWindow.h			©2021 Stevo Brock		All rights reserved.
+//	NSTableView+C++.h			©2026 Stevo Brock		All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
+
+#include "CString.h"
 
 #import <AppKit/AppKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: AKTWindow
+// MARK: NSTableView extension
 
-@interface AKTWindow : NSWindow
+@interface NSTableView (Cpp)
 
 // MARK: Instance methods
 
-- (void) addKeyboardInputHandlerWithKeyDownProc:(BOOL (^)(NSEvent* event)) keyDownProc
-		keyUpProc:(BOOL (^)(NSEvent* event)) keyUpProc;
+- (nullable NSTableColumn*) tableColumnWithIdentifierString:(const CString&) string;
 
 @end
 
