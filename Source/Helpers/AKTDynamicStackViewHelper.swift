@@ -6,6 +6,7 @@ import AppKit
 
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: AKTDynamicStackViewHelper
+@MainActor
 public class AKTDynamicStackViewHelper : NSObject {
 
 	// MARK: Procs

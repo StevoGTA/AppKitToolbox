@@ -6,6 +6,7 @@ import AppKit
 
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: AKTSliderHelper
+@MainActor
 class AKTSliderHelper : NSObject {
 
 	// MARK: Properties

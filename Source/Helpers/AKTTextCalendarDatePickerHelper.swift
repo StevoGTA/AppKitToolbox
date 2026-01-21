@@ -6,6 +6,7 @@ import AppKit
 
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: AKTTextCalendarDatePickerHelper
+@MainActor
 class AKTTextCalendarDatePickerHelper : NSObject {
 
 	// MARK: Properties
