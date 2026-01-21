@@ -6,6 +6,7 @@ import AppKit
 
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: NSMenu extension
+@MainActor
 public extension NSMenu {
 
 	// MARK: Instance methods
@@ -71,7 +72,6 @@ public extension NSMenu {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@MainActor
 	@objc
 	func addItem(withTitle title :String, validationProc :@escaping NSMenuItem.ValidationProc,
 			actionProc :@escaping NSMenuItem.ActionProc) {
