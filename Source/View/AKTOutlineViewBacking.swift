@@ -47,20 +47,6 @@ public class AKTOutlineViewBacking : OutlineViewBacking, NSOutlineViewDataSource
 
 				private			var	setSortDescriptorsInProgress = false
 
-	// MARK: Lifecycle methods
-	//------------------------------------------------------------------------------------------------------------------
-	public override func awakeFromNib() {
-		// Do super
-		super.awakeFromNib()
-
-		// Setup
-		self.outlineView?.dataSource = self
-		self.outlineView?.delegate = self
-		self.outlineTableColumnIndex =
-				(self.outlineView?.outlineTableColumn != nil) ?
-						self.outlineView!.tableColumns.firstIndex(of: self.outlineView!.outlineTableColumn!) : nil
-	}
-
 	// MARK: OutlineViewBacking methods
 	//------------------------------------------------------------------------------------------------------------------
 	public override func set(sortDescriptors: [NSSortDescriptor]) {
@@ -195,6 +181,16 @@ public class AKTOutlineViewBacking : OutlineViewBacking, NSOutlineViewDataSource
     }
 
     // MARK: Instance methods
+	//------------------------------------------------------------------------------------------------------------------
+	@objc func setup() {
+		// Setup
+		self.outlineView?.dataSource = self
+		self.outlineView?.delegate = self
+		self.outlineTableColumnIndex =
+				(self.outlineView?.outlineTableColumn != nil) ?
+						self.outlineView!.tableColumns.firstIndex(of: self.outlineView!.outlineTableColumn!) : nil
+	}
+	
 	//------------------------------------------------------------------------------------------------------------------
 	@objc(objectAtRow:)
 	func object(at row :Int) -> Any { object(for: self.outlineView.item(atRow: row) as! String) }

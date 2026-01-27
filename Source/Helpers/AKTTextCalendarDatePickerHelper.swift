@@ -30,12 +30,9 @@ class AKTTextCalendarDatePickerHelper : NSObject {
 	@IBOutlet	var	textDatePickerBottomConstraint :NSLayoutConstraint?
 	@IBOutlet	var	calendarDatePickerBottomConstraint :NSLayoutConstraint?
 
-	// MARK: NSObject methods
+	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
-	public override func awakeFromNib() {
-		// Do super
-		super.awakeFromNib()
-
+	@objc func setup() {
 		// Setup
 		self.textDatePicker?.actionProc = { [unowned self] _ in
 			// Update the other one
@@ -61,7 +58,6 @@ class AKTTextCalendarDatePickerHelper : NSObject {
 		}
 	}
 
-	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
 	@objc(setDatePickerElements:)
 	func set(datePickerElements :NSDatePicker.ElementFlags) {

@@ -31,17 +31,13 @@ public class AKTDynamicStackViewHelper : NSObject {
 	@IBOutlet	var	stackView :AKTStackView!
 	@IBOutlet	var	addButton :NSButton!
 
-	// MARK: NSObject methods
+	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
-	public override func awakeFromNib() {
-		// Do super
-		super.awakeFromNib()
-
+	@objc func setup() {
 		// Setup
 		self.addButton?.actionProc = { [unowned self] _ in self.add(self.createRemovableViewControllerProc()) }
 	}
 
-	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
 	@objc
 	public func add(_ removableViewController :AKTRemovableViewController) {

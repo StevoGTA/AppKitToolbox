@@ -17,14 +17,7 @@ public class AKTSectionView : NSView {
 			private	var	contentView :NSView?
 			private	var	contentViewTrailingLayoutConstraint :NSLayoutConstraint?
 
-			private	var	notificationObserver :NSObjectProtocol?
-
-	// MARK: Lifecycle methods
-	//------------------------------------------------------------------------------------------------------------------
-	deinit {
-		// Cleanup
-		cleanup()
-	}
+			private	var	notificationObserver :NotificationCenter.Observer?
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
@@ -79,10 +72,13 @@ public class AKTSectionView : NSView {
 		previousView?.alignBottom(to: self.contentView!, constant: -self.contentInsets.bottom)
 		updateLayoutConstraint()
 
-		// Setup Notifications
+		// Setup Notification
 		self.notificationObserver =
-				NotificationCenter.default.addObserver(forName: NSView.frameDidChangeNotification,
-						object: self.contentClipView!, using: { [unowned self] _ in self.updateLayoutConstraint() })
+				NotificationCenter.Observer(name: NSView.frameDidChangeNotification, object: self.contentClipView,
+						proc: { [unowned self] _ in
+							// Update layout constraint
+							MainActor.assumeIsolated() { self.updateLayoutConstraint() }
+						})
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -184,7 +180,7 @@ public class AKTSectionView : NSView {
 		self.contentScrollView = nil
 		self.contentViewTrailingLayoutConstraint = nil
 
-		if self.notificationObserver != nil { NotificationCenter.default.removeObserver(self.notificationObserver!) }
+		self.notificationObserver = nil
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
