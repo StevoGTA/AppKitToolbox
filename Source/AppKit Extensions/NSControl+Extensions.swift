@@ -60,7 +60,7 @@ public extension NSControl {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc(setIntegerValue:animatd:)
+	@objc(setIntegerValue:animated:)
 	func set(integerValue :Int, animated :Bool = false) {
 		// Check animated
 		if animated {
