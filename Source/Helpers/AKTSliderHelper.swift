@@ -39,7 +39,7 @@ class AKTSliderHelper : NSObject {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc(setIntegerValue:animatd:)
+	@objc(setIntegerValue:animated:)
 	func set(integerValue :Int, animated :Bool = false) {
 		// Update UI
 		self.slider.set(integerValue: integerValue, animated: animated)
