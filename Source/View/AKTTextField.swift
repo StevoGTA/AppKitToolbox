@@ -20,6 +20,8 @@ public class AKTTextField : NSTextField {
 
 	@objc	public	var	didCancelEditingProc :() -> Void = {}
 
+			private	var	isCancellingOperation = false
+
 	// MARK: NSView methods
 	//------------------------------------------------------------------------------------------------------------------
 	override public func draw(_ dirtyRect :NSRect) {
@@ -79,15 +81,24 @@ public class AKTTextField : NSTextField {
 							NSTextMovement.other.rawValue)!
 
 		// Check if cancelled
-		if textMovement != .cancel {
-			// Not cancelled
-			self.didEndEditingProc(self.stringValue, textMovement)
-		} else {
+		if self.isCancellingOperation || (textMovement == .cancel) {
 			// Cancelled
 			self.didCancelEditingProc()
+		} else {
+			// Not cancelled
+			self.didEndEditingProc(self.stringValue, textMovement)
 		}
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	override public func cancelOperation(_ sender :Any?) { self.didCancelEditingProc() }
+	override public func cancelOperation(_ sender :Any?) {
+		// Cancel operation
+		self.isCancellingOperation = true
+
+		// Make something else the first responder
+		self.window?.makeFirstResponder(nil)
+
+		// All done
+		self.isCancellingOperation = false
+	}
 }

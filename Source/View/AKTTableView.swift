@@ -17,6 +17,8 @@ public class AKTTableView : NSTableView {
 	// MARK: Properties
 	public	var	menuProc :MenuProc? = nil
 
+	private	var	doubleActionDidBeginEditingProc :() -> Void = {}
+
 	// MARK: NSView methods
 	//------------------------------------------------------------------------------------------------------------------
 	override public func menu(for event :NSEvent) -> NSMenu? {
@@ -31,5 +33,30 @@ public class AKTTableView : NSTableView {
 			// No menuProc
 			return self.menu
 		}
+	}
+
+	// MARK: Instance methods
+	//------------------------------------------------------------------------------------------------------------------
+	@objc func setDoubleActionToEditCell(_ doubleActionDidBeginEditingProc :@escaping () -> Void) {
+		// Store
+		self.doubleActionDidBeginEditingProc = doubleActionDidBeginEditingProc
+
+		// Setup
+		self.target = self
+		self.doubleAction = #selector(doubleActionEditCell)
+	}
+
+	// MARK: Private methods
+	//------------------------------------------------------------------------------------------------------------------
+	@objc private func doubleActionEditCell(_ sender :Any) {
+		// Ensure we clicked on something
+		let	clickedRow = self.clickedRow
+		guard clickedRow != -1 else { return }
+
+		// Start editing
+		editColumn(self.clickedColumn, row: clickedRow, with: nil, select: true)
+
+		// Call proc
+		self.doubleActionDidBeginEditingProc()
 	}
 }

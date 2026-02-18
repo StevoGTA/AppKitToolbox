@@ -25,6 +25,10 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype) menuItemWithString:(const CString&) string representedObject:(NSObject*) representedObject;
 + (instancetype) menuItemWithString:(const CString&) string;
 
+// MARK: Instance methods
+
+- (void) setTitleWithString:(const CString&) string;
+
 @end
 
 NS_ASSUME_NONNULL_END

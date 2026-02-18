@@ -86,4 +86,12 @@
 	return [[NSMenuItem alloc] initWithTitle:(__bridge NSString*) string.getOSString() action:nil keyEquivalent:@""];
 }
 
+// MARK: Instance methods
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) setTitleWithString:(const CString&) string
+{
+	self.title = [(__bridge NSString*) string.getOSString() copy];
+}
+
 @end
