@@ -126,8 +126,8 @@
 {
 	// Setup
 	[self removeAllItems];
-	for (TIteratorD<SLocalization::Currency> iterator1 = SLocalization::Currency::getAll().getIterator();
-			iterator1.hasValue(); iterator1.advance()) {
+	for (TArray<SLocalization::Currency>::Iterator iterator1 = SLocalization::Currency::getAll().getIterator();
+			iterator1; iterator1++) {
 		// Check if common
 		if (iterator1->isCommon())
 			// Found common
@@ -135,8 +135,8 @@
 					representedObject:(__bridge NSString*) iterator1->getISO4217Code().getOSString()];
 	}
 	[self.menu addItem:NSMenuItem.separatorItem];
-	for (TIteratorD<SLocalization::Currency> iterator2 = SLocalization::Currency::getAll().getIterator();
-			iterator2.hasValue(); iterator2.advance()) {
+	for (TArray<SLocalization::Currency>::Iterator iterator2 = SLocalization::Currency::getAll().getIterator();
+			iterator2; iterator2++) {
 		// Check if common
 		if (!iterator2->isCommon())
 			// Found not common
@@ -168,16 +168,16 @@
 {
 	// Setup
 	[self removeAllItems];
-	for (TIteratorD<SLocalization::Language> iterator1 = SLocalization::Language::getAll().getIterator();
-			iterator1.hasValue(); iterator1.advance()) {
+	for (TArray<SLocalization::Language>::Iterator iterator1 = SLocalization::Language::getAll().getIterator();
+			iterator1; iterator1++) {
 		// Check if common
 		if (iterator1->isCommon())
 			// Found common
 			[self addItemWithString:iterator1->getDisplayName() tag:iterator1->getISO639_2_Code()];
 	}
 	[self.menu addItem:NSMenuItem.separatorItem];
-	for (TIteratorD<SLocalization::Language> iterator2 = SLocalization::Language::getAll().getIterator();
-			iterator2.hasValue(); iterator2.advance()) {
+	for (TArray<SLocalization::Language>::Iterator iterator2 = SLocalization::Language::getAll().getIterator();
+			iterator2; iterator2++) {
 		// Check if common
 		if (!iterator2->isCommon())
 			// Found not common

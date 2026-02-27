@@ -151,7 +151,7 @@
 {
 	// Convert
 	NSMutableArray<NSSortDescriptor*>*	sortDescriptors_ = [[NSMutableArray alloc] init];
-	for (TIteratorD<SSortDescriptor> iterator = sortDescriptors.getIterator(); iterator.hasValue(); iterator.advance())
+	for (TArray<SSortDescriptor>::Iterator iterator = sortDescriptors.getIterator(); iterator; iterator++)
 		// Add
 		[sortDescriptors_
 				addObject:
@@ -227,8 +227,7 @@
 {
 	// Convert array
 	NSMutableArray<OutlineViewBackingItem*>*	outlineViewBackingItems = [[NSMutableArray alloc] init];
-	for (TIteratorD<I<COutlineViewItem> > iterator = outlineViewItems.getIterator(); iterator.hasValue();
-			iterator.advance())
+	for (TArray<I<COutlineViewItem> >::Iterator iterator = outlineViewItems.getIterator(); iterator; iterator++)
 		// Add Outline View Backing Item
 		[outlineViewBackingItems
 			addObject:
@@ -256,8 +255,7 @@
 {
 	// Compose row indexes
 	NSMutableIndexSet*	indexSet = [[NSMutableIndexSet alloc] init];
-	for (TIteratorD<I<COutlineViewItem> > iterator = outlineViewItems.getIterator(); iterator.hasValue();
-			iterator.advance())
+	for (TArray<I<COutlineViewItem> >::Iterator iterator = outlineViewItems.getIterator(); iterator; iterator++)
 		// Add index
 		[indexSet addIndex:[self.outlineView rowForItem:(__bridge NSString*) (*iterator)->getID().getOSString()]];
 
