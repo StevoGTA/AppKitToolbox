@@ -19,9 +19,15 @@ public extension NSViewController {
 
 	//------------------------------------------------------------------------------------------------------------------
 	@objc(presentAlert:completionHandler:)
-	func present(_ alert :NSAlert,
-			completionProc :@escaping (_ modalResponse :NSApplication.ModalResponse) -> Void = { _ in }) {
+	func present(_ alert :NSAlert, completionProc :@escaping (_ modalResponse :NSApplication.ModalResponse) -> Void) {
 		// Present
 		self.view.window?.present(alert, completionProc: completionProc)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc(presentAlert:)
+	func present(_ alert :NSAlert) {
+		// Present
+		self.view.window?.present(alert, completionProc: { _,_ in })
 	}
 }
