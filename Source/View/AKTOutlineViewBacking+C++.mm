@@ -4,6 +4,7 @@
 
 #import "AKTOutlineViewBacking+C++.h"
 
+#import "CCoreFoundation.h"
 #import "CppWrapper.h"
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -11,7 +12,25 @@
 
 @implementation AKTOutlineViewBacking (Cpp)
 
-// MARK: Property methods
+// MARK: Properties
+
+//----------------------------------------------------------------------------------------------------------------------
+- (TArray<I<COutlineViewItem> >) expandedOutlineViewItems
+{
+	// Translate items
+	TNArray<I<COutlineViewItem> >	outlineViewItems;
+	for (id object in self.expandedObjects)
+		// Add item
+		outlineViewItems += *((I<COutlineViewItem>*) ((CppWrapper*) object).object);
+
+	return outlineViewItems;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (TArray<CString>) expandedOutlineViewItemIDs
+{
+	return CCoreFoundation::arrayOfStringsFrom((__bridge CFArrayRef) self.expandedObjectIDs);
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 - (TArray<I<COutlineViewItem> >) selectedOutlineViewItems
@@ -23,6 +42,12 @@
 		outlineViewItems += *((I<COutlineViewItem>*) ((CppWrapper*) object).object);
 
 	return outlineViewItems;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (TArray<CString>) selectedOutlineViewItemIDs
+{
+	return CCoreFoundation::arrayOfStringsFrom((__bridge CFArrayRef) self.selectedObjectIDs);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -71,7 +96,7 @@
 - (void) setCompareOutlineViewItemsProc:(AKTOutlineViewBackingCompareOutlineViewItemsProc) compareOutlineViewItemsProc
 {
 	// Set proc
-	self.compareObjectsProc =
+	self.compareItemsProc =
 			^(OutlineViewBackingItem* outlineViewBackingItem1, OutlineViewBackingItem* outlineViewBackingItem2,
 					NSArray<NSSortDescriptor*>* sortDescriptors){
 				// Setup
@@ -117,7 +142,7 @@
 - (void) setOutlineViewItemViewProc:(AKTOutlineViewBackingOutlineItemViewProc) outlineViewItemViewProc
 {
 	// Set proc
-	self.itemViewProc =
+	self.objectViewProc =
 			^(NSOutlineView* outlineView, NSTableColumn* tableColumn, NSInteger rowIndex, id object){
 				// Call proc
 				return outlineViewItemViewProc(outlineView, tableColumn, rowIndex,
@@ -136,7 +161,7 @@
 		(AKTOutlineViewBackingShouldEditItemProc) outlineViewBackingShouldEditItemProc
 {
 	// Set proc
-	self.shouldEditItemProc =
+	self.shouldEditObjectProc =
 			^(NSOutlineView* outlineView, NSTableColumn* tableColumn, id object){
 				// Call proc
 				return outlineViewBackingShouldEditItemProc(outlineView, tableColumn,
@@ -188,6 +213,21 @@
 - (I<COutlineViewItem>) outlineViewItemAtRow:(NSInteger) row
 {
 	return *((I<COutlineViewItem>*) ((CppWrapper*) [self objectAtRow:row]).object);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) expandOutlineViewItemIDs:(const TArray<CString>&) outlineViewItemIDs
+{
+	// Expand outline view items
+	[self.outlineView expandItems:(__bridge NSArray<NSString*>*) *CCoreFoundation::arrayRefFrom(outlineViewItemIDs)];
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) setSelectedOutlineViewItemIDs:(const TArray<CString>&) outlineViewItemIDs
+{
+	// Select outline view items
+	[self.outlineView selectItems:(__bridge NSArray<NSString*>*) *CCoreFoundation::arrayRefFrom(outlineViewItemIDs)
+			byExtendingSelection:NO];
 }
 
 //----------------------------------------------------------------------------------------------------------------------

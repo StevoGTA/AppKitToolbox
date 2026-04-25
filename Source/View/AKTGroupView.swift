@@ -285,34 +285,36 @@ public class AKTGroupView : NSView {
 public class AKTCollapsibleGroupView : AKTGroupView {
 
 	// MARK: Properties
-	private	let	titleView :NSView
+	@objc	private(set)	var	isCollapsed = false
 
-	private	var	heightLayoutConstraint :NSLayoutConstraint!
-	private	var	isCollapsed = false
+			private			let	button :NSButton
+			private			let	titleView :NSView
+
+			private			var	heightLayoutConstraint :NSLayoutConstraint!
 
 	// MARK: Lifecycle methods
 	//------------------------------------------------------------------------------------------------------------------
 	@objc init(title :String, itemLeadingInset :CGFloat, itemTrailingInset :CGFloat) {
 		// Compose button
-		let	button = NSButton(frame: NSRect(x: 0.0, y: 0.0, width: 13.0, height: 13.0))
-		button.bezelStyle = .disclosure
-		button.setButtonType(.pushOnPushOff)
-		button.title = ""
-		button.state = .on
+		self.button = NSButton(frame: NSRect(x: 0.0, y: 0.0, width: 13.0, height: 13.0))
+		self.button.bezelStyle = .disclosure
+		self.button.setButtonType(.pushOnPushOff)
+		self.button.title = ""
+		self.button.state = .on
 
 		// Compose title
 		let	titleLabel = AKTLabel(string: title, font: NSFont.boldSystemFont(ofSize: 12.0))
 
 		// Compose title view
 		self.titleView = NSView()
-		self.titleView.addSubview(button)
+		self.titleView.addSubview(self.button)
 		self.titleView.addSubview(titleLabel)
 
-		button.alignLeading(to: self.titleView)
-		titleLabel.spaceHorizontally(from: button, constant: 8.0)
+		self.button.alignLeading(to: self.titleView)
+		titleLabel.spaceHorizontally(from: self.button, constant: 8.0)
 		titleLabel.alignTrailing(to: self.titleView)
 
-		titleLabel.alignCenterY(to: button)
+		titleLabel.alignCenterY(to: self.button)
 		titleLabel.alignTop(to: self.titleView)
 		titleLabel.alignBottom(to: self.titleView)
 
@@ -324,31 +326,31 @@ public class AKTCollapsibleGroupView : AKTGroupView {
 		self.heightLayoutConstraint.priority = NSLayoutConstraint.Priority(rawValue: 100)
 
 		// Setup button
-		setup(button: button)
+		setupButton()
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	@objc init(title :String, itemLeadingInset :CGFloat) {
 		// Compose button
-		let	button = NSButton(frame: NSRect(x: 0.0, y: 0.0, width: 13.0, height: 13.0))
-		button.bezelStyle = .disclosure
-		button.setButtonType(.pushOnPushOff)
-		button.title = ""
-		button.state = .on
+		self.button = NSButton(frame: NSRect(x: 0.0, y: 0.0, width: 13.0, height: 13.0))
+		self.button.bezelStyle = .disclosure
+		self.button.setButtonType(.pushOnPushOff)
+		self.button.title = ""
+		self.button.state = .on
 
 		// Compose title
 		let	titleLabel = AKTLabel(string: title, font: NSFont.boldSystemFont(ofSize: 12.0))
 
 		// Compose title view
 		self.titleView = NSView()
-		self.titleView.addSubview(button)
+		self.titleView.addSubview(self.button)
 		self.titleView.addSubview(titleLabel)
 
-		button.alignLeading(to: self.titleView)
-		titleLabel.spaceHorizontally(from: button, constant: 8.0)
+		self.button.alignLeading(to: self.titleView)
+		titleLabel.spaceHorizontally(from: self.button, constant: 8.0)
 		titleLabel.alignTrailing(to: self.titleView)
 
-		titleLabel.alignCenterY(to: button)
+		titleLabel.alignCenterY(to: self.button)
 		titleLabel.alignTop(to: self.titleView)
 		titleLabel.alignBottom(to: self.titleView)
 
@@ -360,31 +362,31 @@ public class AKTCollapsibleGroupView : AKTGroupView {
 		self.heightLayoutConstraint.priority = NSLayoutConstraint.Priority(rawValue: 100)
 
 		// Setup button
-		setup(button: button)
+		setupButton()
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	@objc init(title :String) {
 		// Compose button
-		let	button = NSButton(frame: NSRect(x: 0.0, y: 0.0, width: 13.0, height: 13.0))
-		button.bezelStyle = .disclosure
-		button.setButtonType(.pushOnPushOff)
-		button.title = ""
-		button.state = .on
+		self.button = NSButton(frame: NSRect(x: 0.0, y: 0.0, width: 13.0, height: 13.0))
+		self.button.bezelStyle = .disclosure
+		self.button.setButtonType(.pushOnPushOff)
+		self.button.title = ""
+		self.button.state = .on
 
 		// Compose title
 		let	titleLabel = AKTLabel(string: title, font: NSFont.boldSystemFont(ofSize: 12.0))
 
 		// Compose title view
 		self.titleView = NSView()
-		self.titleView.addSubview(button)
+		self.titleView.addSubview(self.button)
 		self.titleView.addSubview(titleLabel)
 
-		button.alignLeading(to: self.titleView)
-		titleLabel.spaceHorizontally(from: button, constant: 8.0)
+		self.button.alignLeading(to: self.titleView)
+		titleLabel.spaceHorizontally(from: self.button, constant: 8.0)
 		titleLabel.alignTrailing(to: self.titleView)
 
-		titleLabel.alignCenterY(to: button)
+		titleLabel.alignCenterY(to: self.button)
 		titleLabel.alignTop(to: self.titleView)
 		titleLabel.alignBottom(to: self.titleView)
 
@@ -396,7 +398,7 @@ public class AKTCollapsibleGroupView : AKTGroupView {
 		self.heightLayoutConstraint.priority = NSLayoutConstraint.Priority(rawValue: 100)
 
 		// Setup button
-		setup(button: button)
+		setupButton()
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -415,28 +417,55 @@ public class AKTCollapsibleGroupView : AKTGroupView {
 		}
 	}
 
+	//------------------------------------------------------------------------------------------------------------------
+	public override func layout() {
+		// Do super
+		super.layout()
+
+		// Check if collapsed
+		if self.isCollapsed && (self.heightLayoutConstraint.constant == 0) {
+			// Update button
+			self.button.state = .off
+			
+			// Update constraints
+			NSLayoutConstraint.deactivate([self.bottomViewBottomLayoutConstraint])
+			NSLayoutConstraint.activate([self.heightLayoutConstraint])
+			self.heightLayoutConstraint.constant = self.titleView.bounds.height
+
+			// Update child views
+			self.subviews.filter({ $0 != self.titleView }).forEach() { $0.isHidden = true }
+		}
+	}
+
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
 	@objc(setCollapsed:completionProc:)
-	func set(collapsed :Bool, completionProc :@escaping () -> Void = {}) {
+	func set(collapsed :Bool, completionProc :@escaping () -> Void) {
 		// Check if changing
 		if collapsed != self.isCollapsed {
 			// Set new value
 			self.isCollapsed = collapsed
 
-			// Update UI
-			self.isCollapsedChanged(completionProc: completionProc)
+			// Check if layout is stable
+			if !self.needsLayout {
+				// Update UI
+				self.isCollapsedChanged(completionProc: completionProc)
+			}
 		} else {
 			// Nothing to do, call proc
 			completionProc()
 		}
 	}
 
+	//------------------------------------------------------------------------------------------------------------------
+	@objc(setCollapsed:)
+	func set(collapsed :Bool) { set(collapsed: collapsed, completionProc: {}) }
+
 	// MARK: Private methods
 	//------------------------------------------------------------------------------------------------------------------
-	private func setup(button :NSButton) {
+	private func setupButton() {
 		// Setup button
-		button.actionProc = { [unowned self] _ in
+		self.button.actionProc = { [unowned self] _ in
 			// Toggle value
 			self.isCollapsed.toggle()
 

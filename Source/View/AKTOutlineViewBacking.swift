@@ -9,9 +9,16 @@ import AppKit
 public class AKTOutlineViewBacking : OutlineViewBacking, NSOutlineViewDataSource, NSOutlineViewDelegate {
 
 	// MARK: Properties
+	@objc		public			var expandedObjects :[Any]
+											{ objects(for: self.outlineView.expandedItems.map({ $0 as! String })) }
+	@objc		public			var	expandedObjectIDs :[String]
+											{ self.outlineView.expandedItems.map({ $0 as! String }) }
+
 	@objc		public			var	selectedObjectsCount :Int { self.outlineView.selectedItems.count }
 	@objc		public			var	selectedObjects :[Any]
 											{ objects(for: self.outlineView.selectedItems.map({ $0 as! String })) }
+	@objc		public			var	selectedObjectIDs :[String]
+											{ self.outlineView.selectedItems.map({ $0 as! String }) }
 
 	@objc		public			var	tableColumnDidMoveProc
 										:(_ outlineView :NSOutlineView, _ tableColumn :NSTableColumn, _ oldIndex :Int,
@@ -20,13 +27,13 @@ public class AKTOutlineViewBacking : OutlineViewBacking, NSOutlineViewDataSource
 										:(_ outlineView :NSOutlineView, _ tableColumn :NSTableColumn) -> Void =
 												{ _,_ in }
 
-	@objc		public			var	itemRowViewProc
-											:(_ outlineView :NSOutlineView, _ item :Any) -> NSView? = { _,_ in nil }
-	@objc		public			var	itemViewProc
+	@objc		public			var	objectRowViewProc
+											:(_ outlineView :NSOutlineView, _ object :Any) -> NSView? = { _,_ in nil }
+	@objc		public			var	objectViewProc
 										:(_ outlineView :NSOutlineView, _ tableColumn :NSTableColumn, _ rowIndex :Int,
-												_ item :Any) -> NSView? = { _,_,_,_ in nil }
-	@objc		public			var	itemDidExpandProc :(_ item :Any) -> Void = { _ in }
-	@objc		public			var	itemDidCollapseProc :(_ item :Any) -> Void = { _ in }
+												_ object :Any) -> NSView? = { _,_,_,_ in nil }
+	@objc		public			var	objectDidExpandProc :(_ object :Any) -> Void = { _ in }
+	@objc		public			var	objectDidCollapseProc :(_ object :Any) -> Void = { _ in }
 
 	@objc		public			var	selectionShouldChangeProc :() -> Bool = { true }
 	@objc		public			var	selectionDidChangeProc :() -> Void = {}
@@ -35,10 +42,10 @@ public class AKTOutlineViewBacking : OutlineViewBacking, NSOutlineViewDataSource
 										:(_ outlineView :NSOutlineView, _ sortDescriptors :[NSSortDescriptor]) -> Void =
 												{ _,_ in }
 
-	@objc		public			var	shouldEditItemRowProc
-										:(_ outlineView :NSOutlineView, _ item :Any) -> Bool = { _,_ in false }
-	@objc		public			var	shouldEditItemProc
-										:(_ outlineView :NSOutlineView, _ tableColumn :NSTableColumn, _ item :Any) ->
+	@objc		public			var	shouldEditObjectRowProc
+										:(_ outlineView :NSOutlineView, _ object :Any) -> Bool = { _,_ in false }
+	@objc		public			var	shouldEditObjectProc
+										:(_ outlineView :NSOutlineView, _ tableColumn :NSTableColumn, _ object :Any) ->
 												Bool = { _,_,_ in false }
 
 	@IBOutlet			weak	var	outlineView :NSOutlineView!
@@ -120,13 +127,13 @@ public class AKTOutlineViewBacking : OutlineViewBacking, NSOutlineViewDataSource
 	//------------------------------------------------------------------------------------------------------------------
 	public func outlineViewItemDidExpand(_ notification: Notification) {
 		// Call proc
-		self.itemDidExpandProc(object(for: notification.userInfo!["NSObject"] as! String))
+		self.objectDidExpandProc(object(for: notification.userInfo!["NSObject"] as! String))
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	public func outlineViewItemDidCollapse(_ notification: Notification) {
 		// Call proc
-		self.itemDidCollapseProc(object(for: notification.userInfo!["NSObject"] as! String))
+		self.objectDidCollapseProc(object(for: notification.userInfo!["NSObject"] as! String))
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -140,10 +147,10 @@ public class AKTOutlineViewBacking : OutlineViewBacking, NSOutlineViewDataSource
 		// Return view
 		if tableColumn == nil {
 			// Row view
-			return self.itemRowViewProc(outlineView, object(for: (item as! String)))
+			return self.objectRowViewProc(outlineView, object(for: (item as! String)))
 		} else if tableColumn != outlineView.outlineTableColumn {
 			// Cell view
-			return self.itemViewProc(outlineView, tableColumn!, self.outlineView.row(forItem: item),
+			return self.objectViewProc(outlineView, tableColumn!, self.outlineView.row(forItem: item),
 					object(for: (item as! String)))
 		} else {
 			// Outline Table Column
@@ -176,8 +183,8 @@ public class AKTOutlineViewBacking : OutlineViewBacking, NSOutlineViewDataSource
     public func outlineView(_ outlineView :NSOutlineView, shouldEdit tableColumn :NSTableColumn?, item :Any) -> Bool {
     	// Call proc
     	return (tableColumn == nil) ?
-    			self.shouldEditItemRowProc(outlineView, object(for: (item as! String))) :
-    			self.shouldEditItemProc(outlineView, tableColumn!, object(for: (item as! String)))
+    			self.shouldEditObjectRowProc(outlineView, object(for: (item as! String))) :
+    			self.shouldEditObjectProc(outlineView, tableColumn!, object(for: (item as! String)))
     }
 
     // MARK: Instance methods

@@ -37,7 +37,12 @@ typedef	BOOL							(^AKTOutlineViewBackingShouldEditItemProc)(NSOutlineView* out
 
 // MARK: Properties
 
+@property (nonatomic, readonly)	TArray<I<COutlineViewItem> >							expandedOutlineViewItems;
+@property (nonatomic, readonly)	TArray<CString>											expandedOutlineViewItemIDs;
+
 @property (nonatomic, readonly)	TArray<I<COutlineViewItem> >							selectedOutlineViewItems;
+@property (nonatomic, readonly)	TArray<CString>											selectedOutlineViewItemIDs;
+
 @property (nonatomic, readonly)	TArray<I<COutlineViewItem> >							topLevelOutlineViewItems;
 
 @property (nonatomic, assign)	AKTOutlineViewBackingSortDescriptorsDidChangeProc		cppSortDescriptorsDidChangeProc;
@@ -57,6 +62,10 @@ typedef	BOOL							(^AKTOutlineViewBackingShouldEditItemProc)(NSOutlineView* out
 - (void) addOutlineViewItems:(const TArray<I<COutlineViewItem> >&) outlineViewItems;
 - (void) removeOutlineViewItems:(const TArray<I<COutlineViewItem> >&) outlineViewItems;
 - (I<COutlineViewItem>) outlineViewItemAtRow:(NSInteger) row;
+
+- (void) expandOutlineViewItemIDs:(const TArray<CString>&) outlineViewItemIDs;
+
+- (void) setSelectedOutlineViewItemIDs:(const TArray<CString>&) outlineViewItemIDs;
 
 - (void) reloadTableColumn:(const CTableColumn&) tableColumn;
 

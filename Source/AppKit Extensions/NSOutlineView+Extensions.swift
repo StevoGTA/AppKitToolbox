@@ -9,6 +9,7 @@ import AppKit
 public extension NSOutlineView {
 
 	// MARK: Properties
+	var	expandedItems :[Any] { (0..<self.numberOfRows).compactMap({ item(atRow: $0) }).filter({ isItemExpanded($0) }) }
 	var	selectedItems :[Any] { items(for: self.selectedRowIndexes) }
 
 	// MARK: Instance methods
@@ -42,10 +43,24 @@ public extension NSOutlineView {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	func select(_ item :Any? = nil) {
+	@objc func collapseItems(_ items :[Any]) { items.forEach({ collapseItem($0) }) }
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc func expandItems(_ items :[Any]) { items.forEach({ expandItem($0) }) }
+
+	//------------------------------------------------------------------------------------------------------------------
+	func select(_ item :Any? = nil, byExtendingSelection :Bool = false) {
 		// Select
 		selectRowIndexes((item != nil) ? IndexSet(integer: row(forItem: item)) : IndexSet(),
-				byExtendingSelection: false)
+				byExtendingSelection: byExtendingSelection)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc(selectItems:byExtendingSelection:)
+	func select(_ items :[Any] = [], byExtendingSelection :Bool = false) {
+		// Select
+		selectRowIndexes(IndexSet(items.map({ row(forItem: $0) })),
+				byExtendingSelection: byExtendingSelection)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
