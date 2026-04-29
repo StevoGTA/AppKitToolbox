@@ -64,6 +64,13 @@ static	MTLRenderPassDescriptor*	sGetCurrentRenderPassDescriptor(AKTMetalView* me
 	return self;
 }
 
+//----------------------------------------------------------------------------------------------------------------------
+- (void) dealloc
+{
+	// Cleanup
+	Delete(self.gpuInternal);
+}
+
 // MARK: NSResponder methods
 
 //----------------------------------------------------------------------------------------------------------------------
