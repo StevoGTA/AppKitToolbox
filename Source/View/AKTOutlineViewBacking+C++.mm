@@ -308,7 +308,7 @@
 	// Compose column indexes
 	NSMutableIndexSet*	indexSet = [[NSMutableIndexSet alloc] init];
 	[self.outlineView.tableColumns
-			enumerateObjectsUsingBlock:^(NSTableColumn* tableColumn, NSUInteger index, BOOL* stop) {
+			enumerateObjectsUsingBlock:^(NSTableColumn* tableColumn, NSUInteger index, BOOL* stop){
 				// Check identifier
 				if (tableColumnIdentifiers.contains(CString((__bridge CFStringRef) tableColumn.identifier)))
 					// Add index

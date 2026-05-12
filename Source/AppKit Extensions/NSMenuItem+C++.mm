@@ -11,7 +11,16 @@
 
 @implementation NSMenuItem (Cpp)
 
-// MARK: Instance methods
+// MARK: Properties
+
+//----------------------------------------------------------------------------------------------------------------------
+- (OV<CString>) representedObjectAsString
+{
+	return (self.representedObject != nil) ?
+			OV<CString>(CString((__bridge CFStringRef) self.representedObject)) : OV<CString>();
+}
+
+// MARK: Class methods
 
 //----------------------------------------------------------------------------------------------------------------------
 + (instancetype) menuItemWithString:(const CString&) string target:(NSObject*) target action:(SEL) action

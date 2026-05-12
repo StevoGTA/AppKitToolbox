@@ -44,6 +44,16 @@
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+- (void) addItemWithString:(const CString&) string representedObject:(id) representedObject
+		indentationLevel:(NSInteger) indentationLevel
+{
+	// Add item
+	[self addItemWithTitle:(__bridge NSString*) string.getOSString()];
+	self.lastItem.representedObject = representedObject;
+	self.lastItem.indentationLevel = indentationLevel;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 - (void) addItemWithString:(const CString&) string tag:(NSInteger) tag representedObject:(id) representedObject
 		indentationLevel:(NSInteger) indentationLevel
 {

@@ -13,6 +13,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NSMenuItem (Cpp)
 
+// MARK: Properties
+
+- (OV<CString>) representedObjectAsString;
+
 // MARK: Class methods
 
 + (instancetype) menuItemWithString:(const CString&) string target:(NSObject*) target action:(SEL) action

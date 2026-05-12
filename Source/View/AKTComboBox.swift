@@ -18,9 +18,9 @@ public class AKTComboBox : NSComboBox {
 								return self.itemByTitle[title]
 							}
 
-	@objc	public	var	didBeginEditingProc :(_ string :String) -> Void = { _ in }
-	@objc	public	var	didChangeProc :(_ string :String) -> Void = { _ in }
-	@objc	public	var	didEndEditingProc :(_ string :String) -> Void = { _ in }
+	@objc	public	var	didBeginEditingProc :(_ comboBox :AKTComboBox, _ string :String) -> Void = { _,_ in }
+	@objc	public	var	didChangeProc :(_ comboBox :AKTComboBox, _ string :String) -> Void = { _,_ in }
+	@objc	public	var	didEndEditingProc :(_ comboBox :AKTComboBox, _ string :String) -> Void = { _,_ in }
 
 			private	var	itemByTitle = [String : Any]()
 
@@ -57,7 +57,7 @@ public class AKTComboBox : NSComboBox {
 		super.textDidBeginEditing(notification)
 
 		// Call proc
-		self.didBeginEditingProc(self.stringValue)
+		self.didBeginEditingProc(self, self.stringValue)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ public class AKTComboBox : NSComboBox {
 		super.textDidChange(notification)
 
 		// Call proc
-		self.didChangeProc(self.stringValue)
+		self.didChangeProc(self, self.stringValue)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -77,7 +77,7 @@ public class AKTComboBox : NSComboBox {
 		// Check if hidden
 		if !self.isHidden {
 			// Call proc
-			self.didEndEditingProc(self.stringValue)
+			self.didEndEditingProc(self, self.stringValue)
 		}
 	}
 

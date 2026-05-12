@@ -4,7 +4,7 @@
 
 #pragma once
 
-#import "CString.h"
+#import "CFile.h"
 
 #import <AppKit/AppKit.h>
 
@@ -17,7 +17,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 // MARK: Properties
 
-@property (nonatomic, assign) CString	nameFieldString;
+@property (nonatomic, readonly)	CFile	file;
+
+@property (nonatomic, assign) 	CString	nameFieldString;
+@property (nonatomic, assign)	CString	extensionString;
 
 @end
 

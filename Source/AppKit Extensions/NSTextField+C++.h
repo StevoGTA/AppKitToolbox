@@ -17,11 +17,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 // MARK: Properties
 
-@property (nonatomic, assign)			CString	string;
-@property (nonatomic, assign, readonly)	OV<CString>	ovString;
+@property (nonatomic, assign)	CString		string;
+@property (nonatomic, assign)	OV<CString>	ovString;
 
 // MARK: Class methods
 
++ (instancetype) createWithPlaceholderString:(const CString&) string;
 + (instancetype) createWithString:(const CString&) string;
 + (instancetype) createWithString:(const CString&) string controlSize:(NSControlSize) controlSize;
 

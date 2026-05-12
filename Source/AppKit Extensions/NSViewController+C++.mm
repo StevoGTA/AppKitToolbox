@@ -7,16 +7,101 @@
 #import "NSString+C++.h"
 #import "AKTProgressViewController+C++.h"
 
+#import <objc/runtime.h>
+
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: NSViewController extension
+// MARK: NSViewControllerNotificationObserverCleanup
+
+@interface NSViewControllerNotificationObserverCleanup : NSObject {
+	// MARK: Properties
+	void*												mViewController;
+	NSMutableArray<NSViewControllerNotificationProc>*	mNotificationProcs;
+}
+
+@end
+
+@implementation NSViewControllerNotificationObserverCleanup
+
+//----------------------------------------------------------------------------------------------------------------------
+- (instancetype) initWithViewController:(NSViewController*) viewController
+//----------------------------------------------------------------------------------------------------------------------
+{
+	if (self = [super init]) {
+		// Store
+		mViewController = (__bridge void*) viewController;
+		mNotificationProcs = [NSMutableArray array];
+	}
+
+	return self;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void*) addNotificationProc:(NSViewControllerNotificationProc) notificationProc
+//----------------------------------------------------------------------------------------------------------------------
+{
+	// The strong assignment triggers objc_retainBlock, which copies a stack block to the heap.
+	// addObject: uses objc_retain (a no-op for stack blocks), so this step must not be skipped.
+	// Blocks passed in are mostly likely stack blocks, so this is necessary to ensure they are retained properly.
+	NSViewControllerNotificationProc	heapNotificationProc = notificationProc;
+	[mNotificationProcs addObject:heapNotificationProc];
+
+	return (__bridge void*) heapNotificationProc;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) dealloc
+//----------------------------------------------------------------------------------------------------------------------
+{
+	// Unregister all observers for this VC
+	CImmediateNotificationCenter::shared().unregisterObserver(mViewController);
+}
+
+@end
+
+//----------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+// MARK: - Local procs
+
+//----------------------------------------------------------------------------------------------------------------------
+static void sHandleNotification(const CString& notificationName, const OR<CNotificationCenter::Sender>& sender,
+		const CDictionary& info, void* userData)
+//----------------------------------------------------------------------------------------------------------------------
+{
+	// Call proc
+	((__bridge NSViewControllerNotificationProc) userData)(notificationName, sender, info);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+// MARK: - NSViewController extension
 
 @implementation NSViewController (Cpp)
 
 //----------------------------------------------------------------------------------------------------------------------
+- (NSViewControllerNotificationObserverCleanup*) notificationObserverCleanup
+//----------------------------------------------------------------------------------------------------------------------
+{
+	// Setup
+	static	const	void*	sKey = &sKey;
+
+	// Get or create cleanup object
+	NSViewControllerNotificationObserverCleanup*	notificationObserverCleanup = objc_getAssociatedObject(self, sKey);
+	if (notificationObserverCleanup == nil) {
+		// Create
+		notificationObserverCleanup = [[NSViewControllerNotificationObserverCleanup alloc] initWithViewController:self];
+
+		// Associate
+		objc_setAssociatedObject(self, sKey, notificationObserverCleanup, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+	}
+
+	return notificationObserverCleanup;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 - (void) performWithProgressViewController:(AKTProgressViewController*) progressViewController
 		progress:(const I<CProgress>&) progress procDispatchQueue:(dispatch_queue_t) procDispatchQueue
-		proc:(ProgressProc) proc cancelProc:(ProgressCancelProc) cancelProc
-		completionProc:(ProgressCompletionProc) completionProc
+		proc:(NSViewControllerProgressProc) proc cancelProc:(NSViewControllerProgressCancelProc) cancelProc
+		completionProc:(NSViewControllerProgressCompletionProc) completionProc
 {
 	// Setup
 	__block				BOOL			isCancelled = NO;
@@ -55,13 +140,36 @@
 
 //----------------------------------------------------------------------------------------------------------------------
 - (void) performWithProgressViewController:(AKTProgressViewController*) progressViewController
-		progress:(const I<CProgress>&) progress proc:(ProgressProc) proc cancelProc:(ProgressCancelProc) cancelProc
-		completionProc:(ProgressCompletionProc) completionProc
+		progress:(const I<CProgress>&) progress proc:(NSViewControllerProgressProc) proc
+		cancelProc:(NSViewControllerProgressCancelProc) cancelProc
+		completionProc:(NSViewControllerProgressCompletionProc) completionProc
 {
 	// Perform
 	[self performWithProgressViewController:progressViewController progress:progress
 			procDispatchQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) proc:proc
 			cancelProc:cancelProc completionProc:completionProc];
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) registerNotificationObserverForName:(const CString&) notificationName
+		sender:(const CNotificationCenter::Sender&) sender proc:(NSViewControllerNotificationProc) proc
+{
+	// Register
+	CImmediateNotificationCenter::shared()
+			.registerObserver(notificationName, sender,
+					CNotificationCenter::Observer((__bridge void*) self, sHandleNotification,
+							[self.notificationObserverCleanup addNotificationProc:proc]));
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) registerNotificationObserverForName:(const CString&) notificationName
+		proc:(NSViewControllerNotificationProc) proc
+{
+	// Register
+	CImmediateNotificationCenter::shared()
+			.registerObserver(notificationName,
+					CNotificationCenter::Observer((__bridge void*) self, sHandleNotification,
+							[self.notificationObserverCleanup addNotificationProc:proc]));
 }
 
 @end
