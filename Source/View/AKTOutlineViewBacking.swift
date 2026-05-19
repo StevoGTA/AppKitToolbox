@@ -48,6 +48,14 @@ public class AKTOutlineViewBacking : OutlineViewBacking, NSOutlineViewDataSource
 										:(_ outlineView :NSOutlineView, _ tableColumn :NSTableColumn, _ object :Any) ->
 												Bool = { _,_,_ in false }
 
+	@objc		public			var	pasteboardWriterForObjectProc :(_ object :Any) -> NSPasteboardWriting? = { _ in nil }
+	@objc		public			var	validateDropProc
+										:(_ outlineView :NSOutlineView, _ info :NSDraggingInfo, _ object :Any?,
+												_ childIndex :Int) -> NSDragOperation = { _,_,_,_ in [] }
+	@objc		public			var	acceptDropProc
+										:(_ info :NSDraggingInfo, _ object :Any?, _ childIndex :Int) -> Bool =
+												{ _,_,_ in false }
+
 	@IBOutlet			weak	var	outlineView :NSOutlineView!
 
 				private			var	outlineTableColumnIndex :Int?
@@ -93,6 +101,26 @@ public class AKTOutlineViewBacking : OutlineViewBacking, NSOutlineViewDataSource
 	public func outlineView(_ outlineView :NSOutlineView, isItemExpandable item :Any) -> Bool {
 		// Check if have children only if can expand items
 		return !(self.outlineView.outlineTableColumn?.isHidden ?? true) ? (childCount(for: item as? String) > 0) : false
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	public func outlineView(_ outlineView :NSOutlineView, pasteboardWriterForItem item :Any) -> NSPasteboardWriting? {
+		// Call proc
+		return self.pasteboardWriterForObjectProc(object(for: item as! String))
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	public func outlineView(_ outlineView :NSOutlineView, validateDrop info :NSDraggingInfo,
+			proposedItem item :Any?, proposedChildIndex index :Int) -> NSDragOperation {
+		// Call proc
+		return self.validateDropProc(outlineView, info,  (item != nil) ? object(for: item as! String) : nil, index)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	public func outlineView(_ outlineView :NSOutlineView, acceptDrop info :NSDraggingInfo, item :Any?,
+			childIndex index :Int) -> Bool {
+		// Call proc
+		return self.acceptDropProc(info, (item != nil) ? object(for: item as! String) : nil, index)
 	}
 
 	// MARK: NSOutlineViewDelegate methods
@@ -145,17 +173,10 @@ public class AKTOutlineViewBacking : OutlineViewBacking, NSOutlineViewDataSource
 	//------------------------------------------------------------------------------------------------------------------
 	public func outlineView(_ outlineView :NSOutlineView, viewFor tableColumn :NSTableColumn?, item :Any) -> NSView? {
 		// Return view
-		if tableColumn == nil {
-			// Row view
-			return self.objectRowViewProc(outlineView, object(for: (item as! String)))
-		} else if tableColumn != outlineView.outlineTableColumn {
-			// Cell view
-			return self.objectViewProc(outlineView, tableColumn!, self.outlineView.row(forItem: item),
-					object(for: (item as! String)))
-		} else {
-			// Outline Table Column
-			return nil
-		}
+		return (tableColumn == nil) ?
+				self.objectRowViewProc(outlineView, object(for: (item as! String))) :
+				self.objectViewProc(outlineView, tableColumn!, self.outlineView.row(forItem: item),
+						object(for: (item as! String)))
 	}
 
 	//------------------------------------------------------------------------------------------------------------------

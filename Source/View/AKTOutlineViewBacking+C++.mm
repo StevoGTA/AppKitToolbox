@@ -169,6 +169,69 @@
 			};
 }
 
+//----------------------------------------------------------------------------------------------------------------------
+- (AKTOutlineViewBackingPasteboardWriterForItemProc) pasteboardWriterForItemProc
+{
+	return nil;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) setPasteboardWriterForItemProc:(AKTOutlineViewBackingPasteboardWriterForItemProc) pasteboardWriterForItemProc
+{
+	// Set proc
+	self.pasteboardWriterForObjectProc = ^id<NSPasteboardWriting>(id object){
+		return pasteboardWriterForItemProc(*((const I<COutlineViewItem>*) ((CppWrapper*) object).object));
+	};
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (AKTOutlineViewBackingValidateDropProc) cppValidateDropProc
+{
+	return nil;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) setCppValidateDropProc:(AKTOutlineViewBackingValidateDropProc) cppValidateDropProc
+{
+	// Set proc
+	self.validateDropProc =
+			^NSDragOperation(NSOutlineView* outlineView, id<NSDraggingInfo> info, id object, NSInteger childIndex){
+				// Setup
+				OV<I<COutlineViewItem> >	outlineViewItem =
+													(object != nil) ?
+															OV<I<COutlineViewItem> >(
+																	*((const I<COutlineViewItem>*)
+																			((CppWrapper*) object).object)) :
+															OV<I<COutlineViewItem> >();
+
+				return cppValidateDropProc(outlineView, info, outlineViewItem, childIndex);
+			};
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (AKTOutlineViewBackingAcceptDropProc) cppAcceptDropProc
+{
+	return nil;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) setCppAcceptDropProc:(AKTOutlineViewBackingAcceptDropProc) cppAcceptDropProc
+{
+	// Set proc
+	self.acceptDropProc =
+			^BOOL(id<NSDraggingInfo> info, id object, NSInteger childIndex){
+				// Setup
+				OV<I<COutlineViewItem> >	outlineViewItem =
+													(object != nil) ?
+															OV<I<COutlineViewItem> >(
+																	*((const I<COutlineViewItem>*)
+																			((CppWrapper*) object).object)) :
+															OV<I<COutlineViewItem> >();
+
+				return cppAcceptDropProc(info, outlineViewItem, childIndex);
+			};
+}
+
 // MARK: Instance methods
 
 //----------------------------------------------------------------------------------------------------------------------

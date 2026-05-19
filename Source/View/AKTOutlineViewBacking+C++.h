@@ -33,6 +33,16 @@ typedef	NSView* _Nullable				(^AKTOutlineViewBackingOutlineItemViewProc)(NSOutli
 typedef	BOOL							(^AKTOutlineViewBackingShouldEditItemProc)(NSOutlineView* outlineView,
 												NSTableColumn* tableColumn, const I<COutlineViewItem>& outlineViewItem);
 
+typedef	id<NSPasteboardWriting> _Nullable	(^AKTOutlineViewBackingPasteboardWriterForItemProc)(
+												const I<COutlineViewItem>& outlineViewItem);
+typedef	NSDragOperation					(^AKTOutlineViewBackingValidateDropProc)(NSOutlineView* outlineView,
+												id<NSDraggingInfo> info,
+												const OV<I<COutlineViewItem>>& outlineViewItem,
+												NSInteger childIndex);
+typedef	BOOL							(^AKTOutlineViewBackingAcceptDropProc)(id<NSDraggingInfo> info,
+												const OV<I<COutlineViewItem>>& outlineViewItem,
+												NSInteger childIndex);
+
 @interface AKTOutlineViewBacking (Cpp)
 
 // MARK: Properties
@@ -53,6 +63,10 @@ typedef	BOOL							(^AKTOutlineViewBackingShouldEditItemProc)(NSOutlineView* out
 @property (nonatomic, assign)	AKTOutlineViewBackingOutlineItemViewProc				outlineViewItemViewProc;
 
 @property (nonatomic, assign)	AKTOutlineViewBackingShouldEditItemProc					outlineViewBackingShouldEditItemProc;
+
+@property (nonatomic, assign)	AKTOutlineViewBackingPasteboardWriterForItemProc		pasteboardWriterForItemProc;
+@property (nonatomic, assign)	AKTOutlineViewBackingValidateDropProc					cppValidateDropProc;
+@property (nonatomic, assign)	AKTOutlineViewBackingAcceptDropProc						cppAcceptDropProc;
 
 // MARK: Instance methods
 
