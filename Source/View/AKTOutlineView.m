@@ -19,7 +19,7 @@
 	NSInteger		rowIndex = [self rowAtPoint:point];
 	NSInteger		columnIndex = [self columnAtPoint:point];
 	NSTableColumn*	tableColumn =
-							(columnIndex < (NSInteger) self.tableColumns.count) ?
+							((columnIndex >= 0) && (columnIndex < (NSInteger) self.tableColumns.count)) ?
 									self.tableColumns[columnIndex] : nil;
 	id				item = [self itemAtRow:rowIndex];
 

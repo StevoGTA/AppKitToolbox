@@ -28,7 +28,9 @@ public class AKTTableView : NSTableView {
 			let	point = convert(event.locationInWindow, from: nil)
 			let	columnIndex = column(at: point)
 
-			return menuProc(row(at: point), columnIndex, self.tableColumns[columnIndex])
+			return menuProc(row(at: point), columnIndex, 
+					((columnIndex >= 0) && (columnIndex < self.tableColumns.count)) ?
+							self.tableColumns[columnIndex] : nil)
 		} else {
 			// No menuProc
 			return self.menu
