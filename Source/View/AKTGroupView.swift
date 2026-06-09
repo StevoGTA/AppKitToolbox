@@ -461,6 +461,10 @@ public class AKTCollapsibleGroupView : AKTGroupView {
 	@objc(setCollapsed:)
 	func set(collapsed :Bool) { set(collapsed: collapsed, completionProc: {}) }
 
+	//------------------------------------------------------------------------------------------------------------------
+	@objc(setCanCollapse:)
+	func set(canCollapse :Bool) { self.button.isHidden = !canCollapse }
+
 	// MARK: Private methods
 	//------------------------------------------------------------------------------------------------------------------
 	private func setupButton() {

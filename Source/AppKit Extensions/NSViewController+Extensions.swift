@@ -30,4 +30,8 @@ public extension NSViewController {
 		// Present
 		self.view.window?.present(alert, completionProc: { _,_ in })
 	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc
+	func dismissFirstPresentedViewController() { self.dismiss(self.presentedViewControllers![0]) }
 }

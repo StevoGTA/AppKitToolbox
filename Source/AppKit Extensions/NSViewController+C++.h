@@ -16,15 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: Types
 
-typedef	void*	_Nullable	(^NSViewControllerProgressProc)(__unsafe_unretained NSViewController* viewController,
-									const I<CProgress>& progress);
-typedef	void				(^NSViewControllerProgressCancelProc)(__unsafe_unretained NSViewController* viewController);
-typedef	void				(^NSViewControllerProgressCompletionProc)(
-									__unsafe_unretained NSViewController* viewController, void* result);
-
-typedef	void				(^NSViewControllerNotificationProc)(const CString& notificationName,
-									const OR<CNotificationCenter::Sender>& sender, const CDictionary& info);
-
+typedef	void	(^NSViewControllerNotificationProc)(const CString& notificationName,
+						const OR<CNotificationCenter::Sender>& sender, const CDictionary& info);
 
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: - NSViewController extension
@@ -33,14 +26,25 @@ typedef	void				(^NSViewControllerNotificationProc)(const CString& notificationN
 
 // MARK: Instance methods
 
-- (void) performWithProgressViewController:(AKTProgressViewController*) progressViewController
+- (void) performWithResultProgressViewController:(AKTProgressViewController*) progressViewController
 		progress:(const I<CProgress>&) progress procDispatchQueue:(dispatch_queue_t) procDispatchQueue
-		proc:(NSViewControllerProgressProc) proc cancelProc:(NSViewControllerProgressCancelProc) cancelProc
-		completionProc:(NSViewControllerProgressCompletionProc) completionProc;
+		proc:
+				(void* _Nullable (^)(__unsafe_unretained NSViewController* viewController,
+							const I<CProgress>& progress)) proc
+		cancelProc:(void (^)(__unsafe_unretained NSViewController* viewController)) cancelProc
+		completionProc:(void (^)(__unsafe_unretained NSViewController* viewController, void* result)) completionProc;
+- (void) performWithResultProgressViewController:(AKTProgressViewController*) progressViewController
+		progress:(const I<CProgress>&) progress
+		proc:
+				(void* _Nullable (^)(__unsafe_unretained NSViewController* viewController,
+						const I<CProgress>& progress)) proc
+		cancelProc:(void (^)(__unsafe_unretained NSViewController* viewController)) cancelProc
+		completionProc:(void (^)(__unsafe_unretained NSViewController* viewController, void* result)) completionProc;
 - (void) performWithProgressViewController:(AKTProgressViewController*) progressViewController
-		progress:(const I<CProgress>&) progress proc:(NSViewControllerProgressProc) proc
-		cancelProc:(NSViewControllerProgressCancelProc) cancelProc
-		completionProc:(NSViewControllerProgressCompletionProc) completionProc;
+		progress:(const I<CProgress>&) progress
+		proc:(void (^)(__unsafe_unretained NSViewController* viewController, const I<CProgress>& progress)) proc
+		cancelProc:(void (^)(__unsafe_unretained NSViewController* viewController)) cancelProc
+		completionProc:(void (^)(__unsafe_unretained NSViewController* viewController)) completionProc;
 
 - (void) registerNotificationObserverForName:(const CString&) notificationName
 		sender:(const CNotificationCenter::Sender&) sender proc:(NSViewControllerNotificationProc) proc;

@@ -98,10 +98,13 @@ static void sHandleNotification(const CString& notificationName, const OR<CNotif
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-- (void) performWithProgressViewController:(AKTProgressViewController*) progressViewController
+- (void) performWithResultProgressViewController:(AKTProgressViewController*) progressViewController
 		progress:(const I<CProgress>&) progress procDispatchQueue:(dispatch_queue_t) procDispatchQueue
-		proc:(NSViewControllerProgressProc) proc cancelProc:(NSViewControllerProgressCancelProc) cancelProc
-		completionProc:(NSViewControllerProgressCompletionProc) completionProc
+		proc:
+				(void* _Nullable (^)(__unsafe_unretained NSViewController* viewController,
+							const I<CProgress>& progress)) proc
+		cancelProc:(void (^)(__unsafe_unretained NSViewController* viewController)) cancelProc
+		completionProc:(void (^)(__unsafe_unretained NSViewController* viewController, void* result)) completionProc
 {
 	// Setup
 	__block				BOOL			isCancelled = NO;
@@ -139,15 +142,39 @@ static void sHandleNotification(const CString& notificationName, const OR<CNotif
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-- (void) performWithProgressViewController:(AKTProgressViewController*) progressViewController
-		progress:(const I<CProgress>&) progress proc:(NSViewControllerProgressProc) proc
-		cancelProc:(NSViewControllerProgressCancelProc) cancelProc
-		completionProc:(NSViewControllerProgressCompletionProc) completionProc
+- (void) performWithResultProgressViewController:(AKTProgressViewController*) progressViewController
+		progress:(const I<CProgress>&) progress
+		proc:
+				(void* _Nullable (^)(__unsafe_unretained NSViewController* viewController,
+						const I<CProgress>& progress)) proc
+		cancelProc:(void (^)(__unsafe_unretained NSViewController* viewController)) cancelProc
+		completionProc:(void (^)(__unsafe_unretained NSViewController* viewController, void* result)) completionProc
 {
 	// Perform
-	[self performWithProgressViewController:progressViewController progress:progress
+	[self performWithResultProgressViewController:progressViewController progress:progress
 			procDispatchQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) proc:proc
 			cancelProc:cancelProc completionProc:completionProc];
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) performWithProgressViewController:(AKTProgressViewController*) progressViewController
+		progress:(const I<CProgress>&) progress
+		proc:(void (^)(__unsafe_unretained NSViewController* viewController, const I<CProgress>& progress)) proc
+		cancelProc:(void (^)(__unsafe_unretained NSViewController* viewController)) cancelProc
+		completionProc:(void (^)(__unsafe_unretained NSViewController* viewController)) completionProc
+{
+	// Perform
+	[self performWithResultProgressViewController:progressViewController progress:progress
+			procDispatchQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+			proc:^void*(NSViewController* viewController, const I<CProgress>& progress_){
+				// Call proc
+				proc(viewController, progress_);
+
+				return nil;
+			} cancelProc:cancelProc completionProc:^(NSViewController* viewController, void* result){
+				// Call completion proc
+				completionProc(viewController);
+			}];
 }
 
 //----------------------------------------------------------------------------------------------------------------------
