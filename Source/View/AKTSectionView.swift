@@ -18,6 +18,7 @@ public class AKTSectionView : NSView {
 			private	var	contentViewTrailingLayoutConstraint :NSLayoutConstraint?
 
 			private	var	notificationObserver :NotificationCenter.Observer?
+			private	var	isUpdatingLayoutConstraint = false
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
@@ -41,7 +42,6 @@ public class AKTSectionView : NSView {
 		self.contentClipView = AKTFlippedClipView()
 		self.contentClipView!.drawsBackground = false
 		self.contentScrollView!.contentView = self.contentClipView!
-		self.contentClipView!.match(self.contentScrollView!)
 
 		self.contentView = NSView()
 		self.contentScrollView!.documentView = self.contentView!
@@ -185,17 +185,24 @@ public class AKTSectionView : NSView {
 
 	//------------------------------------------------------------------------------------------------------------------
 	private func updateLayoutConstraint() {
+		// Check if in the middle of updating constraints
+		guard !self.isUpdatingLayoutConstraint else { return }
+
 		// Setup
 		guard let contentScrollView = self.contentScrollView,
 				let contentViewTrailingLayoutConstraint = self.contentViewTrailingLayoutConstraint else { return }
 
-		// Wait a beat
-		DispatchQueue.main.async() {
-			// Update layout constraint
-			NSAnimationContext.current.duration = 0.1
-			contentViewTrailingLayoutConstraint.animator().constant =
+		// Compute the trailing inset needed to keep content clear of the vertical scroller (if shown)
+		let	targetConstant =
 					!(contentScrollView.verticalScroller?.isHidden ?? true) ?
 							-contentScrollView.verticalScroller!.bounds.size.width : 0.0
- 		}
+
+		// Only update when the value actually changes so we don't re-dirty layout on every notification
+		guard contentViewTrailingLayoutConstraint.constant != targetConstant else { return }
+
+		// Update (no animation - snapping the scroller inset is what keeps the run loop from churning)
+		self.isUpdatingLayoutConstraint = true
+		contentViewTrailingLayoutConstraint.constant = targetConstant
+		self.isUpdatingLayoutConstraint = false
 	}
 }

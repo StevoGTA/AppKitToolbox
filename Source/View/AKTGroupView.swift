@@ -287,6 +287,8 @@ public class AKTCollapsibleGroupView : AKTGroupView {
 	// MARK: Properties
 	@objc	private(set)	var	isCollapsed = false
 
+	@objc					var	willExpandProc :(() -> Void)?
+
 			private			let	button :NSButton
 			private			let	titleView :NSView
 
@@ -446,6 +448,12 @@ public class AKTCollapsibleGroupView : AKTGroupView {
 			// Set new value
 			self.isCollapsed = collapsed
 
+			// Check if collapsed
+			if !self.isCollapsed {
+				// Call proc
+				self.willExpandProc?()
+			}
+
 			// Check if layout is stable
 			if !self.needsLayout {
 				// Update UI
@@ -472,6 +480,12 @@ public class AKTCollapsibleGroupView : AKTGroupView {
 		self.button.actionProc = { [unowned self] _ in
 			// Toggle value
 			self.isCollapsed.toggle()
+
+			// Check if collapsed
+			if !self.isCollapsed {
+				// Call proc
+				self.willExpandProc?()
+			}
 
 			// Update UI
 			self.isCollapsedChanged()
