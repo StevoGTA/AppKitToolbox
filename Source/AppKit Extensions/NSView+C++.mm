@@ -16,7 +16,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 - (CString) toolTipString
 {
-	return CString((__bridge CFStringRef) self.toolTip);
+	return (self.toolTip != nil) ? CString((__bridge CFStringRef) self.toolTip) : CString::mEmpty;
 }
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -17,7 +17,7 @@
 - (SLocalization::Currency) selectedLocalizationCurrency
 {
 	return *SLocalization::Currency::getFor(
-			CString((CFStringRef) CFBridgingRetain(self.selectedItem.representedObject)));
+			CString((__bridge CFStringRef) self.selectedItem.representedObject));
 }
 
 //----------------------------------------------------------------------------------------------------------------------
