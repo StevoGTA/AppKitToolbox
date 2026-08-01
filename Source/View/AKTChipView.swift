@@ -51,6 +51,17 @@ public class AKTChipView : NSView {
 
 			return (other.text == self.text) && (other.style == self.style) && (other.symbol == self.symbol)
 		}
+
+		//--------------------------------------------------------------------------------------------------------------
+		public override var hash :Int {
+			// Must agree with isEqual(_:)
+			var	hasher = Hasher()
+			hasher.combine(self.text)
+			hasher.combine(self.style)
+			hasher.combine(self.symbol)
+
+			return hasher.finalize()
+		}
 	}
 
 	// MARK: Properties
@@ -111,6 +122,8 @@ public class AKTChipView : NSView {
 		// Setup self
 		self.wantsLayer = true
 		self.translatesAutoresizingMaskIntoConstraints = false
+		setContentHuggingPriority(.defaultHigh, for: .horizontal)
+		setContentCompressionResistancePriority(.required, for: .horizontal)
 
 		// Setup Image View
 		self.imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -127,8 +140,8 @@ public class AKTChipView : NSView {
 		self.stackView.orientation = .horizontal
 		self.stackView.alignment = .centerY
 		self.stackView.spacing = 3.0
-		self.stackView.addArrangedSubview(self.imageView)
 		self.stackView.addArrangedSubview(self.textField)
+		self.stackView.addArrangedSubview(self.imageView)
 		addSubview(self.stackView)
 
 		self.stackView.alignLeading(to: self, constant: 6.0)

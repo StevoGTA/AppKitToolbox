@@ -44,6 +44,9 @@ public class AKTChipsView : NSView {
 	//------------------------------------------------------------------------------------------------------------------
 	public override var isFlipped :Bool { true }
 
+	//------------------------------------------------------------------------------------------------------------------
+	public override var intrinsicContentSize :NSSize { self.stackView.fittingSize }
+
 	// MARK: Private methods
 	//------------------------------------------------------------------------------------------------------------------
 	private func setup() {
@@ -87,5 +90,8 @@ public class AKTChipsView : NSView {
 
 		// Update content
 		zip(chipViews, self.infos).forEach() { $0.info = $1 }
+
+		// Update intrinsic content size
+		invalidateIntrinsicContentSize()
 	}
 }
