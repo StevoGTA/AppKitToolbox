@@ -1,21 +1,26 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	AKTOutlineView.h			©2026 Stevo Brock	All rights reserved.
+//	NSSavePanel+C++.h			©2026 Stevo Brock		All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
 #pragma once
+
+#import "CFile.h"
 
 #import <AppKit/AppKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: AKTOutlineView
-@interface AKTOutlineView : NSOutlineView
+// MARK: NSSavePanel extension
+
+@interface NSSavePanel (Cpp)
 
 // MARK: Properties
 
-@property (nonatomic, assign)	BOOL	isDoubleClickToBeginEditingEnabled;
-@property (nonatomic, assign)	BOOL	isOptionClickToBeginEditingEnabled;
+@property (nonatomic, readonly)	CFile	file;
+
+@property (nonatomic, assign) 	CString	nameFieldString;
+@property (nonatomic, assign)	CString	extensionString;
 
 @end
 

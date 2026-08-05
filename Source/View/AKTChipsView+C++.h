@@ -1,21 +1,23 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	AKTOutlineView.h			©2026 Stevo Brock	All rights reserved.
+//	AKTChipsView+C++.h			©2026 Stevo Brock		All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
-#pragma once
+#import "SChipInfo.h"
 
 #import <AppKit/AppKit.h>
+
+#import "Swift.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: AKTOutlineView
-@interface AKTOutlineView : NSOutlineView
+// MARK: AKTChipsView extension
 
-// MARK: Properties
+@interface AKTChipsView (Cpp)
 
-@property (nonatomic, assign)	BOOL	isDoubleClickToBeginEditingEnabled;
-@property (nonatomic, assign)	BOOL	isOptionClickToBeginEditingEnabled;
+// MARK: Instance methods
+
+- (void) setCppChipInfos:(const TArray<SChipInfo>&) chipInfos;
 
 @end
 

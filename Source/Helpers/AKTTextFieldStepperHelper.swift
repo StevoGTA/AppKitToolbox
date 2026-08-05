@@ -73,7 +73,7 @@ public class AKTTextFieldStepperHelper : NSObject {
 								self.textField.formatter = MultiFormatter(allowedCharacterSet: .decimalDigits)
 								self.textField.didChangeProc = { [unowned self] in
 									// Get value
-									let	value = self.valueForStringProc($0)
+									let	value = self.valueForStringProc($1)
 									let	isValid =
 												!$0.isEmpty && (value >= self.stepper.minValue) &&
 														(value <= self.stepper.maxValue)
@@ -85,7 +85,7 @@ public class AKTTextFieldStepperHelper : NSObject {
 									// Call action proc
 									self.actionProc(isValid)
 								}
-								self.textField.didEndEditingProc = { [unowned self] string, textMovement in
+								self.textField.didEndEditingProc = { [unowned self] textField, string, textMovement in
 									// Setup
 									let	value = self.valueForStringProc(string)
 

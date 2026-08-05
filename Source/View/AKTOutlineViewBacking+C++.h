@@ -33,11 +33,26 @@ typedef	NSView* _Nullable				(^AKTOutlineViewBackingOutlineItemViewProc)(NSOutli
 typedef	BOOL							(^AKTOutlineViewBackingShouldEditItemProc)(NSOutlineView* outlineView,
 												NSTableColumn* tableColumn, const I<COutlineViewItem>& outlineViewItem);
 
+typedef	id<NSPasteboardWriting> _Nullable	(^AKTOutlineViewBackingPasteboardWriterForItemProc)(
+												const I<COutlineViewItem>& outlineViewItem);
+typedef	NSDragOperation					(^AKTOutlineViewBackingValidateDropProc)(NSOutlineView* outlineView,
+												id<NSDraggingInfo> info,
+												const OV<I<COutlineViewItem>>& outlineViewItem,
+												NSInteger childIndex);
+typedef	BOOL							(^AKTOutlineViewBackingAcceptDropProc)(id<NSDraggingInfo> info,
+												const OV<I<COutlineViewItem>>& outlineViewItem,
+												NSInteger childIndex);
+
 @interface AKTOutlineViewBacking (Cpp)
 
 // MARK: Properties
 
+@property (nonatomic, readonly)	TArray<I<COutlineViewItem> >							expandedOutlineViewItems;
+@property (nonatomic, readonly)	TArray<CString>											expandedOutlineViewItemIDs;
+
 @property (nonatomic, readonly)	TArray<I<COutlineViewItem> >							selectedOutlineViewItems;
+@property (nonatomic, readonly)	TArray<CString>											selectedOutlineViewItemIDs;
+
 @property (nonatomic, readonly)	TArray<I<COutlineViewItem> >							topLevelOutlineViewItems;
 
 @property (nonatomic, assign)	AKTOutlineViewBackingSortDescriptorsDidChangeProc		cppSortDescriptorsDidChangeProc;
@@ -49,6 +64,10 @@ typedef	BOOL							(^AKTOutlineViewBackingShouldEditItemProc)(NSOutlineView* out
 
 @property (nonatomic, assign)	AKTOutlineViewBackingShouldEditItemProc					outlineViewBackingShouldEditItemProc;
 
+@property (nonatomic, assign)	AKTOutlineViewBackingPasteboardWriterForItemProc		pasteboardWriterForItemProc;
+@property (nonatomic, assign)	AKTOutlineViewBackingValidateDropProc					cppValidateDropProc;
+@property (nonatomic, assign)	AKTOutlineViewBackingAcceptDropProc						cppAcceptDropProc;
+
 // MARK: Instance methods
 
 - (void) setCppSortDescriptors:(const TArray<SSortDescriptor>&) sortDescriptors;
@@ -57,6 +76,10 @@ typedef	BOOL							(^AKTOutlineViewBackingShouldEditItemProc)(NSOutlineView* out
 - (void) addOutlineViewItems:(const TArray<I<COutlineViewItem> >&) outlineViewItems;
 - (void) removeOutlineViewItems:(const TArray<I<COutlineViewItem> >&) outlineViewItems;
 - (I<COutlineViewItem>) outlineViewItemAtRow:(NSInteger) row;
+
+- (void) expandOutlineViewItemIDs:(const TArray<CString>&) outlineViewItemIDs;
+
+- (void) setSelectedOutlineViewItemIDs:(const TArray<CString>&) outlineViewItemIDs;
 
 - (void) reloadTableColumn:(const CTableColumn&) tableColumn;
 

@@ -20,7 +20,7 @@
 // MARK: Lifecycle methods
 
 //----------------------------------------------------------------------------------------------------------------------
-- (void) deinit
+- (void) dealloc
 {
 	for (id <NSObject> object in self.notificationObservers)
 		// Remove observer

@@ -1,21 +1,23 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	AKTOutlineView.h			©2026 Stevo Brock	All rights reserved.
+//	NSPasteboardItem+C++.h			©2026 Stevo Brock	All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
 #pragma once
+
+#include "CString.h"
 
 #import <AppKit/AppKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: AKTOutlineView
-@interface AKTOutlineView : NSOutlineView
+// MARK: NSPasteboardItem extension
 
-// MARK: Properties
+@interface NSPasteboardItem (Cpp)
 
-@property (nonatomic, assign)	BOOL	isDoubleClickToBeginEditingEnabled;
-@property (nonatomic, assign)	BOOL	isOptionClickToBeginEditingEnabled;
+// MARK: Class methods
+
++ (instancetype) pasteboardItemWithString:(const CString&) string forType:(NSString*) type;
 
 @end
 

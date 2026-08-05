@@ -9,7 +9,7 @@
 
 @implementation AKTTextCalendarDatePickerHelper (Cpp)
 
-// MARK: Property methods
+// MARK: Properties
 
 //----------------------------------------------------------------------------------------------------------------------
 - (SGregorianDate) gregorianDate

@@ -85,7 +85,7 @@ static	CVReturn			sDisplayLinkOutput(CVDisplayLinkRef displayLink, const CVTimeS
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-- (void) deinit
+- (void) dealloc
 {
 	// Cleanup
 	[self removePeriodic];
@@ -224,14 +224,17 @@ static	CVReturn			sDisplayLinkOutput(CVDisplayLinkRef displayLink, const CVTimeS
 //----------------------------------------------------------------------------------------------------------------------
 - (void) removePeriodic
 {
-	// Lock to make sure we are not removing while in output callback
-	[self.displayLinkLock lock];
-	::CVDisplayLinkStop(self.displayLinkRef);
-	::CVDisplayLinkRelease(self.displayLinkRef);
-	[self.displayLinkLock unlock];
+	// Check if have display link
+	if (self.displayLinkRef != nil) {
+		// Lock to make sure we are not removing while in output callback
+		[self.displayLinkLock lock];
+		::CVDisplayLinkStop(self.displayLinkRef);
+		::CVDisplayLinkRelease(self.displayLinkRef);
+		[self.displayLinkLock unlock];
 
-	// Clear
-	self.displayLinkRef = nil;
+		// Clear
+		self.displayLinkRef = nil;
+	}
 }
 
 // MARK: Internal methods

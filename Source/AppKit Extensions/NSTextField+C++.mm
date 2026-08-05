@@ -31,21 +31,25 @@
 	return  (self.stringValue.length > 0) ? OV<CString>(self.string) : OV<CString>();
 }
 
-// MARK: Instance methods
-
 //----------------------------------------------------------------------------------------------------------------------
-- (void) setString:(const CString&) string animated:(BOOL) animated
+- (void) setOvString:(OV<CString>) ovString
 {
-	// Check animated
-	if (animated)
-		// Animated
-		self.animator.stringValue = [(__bridge NSString*) string.getOSString() copy];
-	else
-		// Update
-		self.stringValue = [(__bridge NSString*) string.getOSString() copy];
+	self.stringValue = ovString.hasValue() ? [(__bridge NSString*) ovString->getOSString() copy] : @"";
 }
 
 // MARK: Class methods
+
+//----------------------------------------------------------------------------------------------------------------------
++ (instancetype) createWithPlaceholderString:(const CString&) string
+{
+	// Create
+	NSTextField*	textField = [[NSTextField alloc] initWithFrame:NSZeroRect];
+
+	// Set placeholder
+	textField.placeholderString = [(__bridge NSString*) string.getOSString() copy];
+
+	return textField;
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 + (instancetype) createWithString:(const CString&) string
@@ -92,6 +96,20 @@
 	}
 
 	return self;
+}
+
+// MARK: Instance methods
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) setString:(const CString&) string animated:(BOOL) animated
+{
+	// Check animated
+	if (animated)
+		// Animated
+		self.animator.stringValue = [(__bridge NSString*) string.getOSString() copy];
+	else
+		// Update
+		self.stringValue = [(__bridge NSString*) string.getOSString() copy];
 }
 
 @end

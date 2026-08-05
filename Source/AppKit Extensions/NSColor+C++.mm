@@ -9,7 +9,7 @@
 
 @implementation NSColor (Cpp)
 
-// MARK: Property methods
+// MARK: Properties
 
 //----------------------------------------------------------------------------------------------------------------------
 - (CColor) cColor

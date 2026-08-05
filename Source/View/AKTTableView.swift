@@ -17,6 +17,8 @@ public class AKTTableView : NSTableView {
 	// MARK: Properties
 	public	var	menuProc :MenuProc? = nil
 
+	private	var	doubleActionDidBeginEditingProc :() -> Void = {}
+
 	// MARK: NSView methods
 	//------------------------------------------------------------------------------------------------------------------
 	override public func menu(for event :NSEvent) -> NSMenu? {
@@ -26,10 +28,37 @@ public class AKTTableView : NSTableView {
 			let	point = convert(event.locationInWindow, from: nil)
 			let	columnIndex = column(at: point)
 
-			return menuProc(row(at: point), columnIndex, self.tableColumns[columnIndex])
+			return menuProc(row(at: point), columnIndex, 
+					((columnIndex >= 0) && (columnIndex < self.tableColumns.count)) ?
+							self.tableColumns[columnIndex] : nil)
 		} else {
 			// No menuProc
 			return self.menu
 		}
+	}
+
+	// MARK: Instance methods
+	//------------------------------------------------------------------------------------------------------------------
+	@objc func setDoubleActionToEditCell(_ doubleActionDidBeginEditingProc :@escaping () -> Void) {
+		// Store
+		self.doubleActionDidBeginEditingProc = doubleActionDidBeginEditingProc
+
+		// Setup
+		self.target = self
+		self.doubleAction = #selector(doubleActionEditCell)
+	}
+
+	// MARK: Private methods
+	//------------------------------------------------------------------------------------------------------------------
+	@objc private func doubleActionEditCell(_ sender :Any) {
+		// Ensure we clicked on something
+		let	clickedRow = self.clickedRow
+		guard clickedRow != -1 else { return }
+
+		// Start editing
+		editColumn(self.clickedColumn, row: clickedRow, with: nil, select: true)
+
+		// Call proc
+		self.doubleActionDidBeginEditingProc()
 	}
 }

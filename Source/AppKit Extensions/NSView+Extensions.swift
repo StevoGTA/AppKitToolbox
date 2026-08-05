@@ -471,10 +471,6 @@ public extension NSView {
 		return constraint
 	}
 
-
-
-
-
 	//------------------------------------------------------------------------------------------------------------------
 	@discardableResult
 	@objc
@@ -547,14 +543,14 @@ public extension NSView {
 
 	//------------------------------------------------------------------------------------------------------------------
 	@discardableResult
-	func setWidth(to constant :CGFloat, priority :NSLayoutConstraint.Priority? = nil) -> NSLayoutConstraint {
+	@objc
+	func setWidth(to constant :CGFloat) -> NSLayoutConstraint {
 		// Set width
 		self.translatesAutoresizingMaskIntoConstraints = false
 
 		let	constraint =
 					NSLayoutConstraint(item: self, attribute: .width, relatedBy: .equal, toItem: nil,
 							attribute: .notAnAttribute, multiplier: 1.0, constant: constant)
-		if priority != nil { constraint.priority = priority! }
 		NSLayoutConstraint.activate([constraint])
 
 		return constraint
@@ -562,14 +558,46 @@ public extension NSView {
 
 	//------------------------------------------------------------------------------------------------------------------
 	@discardableResult
-	func setHeight(to constant :CGFloat, priority :NSLayoutConstraint.Priority? = nil) -> NSLayoutConstraint {
+	@objc
+	func setWidth(to constant :CGFloat, priority :NSLayoutConstraint.Priority) -> NSLayoutConstraint {
+		// Set width
+		self.translatesAutoresizingMaskIntoConstraints = false
+
+		let	constraint =
+					NSLayoutConstraint(item: self, attribute: .width, relatedBy: .equal, toItem: nil,
+							attribute: .notAnAttribute, multiplier: 1.0, constant: constant)
+		constraint.priority = priority
+		NSLayoutConstraint.activate([constraint])
+
+		return constraint
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@discardableResult
+	@objc
+	func setHeight(to constant :CGFloat) -> NSLayoutConstraint {
 		// Set width
 		self.translatesAutoresizingMaskIntoConstraints = false
 
 		let	constraint =
 					NSLayoutConstraint(item: self, attribute: .height, relatedBy: .equal, toItem: nil,
 							attribute: .notAnAttribute, multiplier: 1.0, constant: constant)
-		if priority != nil { constraint.priority = priority! }
+		NSLayoutConstraint.activate([constraint])
+
+		return constraint
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@discardableResult
+	@objc
+	func setHeight(to constant :CGFloat, priority :NSLayoutConstraint.Priority) -> NSLayoutConstraint {
+		// Set width
+		self.translatesAutoresizingMaskIntoConstraints = false
+
+		let	constraint =
+					NSLayoutConstraint(item: self, attribute: .height, relatedBy: .equal, toItem: nil,
+							attribute: .notAnAttribute, multiplier: 1.0, constant: constant)
+		constraint.priority = priority
 		NSLayoutConstraint.activate([constraint])
 
 		return constraint

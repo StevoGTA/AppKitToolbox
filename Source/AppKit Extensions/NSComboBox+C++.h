@@ -15,9 +15,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NSComboBox (Cpp)
 
+// MARK: Class methods
+
++ (instancetype) createWithPlaceholderString:(const CString&) string;
+
 // MARK: Instance methods
 
 - (void) addString:(const CString&) string;
+- (void) addStrings:(const TArray<CString>&) strings;
 
 @end
 

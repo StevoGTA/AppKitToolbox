@@ -10,7 +10,7 @@
 @implementation NSNib (Extensions)
 
 //----------------------------------------------------------------------------------------------------------------------
-+ (nullable NSView*) instantiateViewWithClass:(Class) clas fromNibNamed:(NSString*) nibName bundle:(NSBundle*) bundle
++ (nullable NSView*) instantiateViewWithClass:(Class) class_ fromNibNamed:(NSString*) nibName bundle:(NSBundle*) bundle
 {
 	// Load NIB
 	NSNib*	nib = [[NSNib alloc] initWithNibNamed:nibName bundle:bundle];
@@ -22,7 +22,7 @@
 	// Iterate top level objects
 	for (NSUInteger i = 0; i < topLevelObjects.count; i++) {
 		// Check this object
-		if ([topLevelObjects[i] class] == clas)
+		if ([topLevelObjects[i] isKindOfClass:class_])
 			// Found it
 			return topLevelObjects[i];
 	}

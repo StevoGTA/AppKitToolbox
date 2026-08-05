@@ -11,14 +11,19 @@ public class AKTTextField : NSTextField {
 	// MARK: Properties
 	@objc	public	var	isValueValid = true { didSet { self.needsDisplay = true } }
 
-	@objc	public	var	didBeginEditingProc :(_ string :String) -> Void = { _ in }
+	@objc	public	var	shouldBeginEditingProc :(_ textField :AKTTextField, _ string :String) -> Bool = { _,_ in true }
+	@objc	public	var	didBeginEditingProc :(_ textField :AKTTextField, _ string :String) -> Void = { _,_ in }
 
-	@objc	public	var	didChangeProc :(_ string :String) -> Void = { _ in }
+	@objc	public	var	didChangeProc :(_ textField :AKTTextField, _ string :String) -> Void = { _,_ in }
 
-	@objc	public	var	shouldEndEditing :(_ string :String) -> Bool = { _ in true }
-	@objc	public	var	didEndEditingProc :(_ string :String, _ textMovement :NSTextMovement) -> Void = { _,_ in }
+	@objc	public	var	shouldEndEditing :(_ textField :AKTTextField, _ string :String) -> Bool = { _,_ in true }
+	@objc	public	var	didEndEditingProc
+								:(_ textField :AKTTextField, _ string :String, _ textMovement :NSTextMovement) -> Void =
+										{ _,_,_ in }
 
-	@objc	public	var	didCancelEditingProc :() -> Void = {}
+	@objc	public	var	didCancelEditingProc :(_ textField :AKTTextField) -> Void = { _ in}
+
+			private	var	isCancellingOperation = false
 
 	// MARK: NSView methods
 	//------------------------------------------------------------------------------------------------------------------
@@ -48,12 +53,18 @@ public class AKTTextField : NSTextField {
 
 	// MARK: NSTextField methods
 	//------------------------------------------------------------------------------------------------------------------
+	override public func textShouldBeginEditing(_ textObject :NSText) -> Bool {
+		// Call proc
+		return self.shouldBeginEditingProc(self, self.stringValue)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
 	override public func textDidBeginEditing(_ notification :Notification) {
 		// Do super
 		super.textDidBeginEditing(notification)
 
 		// Call proc
-		self.didBeginEditingProc(self.stringValue)
+		self.didBeginEditingProc(self, self.stringValue)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -62,11 +73,11 @@ public class AKTTextField : NSTextField {
 		super.textDidChange(notification)
 
 		// Call proc
-		self.didChangeProc(self.stringValue)
+		self.didChangeProc(self, self.stringValue)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	override public func textShouldEndEditing(_ text :NSText) -> Bool { self.shouldEndEditing(self.stringValue) }
+	override public func textShouldEndEditing(_ text :NSText) -> Bool { self.shouldEndEditing(self, self.stringValue) }
 
 	//------------------------------------------------------------------------------------------------------------------
 	override public func textDidEndEditing(_ notification :Notification) {
@@ -79,15 +90,24 @@ public class AKTTextField : NSTextField {
 							NSTextMovement.other.rawValue)!
 
 		// Check if cancelled
-		if textMovement != .cancel {
-			// Not cancelled
-			self.didEndEditingProc(self.stringValue, textMovement)
-		} else {
+		if self.isCancellingOperation || (textMovement == .cancel) {
 			// Cancelled
-			self.didCancelEditingProc()
+			self.didCancelEditingProc(self)
+		} else {
+			// Not cancelled
+			self.didEndEditingProc(self, self.stringValue, textMovement)
 		}
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	override public func cancelOperation(_ sender :Any?) { self.didCancelEditingProc() }
+	override public func cancelOperation(_ sender :Any?) {
+		// Cancel operation
+		self.isCancellingOperation = true
+
+		// Make something else the first responder
+		self.window?.makeFirstResponder(nil)
+
+		// All done
+		self.isCancellingOperation = false
+	}
 }

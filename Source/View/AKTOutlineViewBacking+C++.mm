@@ -4,6 +4,7 @@
 
 #import "AKTOutlineViewBacking+C++.h"
 
+#import "CCoreFoundation.h"
 #import "CppWrapper.h"
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -11,7 +12,25 @@
 
 @implementation AKTOutlineViewBacking (Cpp)
 
-// MARK: Property methods
+// MARK: Properties
+
+//----------------------------------------------------------------------------------------------------------------------
+- (TArray<I<COutlineViewItem> >) expandedOutlineViewItems
+{
+	// Translate items
+	TNArray<I<COutlineViewItem> >	outlineViewItems;
+	for (id object in self.expandedObjects)
+		// Add item
+		outlineViewItems += *((I<COutlineViewItem>*) ((CppWrapper*) object).object);
+
+	return outlineViewItems;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (TArray<CString>) expandedOutlineViewItemIDs
+{
+	return CCoreFoundation::arrayOfStringsFrom((__bridge CFArrayRef) self.expandedObjectIDs);
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 - (TArray<I<COutlineViewItem> >) selectedOutlineViewItems
@@ -23,6 +42,12 @@
 		outlineViewItems += *((I<COutlineViewItem>*) ((CppWrapper*) object).object);
 
 	return outlineViewItems;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (TArray<CString>) selectedOutlineViewItemIDs
+{
+	return CCoreFoundation::arrayOfStringsFrom((__bridge CFArrayRef) self.selectedObjectIDs);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -71,7 +96,7 @@
 - (void) setCompareOutlineViewItemsProc:(AKTOutlineViewBackingCompareOutlineViewItemsProc) compareOutlineViewItemsProc
 {
 	// Set proc
-	self.compareObjectsProc =
+	self.compareItemsProc =
 			^(OutlineViewBackingItem* outlineViewBackingItem1, OutlineViewBackingItem* outlineViewBackingItem2,
 					NSArray<NSSortDescriptor*>* sortDescriptors){
 				// Setup
@@ -117,7 +142,7 @@
 - (void) setOutlineViewItemViewProc:(AKTOutlineViewBackingOutlineItemViewProc) outlineViewItemViewProc
 {
 	// Set proc
-	self.itemViewProc =
+	self.objectViewProc =
 			^(NSOutlineView* outlineView, NSTableColumn* tableColumn, NSInteger rowIndex, id object){
 				// Call proc
 				return outlineViewItemViewProc(outlineView, tableColumn, rowIndex,
@@ -136,11 +161,74 @@
 		(AKTOutlineViewBackingShouldEditItemProc) outlineViewBackingShouldEditItemProc
 {
 	// Set proc
-	self.shouldEditItemProc =
+	self.shouldEditObjectProc =
 			^(NSOutlineView* outlineView, NSTableColumn* tableColumn, id object){
 				// Call proc
 				return outlineViewBackingShouldEditItemProc(outlineView, tableColumn,
 						*((I<COutlineViewItem>*) ((CppWrapper*) object).object));
+			};
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (AKTOutlineViewBackingPasteboardWriterForItemProc) pasteboardWriterForItemProc
+{
+	return nil;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) setPasteboardWriterForItemProc:(AKTOutlineViewBackingPasteboardWriterForItemProc) pasteboardWriterForItemProc
+{
+	// Set proc
+	self.pasteboardWriterForObjectProc = ^id<NSPasteboardWriting>(id object){
+		return pasteboardWriterForItemProc(*((const I<COutlineViewItem>*) ((CppWrapper*) object).object));
+	};
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (AKTOutlineViewBackingValidateDropProc) cppValidateDropProc
+{
+	return nil;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) setCppValidateDropProc:(AKTOutlineViewBackingValidateDropProc) cppValidateDropProc
+{
+	// Set proc
+	self.validateDropProc =
+			^NSDragOperation(NSOutlineView* outlineView, id<NSDraggingInfo> info, id object, NSInteger childIndex){
+				// Setup
+				OV<I<COutlineViewItem> >	outlineViewItem =
+													(object != nil) ?
+															OV<I<COutlineViewItem> >(
+																	*((const I<COutlineViewItem>*)
+																			((CppWrapper*) object).object)) :
+															OV<I<COutlineViewItem> >();
+
+				return cppValidateDropProc(outlineView, info, outlineViewItem, childIndex);
+			};
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (AKTOutlineViewBackingAcceptDropProc) cppAcceptDropProc
+{
+	return nil;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) setCppAcceptDropProc:(AKTOutlineViewBackingAcceptDropProc) cppAcceptDropProc
+{
+	// Set proc
+	self.acceptDropProc =
+			^BOOL(id<NSDraggingInfo> info, id object, NSInteger childIndex){
+				// Setup
+				OV<I<COutlineViewItem> >	outlineViewItem =
+													(object != nil) ?
+															OV<I<COutlineViewItem> >(
+																	*((const I<COutlineViewItem>*)
+																			((CppWrapper*) object).object)) :
+															OV<I<COutlineViewItem> >();
+
+				return cppAcceptDropProc(info, outlineViewItem, childIndex);
 			};
 }
 
@@ -151,7 +239,7 @@
 {
 	// Convert
 	NSMutableArray<NSSortDescriptor*>*	sortDescriptors_ = [[NSMutableArray alloc] init];
-	for (TIteratorD<SSortDescriptor> iterator = sortDescriptors.getIterator(); iterator.hasValue(); iterator.advance())
+	for (TArray<SSortDescriptor>::Iterator iterator = sortDescriptors.getIterator(); iterator; iterator++)
 		// Add
 		[sortDescriptors_
 				addObject:
@@ -191,6 +279,21 @@
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+- (void) expandOutlineViewItemIDs:(const TArray<CString>&) outlineViewItemIDs
+{
+	// Expand outline view items
+	[self.outlineView expandItems:(__bridge NSArray<NSString*>*) *CCoreFoundation::arrayRefFrom(outlineViewItemIDs)];
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) setSelectedOutlineViewItemIDs:(const TArray<CString>&) outlineViewItemIDs
+{
+	// Select outline view items
+	[self.outlineView selectItems:(__bridge NSArray<NSString*>*) *CCoreFoundation::arrayRefFrom(outlineViewItemIDs)
+			byExtendingSelection:NO];
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 - (void) reloadTableColumn:(const CTableColumn&) tableColumn
 {
 	// Reload
@@ -227,8 +330,7 @@
 {
 	// Convert array
 	NSMutableArray<OutlineViewBackingItem*>*	outlineViewBackingItems = [[NSMutableArray alloc] init];
-	for (TIteratorD<I<COutlineViewItem> > iterator = outlineViewItems.getIterator(); iterator.hasValue();
-			iterator.advance())
+	for (TArray<I<COutlineViewItem> >::Iterator iterator = outlineViewItems.getIterator(); iterator; iterator++)
 		// Add Outline View Backing Item
 		[outlineViewBackingItems
 			addObject:
@@ -256,8 +358,7 @@
 {
 	// Compose row indexes
 	NSMutableIndexSet*	indexSet = [[NSMutableIndexSet alloc] init];
-	for (TIteratorD<I<COutlineViewItem> > iterator = outlineViewItems.getIterator(); iterator.hasValue();
-			iterator.advance())
+	for (TArray<I<COutlineViewItem> >::Iterator iterator = outlineViewItems.getIterator(); iterator; iterator++)
 		// Add index
 		[indexSet addIndex:[self.outlineView rowForItem:(__bridge NSString*) (*iterator)->getID().getOSString()]];
 
@@ -270,7 +371,7 @@
 	// Compose column indexes
 	NSMutableIndexSet*	indexSet = [[NSMutableIndexSet alloc] init];
 	[self.outlineView.tableColumns
-			enumerateObjectsUsingBlock:^(NSTableColumn* tableColumn, NSUInteger index, BOOL* stop) {
+			enumerateObjectsUsingBlock:^(NSTableColumn* tableColumn, NSUInteger index, BOOL* stop){
 				// Check identifier
 				if (tableColumnIdentifiers.contains(CString((__bridge CFStringRef) tableColumn.identifier)))
 					// Add index

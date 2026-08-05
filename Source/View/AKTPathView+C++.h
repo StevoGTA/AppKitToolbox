@@ -1,21 +1,24 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	AKTOutlineView.h			©2026 Stevo Brock	All rights reserved.
+//	AKTPathView+C++.h			©2026 Stevo Brock		All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
-#pragma once
+#import "CFilesystemPath.h"
 
 #import <AppKit/AppKit.h>
+
+#import "Swift.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: AKTOutlineView
-@interface AKTOutlineView : NSOutlineView
+// MARK: AKTPathView extension
 
-// MARK: Properties
+@interface AKTPathView (Cpp)
 
-@property (nonatomic, assign)	BOOL	isDoubleClickToBeginEditingEnabled;
-@property (nonatomic, assign)	BOOL	isOptionClickToBeginEditingEnabled;
+// MARK: Instance methods
+
+- (void) setCppRootPath:(const OV<CFilesystemPath>&) filesystemPath;
+- (void) setCppPath:(const CFilesystemPath&) filesystemPath;
 
 @end
 

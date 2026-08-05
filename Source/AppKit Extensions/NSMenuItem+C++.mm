@@ -11,7 +11,16 @@
 
 @implementation NSMenuItem (Cpp)
 
-// MARK: Instance methods
+// MARK: Properties
+
+//----------------------------------------------------------------------------------------------------------------------
+- (OV<CString>) representedObjectAsString
+{
+	return (self.representedObject != nil) ?
+			OV<CString>(CString((__bridge CFStringRef) self.representedObject)) : OV<CString>();
+}
+
+// MARK: Class methods
 
 //----------------------------------------------------------------------------------------------------------------------
 + (instancetype) menuItemWithString:(const CString&) string target:(NSObject*) target action:(SEL) action
@@ -84,6 +93,14 @@
 + (instancetype) menuItemWithString:(const CString&) string
 {
 	return [[NSMenuItem alloc] initWithTitle:(__bridge NSString*) string.getOSString() action:nil keyEquivalent:@""];
+}
+
+// MARK: Instance methods
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) setTitleWithString:(const CString&) string
+{
+	self.title = [(__bridge NSString*) string.getOSString() copy];
 }
 
 @end

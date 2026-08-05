@@ -8,11 +8,12 @@
 
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: Local data
+
 static	NSString*	NSPasteboardTypeFilenames = @"NSFilenamesPboardType";
 
 //----------------------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------------------
-// MARK :AKTFolderFileDropTargetView
+// MARK: - AKTFolderFileDropTargetView
 
 @implementation AKTFolderFileDropTargetView
 

@@ -1,28 +1,28 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	NSView+C++.mm			©2026 Stevo Brock	All rights reserved.
+//	AKTPathView+C++.mm			©2026 Stevo Brock		All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
-#import "NSView+C++.h"
-
-#import "NSString+C++.h"
+#import "AKTPathView+C++.h"
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: NSView extension
+// MARK: AKTPathView extension
 
-@implementation NSView (Cpp)
+@implementation AKTPathView (Cpp)
 
-// MARK: Properties
+// MARK: Instance methods
 
 //----------------------------------------------------------------------------------------------------------------------
-- (CString) toolTipString
+- (void) setCppRootPath:(const OV<CFilesystemPath>&) filesystemPath
 {
-	return (self.toolTip != nil) ? CString((__bridge CFStringRef) self.toolTip) : CString::mEmpty;
+	// Set
+	self.rootPath = filesystemPath.hasValue() ? (__bridge NSString*) filesystemPath->getString().getOSString() : nil;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-- (void) setToolTipString:(CString) string
+- (void) setCppPath:(const CFilesystemPath&) filesystemPath
 {
-	self.toolTip = (__bridge NSString*) string.getOSString();
+	// Set
+	self.path = (__bridge NSString*) filesystemPath.getString().getOSString();
 }
 
 @end

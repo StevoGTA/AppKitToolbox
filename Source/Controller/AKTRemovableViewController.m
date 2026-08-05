@@ -18,8 +18,8 @@
 	[super awakeFromNib];
 
 	// Setup
-	[self.removeButton setTarget:self];
-	[self.removeButton setAction:@selector(remove:)];
+	self.removeButton.target = self;
+	self.removeButton.action = @selector(remove:);
 }
 
 // MARK: Instance methods
