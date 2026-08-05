@@ -81,7 +81,7 @@ open class AKTViewController : NSViewController {
 		@MainActor
 		init(view :NSView, keys :[Key], handlerProc :@escaping (_ key :Key) -> Bool) {
 			// Setup
-			weak	let	weakView = view
+			weak	var	weakView = view
 			self.opaque =
 					NSEvent.addLocalMonitorForEvents(matching: .keyDown, handler: { event in
 						// Ensure we are key window
