@@ -8,15 +8,20 @@ import AppKit
 // MARK: AKTPathView
 public class AKTPathView : NSView {
 
-	// MARK: Types
+	// MARK: Style
+	@objc(AKTPathViewStyle)
+	public enum Style :Int {
+		case standard
+		case dimmed
+	}
+
+	// MARK: SegmentInfo
 	private struct SegmentInfo {
 
 		// MARK: Properties
 		let	name :String
-		let	cumulativePath :String
 
 		let	button :NSButton
-		let	chevronTextField :NSTextField?
 	}
 
 	// MARK: Properties
@@ -47,12 +52,63 @@ public class AKTPathView : NSView {
 									rebuildSegments()
 								}
 							}
+	@objc	public	var	style = Style.standard {
+								didSet {
+									// Check if changed
+									guard self.style != oldValue else { return }
+
+									// Update - only the tint changes, so nothing needs measuring again
+									updateSegmentTints()
+								}
+							}
+	@objc	public	var	font = NSFont.systemFont(ofSize: NSFont.systemFontSize) {
+								didSet {
+									// Check if changed
+									guard self.font != oldValue else { return }
+
+									// Update
+									rebuildSegments()
+								}
+							}
+	@objc	public	var	isEnabled = true {
+								didSet {
+									// Check if changed
+									guard self.isEnabled != oldValue else { return }
+
+									// Update
+									rebuildSegments()
+								}
+							}
+	@objc	public	var	folderDroppedProc :((_ url :URL) -> Void)? {
+								didSet {
+									// Only a path view that can do something with a folder should be a drag destination
+									if self.folderDroppedProc != nil {
+										// Accept folders
+										self.layer?.cornerRadius = 4.0
+										registerForDraggedTypes([.fileURL])
+									} else {
+										// Accept nothing
+										unregisterDraggedTypes()
+									}
+								}
+							}
 
 			private	var	segmentInfos = [SegmentInfo]()
 			private	var	fullWidths = [CGFloat]()
 			private	var	collapsedWidths = [CGFloat]()
 			private	var	fullContentWidth = CGFloat(0.0)
 			private	var	hoveredIndex :Int?
+			private	var	isDropTarget = false {
+								didSet {
+									// Check if changed
+									guard self.isDropTarget != oldValue else { return }
+
+									// Update
+									let	color = NSColor.selectedContentBackgroundColor.withAlphaComponent(0.25)
+
+									self.layer?.backgroundColor = self.isDropTarget ? color.cgColor : nil
+								}
+							}
 
 			private	let	stackView = NSStackView()
 			private	var	trackingArea :NSTrackingArea?
@@ -102,13 +158,66 @@ public class AKTPathView : NSView {
 
 	//------------------------------------------------------------------------------------------------------------------
 	public override func mouseMoved(with event :NSEvent) {
-		// Update hovered segment
+		// A path view that is not taking clicks has nothing to say about where the mouse is
+		guard self.isEnabled else { return }
+
+		// Look for a segment under the mouse.  A chevron, or the space either side of it, is somewhere the mouse
+		//	passes through on its way somewhere else - it is not someone deciding to stop reading - so passing
+		//	over one leaves the hovered segment alone.  It gives way when the mouse reaches another segment, or
+		//	leaves the path altogether.
 		let	point = convert(event.locationInWindow, from: nil)
-		updateHoveredIndex(self.segmentInfos.firstIndex(where: { $0.button.frame.contains(point) }))
+		guard let index =
+				self.segmentInfos.firstIndex(
+						where: { self.convert($0.button.bounds, from: $0.button).contains(point) })
+				else { return }
+
+		// Update hovered segment
+		updateHoveredIndex(index)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	public override func mouseExited(with event :NSEvent) { updateHoveredIndex(nil) }
+
+	//------------------------------------------------------------------------------------------------------------------
+	public override func draggingEntered(_ sender :NSDraggingInfo) -> NSDragOperation {
+		// Check if have a folder to take
+		guard folderURL(from: sender) != nil else { return [] }
+
+		// Highlight
+		self.isDropTarget = true
+
+		return .copy
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	public override func draggingExited(_ sender :NSDraggingInfo?) { self.isDropTarget = false }
+
+	//------------------------------------------------------------------------------------------------------------------
+	public override func performDragOperation(_ sender :NSDraggingInfo) -> Bool {
+		// Unhighlight
+		self.isDropTarget = false
+
+		// Check if have a folder to take
+		guard let url = folderURL(from: sender) else { return false }
+
+		// Call proc
+		self.folderDroppedProc?(url)
+
+		return true
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	public override func resetCursorRects() {
+		// Do super
+		super.resetCursorRects()
+
+		// Check if taking clicks
+		guard self.isEnabled else { return }
+
+		// Every segment reveals something, so every segment gets the hand
+		self.segmentInfos.forEach()
+				{ addCursorRect(convert($0.button.bounds, from: $0.button), cursor: .pointingHand) }
+	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	public override func layout() {
@@ -117,6 +226,9 @@ public class AKTPathView : NSView {
 
 		// Decide which segments are shown in full
 		updateCollapsedStates()
+
+		// The segments may have moved out from under the cursor rects standing over them
+		self.window?.invalidateCursorRects(for: self)
 	}
 
 	// MARK: Private methods
@@ -124,6 +236,7 @@ public class AKTPathView : NSView {
 	private func setup() {
 		// Setup self
 		self.translatesAutoresizingMaskIntoConstraints = false
+		self.wantsLayer = true
 		setAccessibilityRole(.group)
 
 		// Setup Stack View
@@ -143,13 +256,21 @@ public class AKTPathView : NSView {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	private class func chevronTextField() -> NSTextField {
-		// Setup
-		let	textField = NSTextField(labelWithString: "\u{203A}")
-		textField.font = .boldSystemFont(ofSize: NSFont.systemFontSize)
-		textField.textColor = .secondaryLabelColor
+	private func folderURL(from draggingInfo :NSDraggingInfo) -> URL? {
+		// A path view that is not taking clicks is not taking drops either
+		guard self.isEnabled else { return nil }
 
-		return textField
+		// Look for a lone file - anything else is not a destination
+		let	urls =
+					draggingInfo.draggingPasteboard.readObjects(forClasses: [NSURL.self],
+							options: [.urlReadingFileURLsOnly: true]) as? [URL] ?? []
+		guard urls.count == 1 else { return nil }
+
+		// Ask the filesystem whether it is a folder - a URL only says whether it was written with a trailing
+		//	separator, which says nothing about what is actually there
+		let	isFolder = (try? urls[0].resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory ?? false
+
+		return isFolder ? urls[0] : nil
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -165,23 +286,48 @@ public class AKTPathView : NSView {
 		self.collapsedWidths = []
 		self.hoveredIndex = nil
 
-		// Compose the segments to display, keeping the cumulative path for each so a click can reveal it
+		// Compose the segments to display
 		let	components = self.path.split(separator: "/", omittingEmptySubsequences: true).map(String.init)
 		let	rootComponents =
 					(self.rootPath ?? "").split(separator: "/", omittingEmptySubsequences: true).map(String.init)
 		let	skipCount = components.starts(with: rootComponents) ? rootComponents.count : 0
+		let	isAbsolute = self.path.hasPrefix("/")
+
+		// Separators are punctuation, not content, so they sit a step behind whatever the segments are showing.
+		//	Every chevron is the same drawn glyph - a typed one is a third the height of a letter, far too
+		//	slight to separate anything - so the image is composed here rather than once per separator.
+		let	separatorColor :NSColor = self.isEnabled ? .tertiaryLabelColor : .quaternaryLabelColor
+		let	chevronImage =
+					NSImage(systemSymbolName: "chevron.right", accessibilityDescription: nil)?
+									.withSymbolConfiguration(
+											NSImage.SymbolConfiguration(pointSize: self.font.pointSize,
+													weight: .semibold)) ??
+							NSImage()
+
+		// An absolute path shown from its start says so, the same way writing it out as a string does.  Shown from
+		//	a root, it is being read relative to that root, so it says nothing.
+		if isAbsolute && (skipCount == 0) && !components.isEmpty {
+			// Leading separator.  A solidus runs the whole height of a line where the chevron beside it stands
+			//	about as tall as a capital, so it is set smaller to keep the two reading as one family.
+			let	textField = NSTextField(labelWithString: "/")
+			textField.font = .systemFont(ofSize: self.font.pointSize * 0.85, weight: .semibold)
+			textField.textColor = separatorColor
+
+			self.stackView.addArrangedSubview(textField)
+		}
+
 		for index in skipCount ..< components.count {
 			// Setup
 			let	name = components[index]
-			let	cumulativePath = "/" + components[0...index].joined(separator: "/")
+			let	cumulativePath = (isAbsolute ? "/" : "") + components[0...index].joined(separator: "/")
 
 			// Chevron, for all but the first displayed segment
-			var	chevronTextField :NSTextField?
 			if index > skipCount {
 				// Add chevron
-				let	textField = AKTPathView.chevronTextField()
-				self.stackView.addArrangedSubview(textField)
-				chevronTextField = textField
+				let	imageView = NSImageView(image: chevronImage)
+				imageView.contentTintColor = separatorColor
+
+				self.stackView.addArrangedSubview(imageView)
 			}
 
 			// Button - capturing the cumulative path, so no lookup is needed when clicked
@@ -194,20 +340,23 @@ public class AKTPathView : NSView {
 								})
 			button.isBordered = false
 			button.bezelStyle = .inline
-			button.contentTintColor = .secondaryLabelColor
+			button.font = self.font
+			button.toolTip = cumulativePath
+			button.isEnabled = self.isEnabled
 			button.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
 			self.stackView.addArrangedSubview(button)
 
 			// Add segment info
-			self.segmentInfos.append(
-					SegmentInfo(name: name, cumulativePath: cumulativePath, button: button,
-							chevronTextField: chevronTextField))
+			self.segmentInfos.append(SegmentInfo(name: name, button: button))
 		}
 
 		// Check if ending with a separator
 		if self.showsTrailingSeparator && !self.segmentInfos.isEmpty {
 			// Add trailing chevron
-			self.stackView.addArrangedSubview(AKTPathView.chevronTextField())
+			let	imageView = NSImageView(image: chevronImage)
+			imageView.contentTintColor = separatorColor
+
+			self.stackView.addArrangedSubview(imageView)
 		}
 
 		// Measure each segment, full and collapsed, before anything below can trigger laying out - reading fittingSize
@@ -227,6 +376,9 @@ public class AKTPathView : NSView {
 					return $0.button.intrinsicContentSize.width
 				})
 		self.segmentInfos.forEach({ $0.button.title = $0.name })
+
+		// Nothing is hovered, having just been built
+		updateSegmentTints()
 
 		// Note the width everything needs, while the titles are full
 		self.fullContentWidth = self.stackView.fittingSize.width
@@ -248,33 +400,35 @@ public class AKTPathView : NSView {
 		guard (self.fullWidths.count == self.segmentInfos.count) &&
 				(self.collapsedWidths.count == self.segmentInfos.count) else { return }
 
-		// Decide which segments are shown in full.  The last is always full, as is anything hovered, and then segments
-		//	are promoted from the tail toward the head while they still fit.
-		var	isFull = [Bool](repeating: false, count: self.segmentInfos.count)
-		if self.fullWidths.reduce(0.0, +) <= self.bounds.width {
+		// The chevrons and the spacing between everything are there whatever the titles say, so they are what
+		//	every width below has to be measured on top of
+		let	overheadWidth = self.fullContentWidth - self.fullWidths.reduce(0.0, +)
+
+		// Decide which segments are shown in full, taking no account of what is hovered
+		var	isFull :[Bool]
+		if self.fullContentWidth <= self.bounds.width {
 			// Everything fits
-			isFull = isFull.map({ _ in true })
+			isFull = [Bool](repeating: true, count: self.segmentInfos.count)
 		} else {
-			// Not everything fits
+			// Not everything fits, so the last is shown and the rest earn their place from the tail back
+			isFull = [Bool](repeating: false, count: self.segmentInfos.count)
 			isFull[self.segmentInfos.count - 1] = true
-			if let hoveredIndex = self.hoveredIndex { isFull[hoveredIndex] = true }
+			show(&isFull, from: self.segmentInfos.count - 2, through: 0, overheadWidth: overheadWidth)
+		}
 
-			var	usedWidth =
-						(0 ..< self.segmentInfos.count)
-								.reduce(0.0, { $0 + (isFull[$1] ? self.fullWidths[$1] : self.collapsedWidths[$1]) })
-
-			for index in stride(from: self.segmentInfos.count - 2, through: 0, by: -1) {
-				// Check if already full
-				guard !isFull[index] else { continue }
-
-				// Check if promoting fits
-				let	deltaWidth = self.fullWidths[index] - self.collapsedWidths[index]
-				if (usedWidth + deltaWidth) <= self.bounds.width {
-					// Promote
-					isFull[index] = true
-					usedWidth += deltaWidth
-				}
+		// Expand the hovered segment.  Its left edge must not move - if it did, it would slide out from under the
+		//	mouse, the mouse would land on a different segment, and the path would flip back and forth - so
+		//	everything after it is taken back and then earned again, leaving the room it needs to come only
+		//	from there.
+		if let hoveredIndex = self.hoveredIndex, !isFull[hoveredIndex] {
+			// Expand
+			isFull[hoveredIndex] = true
+			for index in (hoveredIndex + 1) ..< self.segmentInfos.count {
+				// Is not full
+				isFull[index] = false
 			}
+
+			show(&isFull, from: self.segmentInfos.count - 1, through: hoveredIndex + 1, overheadWidth: overheadWidth)
 		}
 
 		// Apply
@@ -292,6 +446,47 @@ public class AKTPathView : NSView {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
+	private func width(of isFull :[Bool], overheadWidth :CGFloat) -> CGFloat {
+		// Add up what each segment is showing
+		return (0 ..< self.segmentInfos.count)
+				.reduce(overheadWidth,
+						{ $0 + (isFull[$1] ? self.fullWidths[$1] : self.collapsedWidths[$1]) })
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	private func show(_ isFull :inout [Bool], from :Int, through :Int, overheadWidth :CGFloat) {
+		// Setup
+		var	usedWidth = width(of: isFull, overheadWidth: overheadWidth)
+
+		// Show as many as will fit, working from the tail toward the head
+		for index in stride(from: from, through: through, by: -1) {
+			// Check if already showing
+			guard !isFull[index] else { continue }
+
+			// Check if showing this one fits
+			let	deltaWidth = self.fullWidths[index] - self.collapsedWidths[index]
+			guard (usedWidth + deltaWidth) <= self.bounds.width else { continue }
+
+			// Show
+			isFull[index] = true
+			usedWidth += deltaWidth
+		}
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	private func updateSegmentTints() {
+		// A path standing on its own is the value being shown, so it reads as one.  A path giving context to
+		//	something else on the same line steps back so that something else reads first.
+		let	color :NSColor = (self.style == .dimmed) ? .secondaryLabelColor : .labelColor
+
+		// The segment under the mouse takes the accent color, which is what says it will act on a click
+		self.segmentInfos.enumerated().forEach() {
+			// Set tint
+			$0.element.button.contentTintColor = ($0.offset == self.hoveredIndex) ? .controlAccentColor : color
+		}
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
 	private func updateHoveredIndex(_ hoveredIndex :Int?) {
 		// Check if changed
 		guard hoveredIndex != self.hoveredIndex else { return }
@@ -299,7 +494,20 @@ public class AKTPathView : NSView {
 		// Update
 		self.hoveredIndex = hoveredIndex
 
-		// Needs layout
-		self.needsLayout = true
+		// Bring the hovered segment forward
+		updateSegmentTints()
+
+		// Expand and collapse by moving, not by jumping.  What is being read has just changed shape and position,
+		//	and the eye can only follow that if it can see it happen.
+		NSAnimationContext.runAnimationGroup({ context in
+			// Setup
+			context.duration = 0.3
+			context.timingFunction = CAMediaTimingFunction(name: .easeOut)
+			context.allowsImplicitAnimation = true
+
+			// Update
+			self.updateCollapsedStates()
+			self.layoutSubtreeIfNeeded()
+		})
 	}
 }
