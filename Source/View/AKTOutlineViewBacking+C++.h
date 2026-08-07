@@ -26,6 +26,9 @@ typedef	BOOL							(^AKTOutlineViewBackingCompareOutlineViewItemsProc)(
 typedef	TArray<I<COutlineViewItem> >	(^AKTOutlineViewBackingReloadChildOutlineViewItemsProc)(
 												const I<COutlineViewItem>& outlineViewItem);
 
+typedef	CGFloat							(^AKTOutlineViewBackingOutlineItemHeightProc)(
+												const I<COutlineViewItem>& outlineViewItem);
+
 typedef	NSView* _Nullable				(^AKTOutlineViewBackingOutlineItemViewProc)(NSOutlineView* outlineView,
 												NSTableColumn* tableColumn, NSInteger rowIndex,
 												const I<COutlineViewItem>& outlineViewItem);
@@ -61,6 +64,7 @@ typedef	BOOL							(^AKTOutlineViewBackingAcceptDropProc)(id<NSDraggingInfo> inf
 @property (nonatomic, assign)	AKTOutlineViewBackingReloadChildOutlineViewItemsProc	reloadChildOutlineViewItemsProc;
 
 @property (nonatomic, assign)	AKTOutlineViewBackingOutlineItemViewProc				outlineViewItemViewProc;
+@property (nonatomic, assign)	AKTOutlineViewBackingOutlineItemHeightProc				outlineViewItemHeightProc;
 
 @property (nonatomic, assign)	AKTOutlineViewBackingShouldEditItemProc					outlineViewBackingShouldEditItemProc;
 

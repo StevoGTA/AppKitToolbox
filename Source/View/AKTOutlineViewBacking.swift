@@ -32,6 +32,8 @@ public class AKTOutlineViewBacking : OutlineViewBacking, NSOutlineViewDataSource
 	@objc		public			var	objectViewProc
 										:(_ outlineView :NSOutlineView, _ tableColumn :NSTableColumn, _ rowIndex :Int,
 												_ object :Any) -> NSView? = { _,_,_,_ in nil }
+	@objc		public			var	objectHeightProc
+										:(_ outlineView :NSOutlineView, _ object :Any) -> NSNumber? = { _,_ in nil }
 	@objc		public			var	objectDidExpandProc :(_ object :Any) -> Void = { _ in }
 	@objc		public			var	objectDidCollapseProc :(_ object :Any) -> Void = { _ in }
 
@@ -177,6 +179,18 @@ public class AKTOutlineViewBacking : OutlineViewBacking, NSOutlineViewDataSource
 				self.objectRowViewProc(outlineView, object(for: (item as! String))) :
 				self.objectViewProc(outlineView, tableColumn!, self.outlineView.row(forItem: item),
 						object(for: (item as! String)))
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	public func outlineView(_ outlineView :NSOutlineView, heightOfRowByItem item :Any) -> CGFloat {
+		// Query height
+		if let height = self.objectHeightProc(outlineView, object(for: (item as! String))) {
+			// Have height
+			return CGFloat(height.doubleValue)
+		} else {
+			// Don't have height
+			return outlineView.rowHeight
+		}
 	}
 
 	//------------------------------------------------------------------------------------------------------------------

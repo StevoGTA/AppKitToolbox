@@ -60,7 +60,11 @@ public class AKTChipsView : NSView {
 		self.stackView.spacing = 4.0
 		addSubview(self.stackView)
 
-		self.stackView.match(self)
+		// Setup constraints
+		self.stackView.alignLeading(to: self)
+		self.stackView.alignTop(to: self)
+		self.stackView.alignBottom(to: self)
+		self.stackView.alignTrailing(lessThanOrEqualTo: self)
 
 		// Chips are the payload of the row - the path beside them gives way first
 		setContentCompressionResistancePriority(.required, for: .horizontal)

@@ -151,6 +151,23 @@
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+- (AKTOutlineViewBackingOutlineItemHeightProc) outlineViewItemHeightProc
+{
+	return nil;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) setOutlineViewItemHeightProc:(AKTOutlineViewBackingOutlineItemHeightProc) outlineViewItemHeightProc
+{
+	// Set proc
+	self.objectHeightProc = ^(NSOutlineView* outlineView, id object){
+		// Call proc
+		return [NSNumber
+				numberWithDouble:outlineViewItemHeightProc(*((I<COutlineViewItem>*) ((CppWrapper*) object).object))];
+	};
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 - (AKTOutlineViewBackingShouldEditItemProc) outlineViewBackingShouldEditItemProc
 {
 	return nil;
