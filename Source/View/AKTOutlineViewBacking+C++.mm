@@ -318,17 +318,22 @@
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+- (void) reloadTableColumnIdentifier:(const CString&) tableColumnIdentifier
+{
+	// Reload
+	[self.outlineView reloadColumnFor:(__bridge NSString*) tableColumnIdentifier.getOSString()];
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 - (void) reloadTableViewItem:(const CTableViewItem&) tableViewItem
 		tableColumnIdentifiers:(const OV<TSet<CString> >&) tableColumnIdentifiers
 {
-	// Check if have identifiers
-	if (tableColumnIdentifiers.hasValue())
-		// Reload specific cells
-		[self.outlineView reloadDataForRowIndexes:[self rowIndexForTableViewItem:tableViewItem]
-				columnIndexes:[self columnIndexesForTableColumnIdentifiers:*tableColumnIdentifiers]];
-	else
-		// Reload whole item
-		[self.outlineView reloadItem:(__bridge NSString*) tableViewItem.getID().getOSString()];
+	// Reload cells - the given columns, or all columns
+	[self.outlineView reloadDataForRowIndexes:[self rowIndexForTableViewItem:tableViewItem]
+			columnIndexes:
+					tableColumnIdentifiers.hasValue() ?
+							[self columnIndexesForTableColumnIdentifiers:*tableColumnIdentifiers] :
+							[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.outlineView.numberOfColumns)]];
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -338,6 +343,18 @@
 	// Reload cells
 	[self.outlineView reloadDataForRowIndexes:[self rowIndexesForOutlineViewItems:outlineViewItems]
 			columnIndexes:[self columnIndexesForTableColumnIdentifiers:TSSet<CString>(tableColumn.getIdentifier())]];
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) reloadOutlineViewItems:(TArray<I<COutlineViewItem> >&) outlineViewItems
+		tableColumnIdentifiers:(const OV<TSet<CString> >&) tableColumnIdentifiers
+{
+	// Reload cells - the given columns, or all columns
+	[self.outlineView reloadDataForRowIndexes:[self rowIndexesForOutlineViewItems:outlineViewItems]
+			columnIndexes:
+					tableColumnIdentifiers.hasValue() ?
+							[self columnIndexesForTableColumnIdentifiers:*tableColumnIdentifiers] :
+							[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.outlineView.numberOfColumns)]];
 }
 
 // MARK: Private methods
