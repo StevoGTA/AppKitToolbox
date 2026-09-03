@@ -18,8 +18,10 @@
 	return [[AKTChipViewInfo alloc]
 			initWithText:(__bridge NSString*) chipInfo.getText().getOSString()
 			style:
-					(chipInfo.getStyle() == SChipInfo::kStyleFilled) ?
-							AKTChipViewInfoStyleFilled : AKTChipViewInfoStyleOutlined
+					(chipInfo.getStyle() == SChipInfo::kStyleAccented) ?
+							AKTChipViewInfoStyleAccented :
+							(chipInfo.getStyle() == SChipInfo::kStyleFilled) ?
+									AKTChipViewInfoStyleFilled : AKTChipViewInfoStyleOutlined
 			symbol:
 					(chipInfo.getSymbol() == SChipInfo::kSymbolLocked) ?
 							AKTChipViewInfoSymbolLocked : AKTChipViewInfoSymbolNone];

@@ -17,6 +17,7 @@ public class AKTChipView : NSView {
 		public enum Style :Int {
 			case outlined
 			case filled
+			case accented
 		}
 
 		// MARK: Symbol
@@ -74,6 +75,22 @@ public class AKTChipView : NSView {
 									}
 								}
 							}
+	@objc	public	var	isEmphasized = false {
+								didSet {
+									// Check if changed
+									if self.isEmphasized != oldValue {
+										// Update
+										updateColors()
+									}
+								}
+							}
+
+			private	var	tintColor :NSColor {
+								// Neutral chips draw in the label family, accented chips in the accent color, and on
+								//	emphasized (selected), everything draws in white
+								self.isEmphasized ?
+										.white : ((self.info?.style == .accented) ? .controlAccentColor : .labelColor)
+							}
 
 			private	let	textField = NSTextField(labelWithString: "")
 			private	let	imageView = NSImageView()
@@ -105,12 +122,15 @@ public class AKTChipView : NSView {
 	//------------------------------------------------------------------------------------------------------------------
 	public override func updateLayer() {
 		// Setup
-		let	isFilled = (self.info?.style ?? .outlined) == .filled
+		let	style = self.info?.style ?? .outlined
+		let	tintColor = self.tintColor
 
 		self.layer?.cornerRadius = self.bounds.height / 2.0
 		self.layer?.borderWidth = 1.0
-		self.layer?.borderColor = NSColor.tertiaryLabelColor.cgColor
-		self.layer?.backgroundColor = isFilled ? NSColor.quaternaryLabelColor.cgColor : NSColor.clear.cgColor
+		self.layer?.borderColor = tintColor.withAlphaComponent((style == .accented) ? 1.0 : 0.25).cgColor
+		self.layer?.backgroundColor =
+				(style == .outlined) ?
+						NSColor.clear.cgColor : tintColor.withAlphaComponent((style == .accented) ? 0.15 : 0.1).cgColor
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -151,6 +171,15 @@ public class AKTChipView : NSView {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
+	private func updateColors() {
+		// Update Text Field
+		self.textField.textColor = self.tintColor
+
+		// Needs display
+		self.needsDisplay = true
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
 	private func updateContent() {
 		// Update Text Field
 		self.textField.stringValue = self.info?.text ?? ""
@@ -168,6 +197,7 @@ public class AKTChipView : NSView {
 				self.imageView.isHidden = true
 		}
 
-		self.needsDisplay = true
+		// Update colors
+		updateColors()
 	}
 }

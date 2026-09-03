@@ -18,6 +18,17 @@ public class AKTChipsView : NSView {
 									updateChipViews()
 								}
 							}
+	@objc	public	var	isEmphasized = false {
+								didSet {
+									// Check if changed
+									guard self.isEmphasized != oldValue else { return }
+
+									// Update
+									self.chipViews.forEach() { $0.isEmphasized = self.isEmphasized }
+								}
+							}
+
+			private	var	chipViews :[AKTChipView] { self.stackView.arrangedSubviews.compactMap({ $0 as? AKTChipView }) }
 
 			private	let	stackView = NSStackView()
 
@@ -74,12 +85,13 @@ public class AKTChipsView : NSView {
 	//------------------------------------------------------------------------------------------------------------------
 	private func updateChipViews() {
 		// Setup
-		var	chipViews = self.stackView.arrangedSubviews.compactMap({ $0 as? AKTChipView })
+		var	chipViews = self.chipViews
 
 		// Add any chip views needed
 		while chipViews.count < self.infos.count {
 			// Add one more
 			let	chipView = AKTChipView()
+			chipView.isEmphasized = self.isEmphasized
 			self.stackView.addArrangedSubview(chipView)
 			chipViews.append(chipView)
 		}
