@@ -4,7 +4,6 @@
 
 #import "COutlineViewItem.h"
 #import "CTableColumn.h"
-#import "CTableViewBacking.h"
 #import "SSortDescriptor.h"
 
 #import <AppKit/AppKit.h>
