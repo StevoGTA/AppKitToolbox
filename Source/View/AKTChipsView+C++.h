@@ -18,6 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 // MARK: Instance methods
 
 - (void) setCppChipInfos:(const TArray<SChipInfo>&) chipInfos;
+- (void) setCppChipInfo:(const SChipInfo&) chipInfo;
 
 @end
 

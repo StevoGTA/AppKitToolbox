@@ -4,6 +4,8 @@
 
 #import "AKTChipView+C++.h"
 
+#import "NSColor+C++.h"
+
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: AKTChipView extension
 
@@ -24,7 +26,8 @@
 									AKTChipViewInfoStyleFilled : AKTChipViewInfoStyleOutlined
 			symbol:
 					(chipInfo.getSymbol() == SChipInfo::kSymbolLocked) ?
-							AKTChipViewInfoSymbolLocked : AKTChipViewInfoSymbolNone];
+							AKTChipViewInfoSymbolLocked : AKTChipViewInfoSymbolNone
+			tintColor:chipInfo.getColor().hasValue() ? [NSColor colorForCColor:*chipInfo.getColor()] : nil];
 }
 
 // MARK: Instance methods

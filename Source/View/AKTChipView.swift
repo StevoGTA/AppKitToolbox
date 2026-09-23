@@ -31,14 +31,16 @@ public class AKTChipView : NSView {
 		@objc	public	let	text :String
 		@objc	public	let	style :Style
 		@objc	public	let	symbol :Symbol
+		@objc	public	let	tintColor :NSColor?
 
 		// MARK: Lifecycle methods
 		//--------------------------------------------------------------------------------------------------------------
-		@objc public init(text :String, style :Style, symbol :Symbol = .none) {
+		@objc public init(text :String, style :Style, symbol :Symbol = .none, tintColor :NSColor? = nil) {
 			// Store
 			self.text = text
 			self.style = style
 			self.symbol = symbol
+			self.tintColor = tintColor
 
 			// Do super
 			super.init()
@@ -50,7 +52,8 @@ public class AKTChipView : NSView {
 			// Compare
 			guard let other = object as? Info else { return false }
 
-			return (other.text == self.text) && (other.style == self.style) && (other.symbol == self.symbol)
+			return (other.text == self.text) && (other.style == self.style) && (other.symbol == self.symbol) &&
+					(other.tintColor == self.tintColor)
 		}
 
 		//--------------------------------------------------------------------------------------------------------------
@@ -60,6 +63,7 @@ public class AKTChipView : NSView {
 			hasher.combine(self.text)
 			hasher.combine(self.style)
 			hasher.combine(self.symbol)
+			hasher.combine(self.tintColor)
 
 			return hasher.finalize()
 		}
@@ -86,10 +90,14 @@ public class AKTChipView : NSView {
 							}
 
 			private	var	tintColor :NSColor {
-								// Neutral chips draw in the label family, accented chips in the accent color, and on
-								//	emphasized (selected), everything draws in white
+								// Neutral chips draw in the label family, accented chips in the accent color, chips
+								//	with their own color in that color, and on emphasized (selected), everything draws
+								//	in white
 								self.isEmphasized ?
-										.white : ((self.info?.style == .accented) ? .controlAccentColor : .labelColor)
+										.white :
+										(self.info?.tintColor ??
+												((self.info?.style == .accented) ?
+														.controlAccentColor : .labelColor))
 							}
 
 			private	let	textField = NSTextField(labelWithString: "")

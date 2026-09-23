@@ -26,4 +26,11 @@
 	self.infos = infos;
 }
 
+//----------------------------------------------------------------------------------------------------------------------
+- (void) setCppChipInfo:(const SChipInfo&) chipInfo
+{
+	// Set
+	self.infos = @[[AKTChipView infoFor:chipInfo]];
+}
+
 @end
