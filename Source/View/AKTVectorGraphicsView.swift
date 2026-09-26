@@ -17,7 +17,8 @@ public class AKTVectorGraphicsView : NSView {
 		case strokedPill(color :NSColor, lineWidth :CGFloat = 1.0)
 		case filledAndStrokedPill(fillColor :NSColor, strokeColor :NSColor, lineWidth :CGFloat = 1.0)
 		case filledRoundedRect(color :NSColor, radius :CGFloat = 10.0)
-		case strokedRoundedRect(color :NSColor, radius :CGFloat = 10.0, lineWidth :CGFloat = 1.0)
+		case strokedRoundedRect(color :NSColor, radius :CGFloat = 10.0, lineWidth :CGFloat = 1.0,
+				dashPattern :[CGFloat] = [])
 		case filledShape(path :NSBezierPath, color :NSColor)
 		case strokedShape(path :NSBezierPath, color :NSColor)
 	}
@@ -90,8 +91,8 @@ public class AKTVectorGraphicsView : NSView {
 
 				NSBezierPath(roundedRect: self.bounds, xRadius: radius, yRadius: radius).fill()
 
-			case let .strokedRoundedRect(color: color, radius: radius, lineWidth: lineWidth):
-				// Oval
+			case let .strokedRoundedRect(color: color, radius: radius, lineWidth: lineWidth, dashPattern: dashPattern):
+				// Rounded rect, dashed when a pattern is given
 				color.setStroke()
 
 				let	path =
@@ -99,6 +100,9 @@ public class AKTVectorGraphicsView : NSView {
 									roundedRect: self.bounds.insetBy(dx: lineWidth * 0.5, dy: lineWidth * 0.5),
 											xRadius: radius, yRadius: radius)
 				path.lineWidth = lineWidth
+				if !dashPattern.isEmpty {
+					path.setLineDash(dashPattern, count: dashPattern.count, phase: 0.0)
+				}
 				path.stroke()
 
 			case let .filledShape(path, color):
@@ -166,6 +170,16 @@ public class AKTVectorGraphicsView : NSView {
 			lineWidth :CGFloat = 1.0) {
 		// Set content
 		self.content = .strokedRoundedRect(color: color, radius: radius, lineWidth: lineWidth)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc(setContentAsRoundedRectStrokedWithColor:radius:lineWidth:dashPattern:)
+	func setContent(strokedRoundedRectWithColor color :NSColor, radius :CGFloat = 10.0,
+			lineWidth :CGFloat = 1.0, dashPattern :[NSNumber]) {
+		// Set content
+		self.content =
+				.strokedRoundedRect(color: color, radius: radius, lineWidth: lineWidth,
+						dashPattern: dashPattern.map({ CGFloat($0.doubleValue) }))
 	}
 	//------------------------------------------------------------------------------------------------------------------
 	@objc(setContentAsShapeFilledWithPath:color:)

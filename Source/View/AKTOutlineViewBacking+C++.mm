@@ -168,20 +168,19 @@
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-- (AKTOutlineViewBackingShouldEditItemProc) outlineViewBackingShouldEditItemProc
+- (AKTOutlineViewBackingShouldEditItemProc) shouldEditItemProc
 {
 	return nil;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-- (void) setOutlineViewBackingShouldEditItemProc:
-		(AKTOutlineViewBackingShouldEditItemProc) outlineViewBackingShouldEditItemProc
+- (void) setShouldEditItemProc:(AKTOutlineViewBackingShouldEditItemProc) shouldEditItemProc
 {
 	// Set proc
 	self.shouldEditObjectProc =
 			^(NSOutlineView* outlineView, NSTableColumn* tableColumn, id object){
 				// Call proc
-				return outlineViewBackingShouldEditItemProc(outlineView, tableColumn,
+				return shouldEditItemProc(outlineView, tableColumn,
 						*((I<COutlineViewItem>*) ((CppWrapper*) object).object));
 			};
 }

@@ -65,7 +65,7 @@ typedef	BOOL							(^AKTOutlineViewBackingAcceptDropProc)(id<NSDraggingInfo> inf
 @property (nonatomic, assign)	AKTOutlineViewBackingOutlineItemViewProc				outlineViewItemViewProc;
 @property (nonatomic, assign)	AKTOutlineViewBackingOutlineItemHeightProc				outlineViewItemHeightProc;
 
-@property (nonatomic, assign)	AKTOutlineViewBackingShouldEditItemProc					outlineViewBackingShouldEditItemProc;
+@property (nonatomic, assign)	AKTOutlineViewBackingShouldEditItemProc					shouldEditItemProc;
 
 @property (nonatomic, assign)	AKTOutlineViewBackingPasteboardWriterForItemProc		pasteboardWriterForItemProc;
 @property (nonatomic, assign)	AKTOutlineViewBackingValidateDropProc					cppValidateDropProc;
