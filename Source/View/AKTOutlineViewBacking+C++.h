@@ -96,6 +96,10 @@ typedef	BOOL							(^AKTOutlineViewBackingAcceptDropProc)(id<NSDraggingInfo> inf
 - (void) reloadOutlineViewItems:(TArray<I<COutlineViewItem> >&) outlineViewItems
 		tableColumnIdentifiers:(const OV<TSet<CString> >&) tableColumnIdentifiers;
 
+- (void) reloadOutlineViewItemIDs:(const TArray<CString>&) outlineViewItemIDs;
+- (void) reloadOutlineViewItemIDs:(const TArray<CString>&) outlineViewItemIDs
+		tableColumnIdentifiers:(const OV<TSet<CString> >&) tableColumnIdentifiers;
+
 @end
 
 NS_ASSUME_NONNULL_END

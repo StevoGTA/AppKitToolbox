@@ -356,6 +356,25 @@
 							[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.outlineView.numberOfColumns)]];
 }
 
+//----------------------------------------------------------------------------------------------------------------------
+- (void) reloadOutlineViewItemIDs:(const TArray<CString>&) outlineViewItemIDs
+{
+	// Reload every cell in the rows
+	[self.outlineView reloadRowsForItems:[self itemsForOutlineViewItemIDs:outlineViewItemIDs]];
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) reloadOutlineViewItemIDs:(const TArray<CString>&) outlineViewItemIDs
+		tableColumnIdentifiers:(const OV<TSet<CString> >&) tableColumnIdentifiers
+{
+	// Reload cells - the given columns, or all columns
+	[self.outlineView reloadDataForRowIndexes:[self rowIndexesForOutlineViewItemIDs:outlineViewItemIDs]
+			columnIndexes:
+					tableColumnIdentifiers.hasValue() ?
+							[self columnIndexesForTableColumnIdentifiers:*tableColumnIdentifiers] :
+							[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.outlineView.numberOfColumns)]];
+}
+
 // MARK: Private methods
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -380,22 +399,31 @@
 //----------------------------------------------------------------------------------------------------------------------
 - (NSIndexSet*) rowIndexForTableViewItem:(const CTableViewItem&) tableViewItem
 {
-	// Setup
-	NSString*	item = (__bridge NSString*) tableViewItem.getID().getOSString();
-
-	return [[NSIndexSet alloc] initWithIndex:[self.outlineView rowForItem:item]];
+	return [self.outlineView rowIndexesForItems:@[(__bridge NSString*) tableViewItem.getID().getOSString()]];
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 - (NSIndexSet*) rowIndexesForOutlineViewItems:(const TArray<I<COutlineViewItem> >&) outlineViewItems
 {
-	// Compose row indexes
-	NSMutableIndexSet*	indexSet = [[NSMutableIndexSet alloc] init];
-	for (TArray<I<COutlineViewItem> >::Iterator iterator = outlineViewItems.getIterator(); iterator; iterator++)
-		// Add index
-		[indexSet addIndex:[self.outlineView rowForItem:(__bridge NSString*) (*iterator)->getID().getOSString()]];
+	return [self rowIndexesForOutlineViewItemIDs:COutlineViewItem::getIDs(outlineViewItems)];
+}
 
-	return indexSet;
+//----------------------------------------------------------------------------------------------------------------------
+- (NSIndexSet*) rowIndexesForOutlineViewItemIDs:(const TArray<CString>&) outlineViewItemIDs
+{
+	return [self.outlineView rowIndexesForItems:[self itemsForOutlineViewItemIDs:outlineViewItemIDs]];
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (NSArray<NSString*>*) itemsForOutlineViewItemIDs:(const TArray<CString>&) outlineViewItemIDs
+{
+	// Compose items
+	NSMutableArray<NSString*>*	items = [[NSMutableArray alloc] init];
+	for (TArray<CString>::Iterator iterator = outlineViewItemIDs.getIterator(); iterator; iterator++)
+		// Add item
+		[items addObject:(__bridge NSString*) iterator->getOSString()];
+
+	return items;
 }
 
 //----------------------------------------------------------------------------------------------------------------------

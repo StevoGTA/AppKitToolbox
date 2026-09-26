@@ -17,6 +17,17 @@ public extension NSOutlineView {
 	func items(for rowIndexes :IndexSet) -> [Any] { rowIndexes.map({ item(atRow: $0)! }) }
 
 	//------------------------------------------------------------------------------------------------------------------
+	@objc(rowIndexesForItems:)
+	func rowIndexes(for items :[Any]) -> IndexSet {
+		// Compose row indexes, skipping items that are not showing
+		return IndexSet(items.map({ row(forItem: $0) }).filter({ $0 != -1 }))
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	@objc(reloadRowsForItems:)
+	func reloadRows(for items :[Any]) { reloadRows(at: rowIndexes(for: items)) }
+
+	//------------------------------------------------------------------------------------------------------------------
 	func itemsForContextualMenuAction(forClickedRow row :Int) -> [Any] {
 		return items(for: rowIndexesForContextualMenuAction(forClickedRow: row))
 	}
