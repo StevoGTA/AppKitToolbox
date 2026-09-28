@@ -295,6 +295,18 @@
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+- (TArray<I<COutlineViewItem> >) outlineViewItemsForContextualMenuActionForClickedRow:(NSInteger) row
+{
+	// Translate items
+	TNArray<I<COutlineViewItem> >	outlineViewItems;
+	for (id object in [self objectsForContextualMenuActionForClickedRow:row])
+		// Add item
+		outlineViewItems += *((I<COutlineViewItem>*) ((CppWrapper*) object).object);
+
+	return outlineViewItems;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 - (void) expandOutlineViewItemIDs:(const TArray<CString>&) outlineViewItemIDs
 {
 	// Expand outline view items

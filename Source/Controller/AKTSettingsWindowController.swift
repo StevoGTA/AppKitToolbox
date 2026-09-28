@@ -108,6 +108,7 @@ class AKTSettingsWindowController : NSWindowController {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
+	@objc
 	func selectPane(identifier: String) {
 		// Check if the current one
 		guard self.currentPaneIdentifier != identifier else { return }

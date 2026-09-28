@@ -234,6 +234,12 @@ public class AKTOutlineViewBacking : OutlineViewBacking, NSOutlineViewDataSource
 	}
 	
 	//------------------------------------------------------------------------------------------------------------------
+	@objc func objectsForContextualMenuAction(forClickedRow row :Int) -> [Any] {
+		// Return items
+		return objects(for: self.outlineView.itemsForContextualMenuAction(forClickedRow: row).map({ $0 as! String }))
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
 	@objc(objectAtRow:)
 	func object(at row :Int) -> Any { object(for: self.outlineView.item(atRow: row) as! String) }
 }

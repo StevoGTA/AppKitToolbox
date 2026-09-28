@@ -79,6 +79,7 @@ typedef	BOOL							(^AKTOutlineViewBackingAcceptDropProc)(id<NSDraggingInfo> inf
 - (void) addOutlineViewItems:(const TArray<I<COutlineViewItem> >&) outlineViewItems;
 - (void) removeOutlineViewItems:(const TArray<I<COutlineViewItem> >&) outlineViewItems;
 - (I<COutlineViewItem>) outlineViewItemAtRow:(NSInteger) row;
+- (TArray<I<COutlineViewItem> >) outlineViewItemsForContextualMenuActionForClickedRow:(NSInteger) row;
 
 - (void) expandOutlineViewItemIDs:(const TArray<CString>&) outlineViewItemIDs;
 

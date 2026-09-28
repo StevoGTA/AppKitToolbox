@@ -59,11 +59,19 @@ class AKTTextCalendarDatePickerHelper : NSObject {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	@objc(setDatePickerElements:)
 	func set(datePickerElements :NSDatePicker.ElementFlags) {
 		// Set
 		self.textDatePicker.datePickerElements = datePickerElements
 		self.calendarDatePicker.datePickerElements = datePickerElements
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	// Swift 6.1 (Xcode 16.4) prints NS_OPTIONS parameter types by their bare Swift name in the generated header when
+	//	C++ interop is enabled, so the Objective-C selector takes the raw value.  Remove once on Swift 6.2 or later.
+	@objc(setDatePickerElements:)
+	func set(datePickerElementsRawValue :UInt) {
+		// Set
+		set(datePickerElements: NSDatePicker.ElementFlags(rawValue: datePickerElementsRawValue))
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
