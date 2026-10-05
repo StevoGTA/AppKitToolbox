@@ -8,7 +8,7 @@
 
 #import <AppKit/AppKit.h>
 
-#import "Swift.h"		// AKTOutlineViewBacking is defined in Swift so must include its interface somehow
+#import "Swift.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
