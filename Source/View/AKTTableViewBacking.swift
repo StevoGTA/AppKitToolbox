@@ -26,7 +26,17 @@ public class AKTTableViewBacking : TableViewBacking, NSTableViewDataSource, NSTa
 										:(_ tableView :NSTableView, _ tableColumn :NSTableColumn, _ rowIndex :Int,
 												_ object :Any) -> NSView? = { _,_,_,_ in nil }
 	@objc		public			var	objectHeightProc
-										:(_ tableView :NSTableView, _ object :Any) -> NSNumber? = { _,_ in nil }
+										:((_ tableView :NSTableView, _ object :Any) -> NSNumber?)? = nil {
+											didSet {
+												// AppKit checks which methods the delegate implements when the
+												//	delegate is set, so set it again to have heights asked or not
+												if self.tableView?.delegate === self {
+													// Set again
+													self.tableView.delegate = nil
+													self.tableView.delegate = self
+												}
+											}
+										}
 
 	@objc		public			var	selectionShouldChangeProc :() -> Bool = { true }
 	@objc		public			var	selectionDidChangeProc :() -> Void = {}
@@ -55,6 +65,20 @@ public class AKTTableViewBacking : TableViewBacking, NSTableViewDataSource, NSTa
 	@IBOutlet			weak	var	tableView :NSTableView!
 
 				private			var	setSortDescriptorsInProgress = false
+
+	// MARK: NSObject methods
+	//------------------------------------------------------------------------------------------------------------------
+	public override func responds(to selector :Selector!) -> Bool {
+		// Rows have their own heights only when there is an object height proc - otherwise AppKit uses rowHeight for
+		//	every row and asks nothing per row
+		if selector == #selector(NSTableViewDelegate.tableView(_:heightOfRow:)) {
+			// Row heights
+			return self.objectHeightProc != nil
+		} else {
+			// Do super
+			return super.responds(to: selector)
+		}
+	}
 
 	// MARK: TableViewBacking methods
 	//------------------------------------------------------------------------------------------------------------------
@@ -130,7 +154,7 @@ public class AKTTableViewBacking : TableViewBacking, NSTableViewDataSource, NSTa
 	//------------------------------------------------------------------------------------------------------------------
 	public func tableView(_ tableView :NSTableView, heightOfRow row :Int) -> CGFloat {
 		// Query height
-		if let height = self.objectHeightProc(tableView, object(at: row)) {
+		if let height = self.objectHeightProc?(tableView, object(at: row)) {
 			// Have height
 			return CGFloat(height.doubleValue)
 		} else {

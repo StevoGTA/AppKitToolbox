@@ -33,7 +33,17 @@ public class AKTOutlineViewBacking : OutlineViewBacking, NSOutlineViewDataSource
 										:(_ outlineView :NSOutlineView, _ tableColumn :NSTableColumn, _ rowIndex :Int,
 												_ object :Any) -> NSView? = { _,_,_,_ in nil }
 	@objc		public			var	objectHeightProc
-										:(_ outlineView :NSOutlineView, _ object :Any) -> NSNumber? = { _,_ in nil }
+										:((_ outlineView :NSOutlineView, _ object :Any) -> NSNumber?)? = nil {
+											didSet {
+												// AppKit checks which methods the delegate implements when the
+												//	delegate is set, so set it again to have heights asked or not
+												if self.outlineView?.delegate === self {
+													// Set again
+													self.outlineView.delegate = nil
+													self.outlineView.delegate = self
+												}
+											}
+										}
 	@objc		public			var	objectDidExpandProc :(_ object :Any) -> Void = { _ in }
 	@objc		public			var	objectDidCollapseProc :(_ object :Any) -> Void = { _ in }
 
@@ -63,6 +73,20 @@ public class AKTOutlineViewBacking : OutlineViewBacking, NSOutlineViewDataSource
 				private			var	outlineTableColumnIndex :Int?
 
 				private			var	setSortDescriptorsInProgress = false
+
+	// MARK: NSObject methods
+	//------------------------------------------------------------------------------------------------------------------
+	public override func responds(to selector :Selector!) -> Bool {
+		// Rows have their own heights only when there is an object height proc - otherwise AppKit uses rowHeight for
+		//	every row and asks nothing per row
+		if selector == #selector(NSOutlineViewDelegate.outlineView(_:heightOfRowByItem:)) {
+			// Row heights
+			return self.objectHeightProc != nil
+		} else {
+			// Do super
+			return super.responds(to: selector)
+		}
+	}
 
 	// MARK: OutlineViewBacking methods
 	//------------------------------------------------------------------------------------------------------------------
@@ -184,7 +208,7 @@ public class AKTOutlineViewBacking : OutlineViewBacking, NSOutlineViewDataSource
 	//------------------------------------------------------------------------------------------------------------------
 	public func outlineView(_ outlineView :NSOutlineView, heightOfRowByItem item :Any) -> CGFloat {
 		// Query height
-		if let height = self.objectHeightProc(outlineView, object(for: (item as! String))) {
+		if let height = self.objectHeightProc?(outlineView, object(for: (item as! String))) {
 			// Have height
 			return CGFloat(height.doubleValue)
 		} else {
