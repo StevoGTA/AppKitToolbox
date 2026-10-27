@@ -46,10 +46,14 @@ typedef	void	(^NSViewControllerNotificationProc)(const CString& notificationName
 		cancelProc:(void (^)(__unsafe_unretained NSViewController* viewController)) cancelProc
 		completionProc:(void (^)(__unsafe_unretained NSViewController* viewController)) completionProc;
 
-- (void) registerNotificationObserverForName:(const CString&) notificationName
-		sender:(const CNotificationCenter::Sender&) sender proc:(NSViewControllerNotificationProc) proc;
-- (void) registerNotificationObserverForName:(const CString&) notificationName
+- (void) registerNotificationObserverForNotificationCenterAndName:
+				(const SNotificationCenterAndName&) notificationCenterAndName
 		proc:(NSViewControllerNotificationProc) proc;
+- (void) registerNotificationObserverForNotificationCenter:(CNotificationCenter&) notificationCenter
+		notificationName:(const CString&) notificationName sender:(const CNotificationCenter::Sender&) sender
+		proc:(NSViewControllerNotificationProc) proc;
+- (void) registerNotificationObserverForNotificationCenter:(CNotificationCenter&) notificationCenter
+		notificationName:(const CString&) notificationName proc:(NSViewControllerNotificationProc) proc;
 
 @end
 

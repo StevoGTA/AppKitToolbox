@@ -10,66 +10,60 @@
 #import <objc/runtime.h>
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: NSViewControllerNotificationObserverCleanup
+// MARK: Local proc declarations
 
-@interface NSViewControllerNotificationObserverCleanup : NSObject {
-	// MARK: Properties
-	void*												mViewController;
-	NSMutableArray<NSViewControllerNotificationProc>*	mNotificationProcs;
-}
+static	void	sHandleNotification(const CString& notificationName, const OR<CNotificationCenter::Sender>& sender,
+						const CDictionary& info, void* userData);
+
+//----------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+// MARK: - NSViewControllerNotificationObserver
+
+@interface NSViewControllerNotificationObserver : NSObject
+
+// MARK: Properties
+
+@property (nonatomic, assign)	CNotificationCenter*				notificationCenter;
+@property (nonatomic, copy)		NSViewControllerNotificationProc	notificationProc;
 
 @end
 
-@implementation NSViewControllerNotificationObserverCleanup
+@implementation NSViewControllerNotificationObserver
 
 //----------------------------------------------------------------------------------------------------------------------
-- (instancetype) initWithViewController:(NSViewController*) viewController
+- (instancetype) initWithNotificationCenter:(CNotificationCenter&) notificationCenter
+		notificationName:(const CString&) notificationName
+		sender:(const OR<const CNotificationCenter::Sender>&) sender
+		notificationProc:(NSViewControllerNotificationProc) notificationProc
 //----------------------------------------------------------------------------------------------------------------------
 {
 	if (self = [super init]) {
 		// Store
-		mViewController = (__bridge void*) viewController;
-		mNotificationProcs = [NSMutableArray array];
+		self.notificationCenter = &notificationCenter;
+		self.notificationProc = notificationProc;
+
+		// Register
+		CNotificationCenter::Observer	observer((__bridge void*) self, sHandleNotification, (__bridge void*) self);
+		if (sender.hasReference())
+			// Have sender
+			notificationCenter.registerObserver(notificationName, *sender, observer);
+		else
+			// Don't have sender
+			notificationCenter.registerObserver(notificationName, observer);
 	}
 
 	return self;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-- (void*) addNotificationProc:(NSViewControllerNotificationProc) notificationProc
-//----------------------------------------------------------------------------------------------------------------------
-{
-	// The strong assignment triggers objc_retainBlock, which copies a stack block to the heap.
-	// addObject: uses objc_retain (a no-op for stack blocks), so this step must not be skipped.
-	// Blocks passed in are mostly likely stack blocks, so this is necessary to ensure they are retained properly.
-	NSViewControllerNotificationProc	heapNotificationProc = notificationProc;
-	[mNotificationProcs addObject:heapNotificationProc];
-
-	return (__bridge void*) heapNotificationProc;
-}
-
-//----------------------------------------------------------------------------------------------------------------------
 - (void) dealloc
 //----------------------------------------------------------------------------------------------------------------------
 {
-	// Unregister all observers for this VC
-	CImmediateNotificationCenter::shared().unregisterObserver(mViewController);
+	// Unregister
+	self.notificationCenter->unregisterObserver((__bridge void*) self);
 }
 
 @end
-
-//----------------------------------------------------------------------------------------------------------------------
-//----------------------------------------------------------------------------------------------------------------------
-// MARK: - Local procs
-
-//----------------------------------------------------------------------------------------------------------------------
-static void sHandleNotification(const CString& notificationName, const OR<CNotificationCenter::Sender>& sender,
-		const CDictionary& info, void* userData)
-//----------------------------------------------------------------------------------------------------------------------
-{
-	// Call proc
-	((__bridge NSViewControllerNotificationProc) userData)(notificationName, sender, info);
-}
 
 //----------------------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------------------
@@ -78,23 +72,24 @@ static void sHandleNotification(const CString& notificationName, const OR<CNotif
 @implementation NSViewController (Cpp)
 
 //----------------------------------------------------------------------------------------------------------------------
-- (NSViewControllerNotificationObserverCleanup*) notificationObserverCleanup
+- (NSMutableArray<NSViewControllerNotificationObserver*>*) notificationObservers
 //----------------------------------------------------------------------------------------------------------------------
 {
 	// Setup
 	static	const	void*	sKey = &sKey;
 
-	// Get or create cleanup object
-	NSViewControllerNotificationObserverCleanup*	notificationObserverCleanup = objc_getAssociatedObject(self, sKey);
-	if (notificationObserverCleanup == nil) {
+	// Get or create notification observers
+	NSMutableArray<NSViewControllerNotificationObserver*>*	notificationObservers =
+																	objc_getAssociatedObject(self, sKey);
+	if (notificationObservers == nil) {
 		// Create
-		notificationObserverCleanup = [[NSViewControllerNotificationObserverCleanup alloc] initWithViewController:self];
+		notificationObservers = [NSMutableArray array];
 
 		// Associate
-		objc_setAssociatedObject(self, sKey, notificationObserverCleanup, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+		objc_setAssociatedObject(self, sKey, notificationObservers, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 	}
 
-	return notificationObserverCleanup;
+	return notificationObservers;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -178,25 +173,55 @@ static void sHandleNotification(const CString& notificationName, const OR<CNotif
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-- (void) registerNotificationObserverForName:(const CString&) notificationName
-		sender:(const CNotificationCenter::Sender&) sender proc:(NSViewControllerNotificationProc) proc
+- (void) registerNotificationObserverForNotificationCenterAndName:
+				(const SNotificationCenterAndName&) notificationCenterAndName
+		proc:(NSViewControllerNotificationProc) proc
 {
-	// Register
-	CImmediateNotificationCenter::shared()
-			.registerObserver(notificationName, sender,
-					CNotificationCenter::Observer((__bridge void*) self, sHandleNotification,
-							[self.notificationObserverCleanup addNotificationProc:proc]));
+	// Add notification observer
+	[self.notificationObservers
+			addObject:
+					[[NSViewControllerNotificationObserver alloc]
+							initWithNotificationCenter:notificationCenterAndName.getNotificationCenter()
+							notificationName:notificationCenterAndName.getNotificationName()
+							sender:OR<const CNotificationCenter::Sender>() notificationProc:proc]];
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-- (void) registerNotificationObserverForName:(const CString&) notificationName
+- (void) registerNotificationObserverForNotificationCenter:(CNotificationCenter&) notificationCenter
+		notificationName:(const CString&) notificationName sender:(const CNotificationCenter::Sender&) sender
 		proc:(NSViewControllerNotificationProc) proc
 {
-	// Register
-	CImmediateNotificationCenter::shared()
-			.registerObserver(notificationName,
-					CNotificationCenter::Observer((__bridge void*) self, sHandleNotification,
-							[self.notificationObserverCleanup addNotificationProc:proc]));
+	// Add notification observer
+	[self.notificationObservers
+			addObject:
+					[[NSViewControllerNotificationObserver alloc] initWithNotificationCenter:notificationCenter
+							notificationName:notificationName sender:OR<const CNotificationCenter::Sender>(sender)
+							notificationProc:proc]];
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) registerNotificationObserverForNotificationCenter:(CNotificationCenter&) notificationCenter
+		notificationName:(const CString&) notificationName proc:(NSViewControllerNotificationProc) proc
+{
+	// Add notification observer
+	[self.notificationObservers
+			addObject:
+					[[NSViewControllerNotificationObserver alloc] initWithNotificationCenter:notificationCenter
+							notificationName:notificationName sender:OR<const CNotificationCenter::Sender>()
+							notificationProc:proc]];
 }
 
 @end
+
+//----------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+// MARK: - Local proc definitions
+
+//----------------------------------------------------------------------------------------------------------------------
+void sHandleNotification(const CString& notificationName, const OR<CNotificationCenter::Sender>& sender,
+		const CDictionary& info, void* userData)
+//----------------------------------------------------------------------------------------------------------------------
+{
+	// Call proc
+	((__bridge NSViewControllerNotificationObserver*) userData).notificationProc(notificationName, sender, info);
+}

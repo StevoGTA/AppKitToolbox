@@ -72,8 +72,8 @@ public class AKTTableViewBacking : TableViewBacking, NSTableViewDataSource, NSTa
 		// Rows have their own heights only when there is an object height proc - otherwise AppKit uses rowHeight for
 		//	every row and asks nothing per row
 		if selector == #selector(NSTableViewDelegate.tableView(_:heightOfRow:)) {
-			// Row heights
-			return self.objectHeightProc != nil
+			// Row heights (AppKit asks when the delegate is set, which is on the main thread)
+			return MainActor.assumeIsolated() { self.objectHeightProc != nil }
 		} else {
 			// Do super
 			return super.responds(to: selector)
