@@ -19,6 +19,8 @@ public class AKTVectorGraphicsView : NSView {
 		case filledRoundedRect(color :NSColor, radius :CGFloat = 10.0)
 		case strokedRoundedRect(color :NSColor, radius :CGFloat = 10.0, lineWidth :CGFloat = 1.0,
 				dashPattern :[CGFloat] = [])
+		case filledAndStrokedRoundedRect(fillColor :NSColor, strokeColor :NSColor, radius :CGFloat = 10.0,
+				lineWidth :CGFloat = 1.0)
 		case filledShape(path :NSBezierPath, color :NSColor)
 		case strokedShape(path :NSBezierPath, color :NSColor)
 	}
@@ -105,6 +107,21 @@ public class AKTVectorGraphicsView : NSView {
 				}
 				path.stroke()
 
+			case let .filledAndStrokedRoundedRect(fillColor: fillColor, strokeColor: strokeColor, radius: radius,
+					lineWidth: lineWidth):
+				// Rounded rect
+				fillColor.setFill()
+				strokeColor.setStroke()
+
+				NSBezierPath(roundedRect: self.bounds, xRadius: radius, yRadius: radius).fill()
+
+				let	path =
+							NSBezierPath(
+									roundedRect: self.bounds.insetBy(dx: lineWidth * 0.5, dy: lineWidth * 0.5),
+											xRadius: radius, yRadius: radius)
+				path.lineWidth = lineWidth
+				path.stroke()
+
 			case let .filledShape(path, color):
 				// Shape
 				color.setFill()
@@ -181,6 +198,16 @@ public class AKTVectorGraphicsView : NSView {
 				.strokedRoundedRect(color: color, radius: radius, lineWidth: lineWidth,
 						dashPattern: dashPattern.map({ CGFloat($0.doubleValue) }))
 	}
+	//------------------------------------------------------------------------------------------------------------------
+	@objc(setContentAsRoundedRectFilledWithColor:strokedWithColor:radius:lineWidth:)
+	func setContentAsRoundedRect(filledWithColor fillColor :NSColor, strokedWithColor strokeColor :NSColor,
+			radius :CGFloat = 10.0, lineWidth :CGFloat = 1.0) {
+		// Set content
+		self.content =
+				.filledAndStrokedRoundedRect(fillColor: fillColor, strokeColor: strokeColor, radius: radius,
+						lineWidth: lineWidth)
+	}
+
 	//------------------------------------------------------------------------------------------------------------------
 	@objc(setContentAsShapeFilledWithPath:color:)
 	func setContent(filledShapeWithPath path :NSBezierPath, color :NSColor) {
