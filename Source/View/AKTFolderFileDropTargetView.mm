@@ -9,7 +9,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: Local data
 
-static	NSString*	NSPasteboardTypeFilenames = @"NSFilenamesPboardType";
+static	NSString*	sPasteboardTypeFilenames = @"NSFilenamesPboardType";
 
 //----------------------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------------------
@@ -26,7 +26,7 @@ static	NSString*	NSPasteboardTypeFilenames = @"NSFilenamesPboardType";
 	[super awakeFromNib];
 
 	// Register for dragged types
-	[self registerForDraggedTypes:@[NSPasteboardTypeURL, NSPasteboardTypeFilenames]];
+	[self registerForDraggedTypes:@[NSPasteboardTypeURL, sPasteboardTypeFilenames]];
 }
 
 // MARK: NSDraggingDestination methods
@@ -51,9 +51,9 @@ static	NSString*	NSPasteboardTypeFilenames = @"NSFilenamesPboardType";
 		// URLs on pasteboard
 		NSDictionary<NSString*, id>*	options = @{NSPasteboardURLReadingFileURLsOnlyKey: @YES};
 		[urls addObjectsFromArray:[pasteboard readObjectsForClasses:@[[NSURL class]] options:options]];
-	} else if ([pasteboard.types containsObject:NSPasteboardTypeFilenames]) {
+	} else if ([pasteboard.types containsObject:sPasteboardTypeFilenames]) {
 		// Paths on pasteboard
-		NSArray<NSString*>*	paths = [pasteboard propertyListForType:NSPasteboardTypeFilenames];
+		NSArray<NSString*>*	paths = [pasteboard propertyListForType:sPasteboardTypeFilenames];
 		for (NSString* path in paths)
 			// Add url
 			[urls addObject:[NSURL fileURLWithPath:path]];

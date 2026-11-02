@@ -101,6 +101,7 @@ public class AKTPathView : NSView, NSViewToolTipOwner {
 												registerForDraggedTypes([.fileURL])
 											} else {
 												// Accept nothing
+												self.layer?.cornerRadius = 0.0
 												unregisterDraggedTypes()
 											}
 										}

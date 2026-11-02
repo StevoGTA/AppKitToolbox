@@ -24,6 +24,9 @@ extension NSBox {
 					// Not animated
 					control.isEnabled = isEnabled
 				}
+			} else {
+				// Assume NSView
+				$0.set(isEnabled: isEnabled, animated: animated)
 			}
 		}
 	}

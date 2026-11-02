@@ -47,7 +47,7 @@ class AKTURLControl : NSControl {
 				NSAttributedString(string: string,
 						attributes: [
 										.foregroundColor: NSColor.blue,
-										.underlineStyle: true,
+										.underlineStyle: NSUnderlineStyle.single.rawValue,
 									])
 		self.url = url
 
@@ -62,7 +62,7 @@ class AKTURLControl : NSControl {
 				NSAttributedString(string: string,
 						attributes: [
 										.foregroundColor: NSColor.blue,
-										.underlineStyle: true,
+										.underlineStyle: NSUnderlineStyle.single.rawValue,
 										.font: font,
 									])
 		self.url = url

@@ -4,7 +4,6 @@
 
 #import "NSSavePanel+C++.h"
 
-#import "NSString+C++.h"
 #import "NSURL+C++.h"
 
 #import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>

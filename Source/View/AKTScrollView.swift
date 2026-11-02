@@ -22,7 +22,7 @@ public class AKTScrollView : NSScrollView {
 		// Setup notifications
 		self.viewBoundsDidChangeNotificationCenterObserver =
 				NotificationCenter.Observer(name: NSView.boundsDidChangeNotification, object: self.contentView,
-						proc: { _ in MainActor.assumeIsolated() { [unowned self] in self.viewBoundsDidChangeProc() } })
+						proc: { [unowned self] _ in MainActor.assumeIsolated() { self.viewBoundsDidChangeProc() } })
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -33,6 +33,6 @@ public class AKTScrollView : NSScrollView {
 		// Setup notifications
 		self.viewBoundsDidChangeNotificationCenterObserver =
 				NotificationCenter.Observer(name: NSView.boundsDidChangeNotification, object: self.contentView,
-						proc: { _ in MainActor.assumeIsolated() { [unowned self] in self.viewBoundsDidChangeProc() } })
+						proc: { [unowned self] _ in MainActor.assumeIsolated() { self.viewBoundsDidChangeProc() } })
 	}
 }

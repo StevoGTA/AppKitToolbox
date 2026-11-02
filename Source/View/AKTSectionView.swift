@@ -157,6 +157,7 @@ public class AKTSectionView : NSView {
 
 		// Remove view
 		view.removeFromSuperview()
+		guard contentViewSubviewsOrderedVertically.count > 1 else { return }
 
 		// Check position
 		if index == 0 {

@@ -4,8 +4,6 @@
 
 #import "AKTProgressViewController+C++.h"
 
-#import "NSString+C++.h"
-
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: Local proc declarations
 

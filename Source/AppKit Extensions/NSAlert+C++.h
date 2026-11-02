@@ -21,11 +21,14 @@ NS_ASSUME_NONNULL_BEGIN
 		buttonTitle:(NSString*) buttonTitle;
 + (instancetype) informationalWithMessage:(const CString&) message accessoryView:(NSView*) accessoryView
 		confirmButtonTitle:(const CString&) confirmButtonTitle cancelButtonTitle:(const CString&) cancelButtonTitle;
++ (instancetype) informationalWithMessage:(const CString&) message buttonTitle:(const CString&) buttonTitle;
 
 + (instancetype) warningWithMessage:(NSString*) message error:(const SError&) error
 		buttonTitle:(NSString*) buttonTitle;
 + (instancetype) warningWithMessageString:(const CString&) messageString error:(const SError&) error
 		buttonTitleString:(const CString&) buttonTitleString;
++ (instancetype) warningWithMessage:(const CString&) message information:(const CString&) information
+		confirmButtonTitle:(const CString&) confirmButtonTitle cancelButtonTitle:(const CString&) cancelButtonTitle;
 + (instancetype) warningWithMessage:(const CString&) message confirmButtonTitle:(const CString&) confirmButtonTitle
 		cancelButtonTitle:(const CString&) cancelButtonTitle;
 

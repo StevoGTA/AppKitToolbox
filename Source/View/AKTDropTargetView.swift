@@ -189,7 +189,7 @@ public class AKTFolderFileDropTargetView : AKTDropTargetView {
 	override func items(for draggingInfo: NSDraggingInfo) -> [Any] {
 		// Retrieve URLs
 		return draggingInfo.draggingPasteboard.readObjects(forClasses: [NSURL.self],
-				options: [.urlReadingFileURLsOnly : true]) as! [URL]
+				options: [.urlReadingFileURLsOnly : true]) as? [URL] ?? []
 	}
 
 	// MARK: Private methods

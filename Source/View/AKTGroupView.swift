@@ -228,6 +228,7 @@ public class AKTGroupView : NSView {
 
 		// Remove view
 		view.removeFromSuperview()
+		guard subviewsOrderedVertically.count > 1 else { return }
 
 		// Check position
 		if index == 0 {

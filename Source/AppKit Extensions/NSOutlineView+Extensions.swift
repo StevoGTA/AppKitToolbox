@@ -62,7 +62,7 @@ public extension NSOutlineView {
 	//------------------------------------------------------------------------------------------------------------------
 	func select(_ item :Any? = nil, byExtendingSelection :Bool = false) {
 		// Select
-		selectRowIndexes((item != nil) ? IndexSet(integer: row(forItem: item)) : IndexSet(),
+		selectRowIndexes((item != nil) ? rowIndexes(for: [item!]) : IndexSet(),
 				byExtendingSelection: byExtendingSelection)
 	}
 
@@ -70,7 +70,7 @@ public extension NSOutlineView {
 	@objc(selectItems:byExtendingSelection:)
 	func select(_ items :[Any] = [], byExtendingSelection :Bool = false) {
 		// Select
-		selectRowIndexes(IndexSet(items.map({ row(forItem: $0) })),
+		selectRowIndexes(rowIndexes(for: items),
 				byExtendingSelection: byExtendingSelection)
 	}
 

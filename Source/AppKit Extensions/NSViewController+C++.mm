@@ -4,7 +4,6 @@
 
 #import "NSViewController+C++.h"
 
-#import "NSString+C++.h"
 #import "AKTProgressViewController+C++.h"
 
 #import <objc/runtime.h>

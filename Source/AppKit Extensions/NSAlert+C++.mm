@@ -39,6 +39,13 @@
 }
 
 //----------------------------------------------------------------------------------------------------------------------
++ (instancetype) informationalWithMessage:(const CString&) message buttonTitle:(const CString&) buttonTitle
+{
+	return [NSAlert informationalWithMessage:(__bridge NSString*) message.getOSString() information:@""
+			buttonTitles:@[(__bridge NSString*) buttonTitle.getOSString()]];
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 + (instancetype) warningWithMessage:(NSString*) message error:(const SError&) error
 		buttonTitle:(NSString*) buttonTitle
 {
@@ -52,6 +59,19 @@
 {
 	return [NSAlert warningWithMessage:(__bridge NSString*) messageString.getOSString() error:error
 			buttonTitle:(__bridge NSString*) buttonTitleString.getOSString()];
+}
+
+//----------------------------------------------------------------------------------------------------------------------
++ (instancetype) warningWithMessage:(const CString&) message information:(const CString&) information
+		confirmButtonTitle:(const CString&) confirmButtonTitle cancelButtonTitle:(const CString&) cancelButtonTitle
+{
+	return [NSAlert warningWithMessage:(__bridge NSString*) message.getOSString()
+			information:(__bridge NSString*) information.getOSString()
+			buttonTitles:
+					@[
+						(__bridge NSString*) confirmButtonTitle.getOSString(),
+						(__bridge NSString*) cancelButtonTitle.getOSString(),
+					]];
 }
 
 //----------------------------------------------------------------------------------------------------------------------

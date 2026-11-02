@@ -6,7 +6,7 @@ import AppKit
 
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: AKTTextView
-public class AKTTextView : NSTextView, NSTextStorageDelegate {
+public class AKTTextView : NSTextView {
 
 	// MARK: Properties
 			public	var	stringValue :String {
@@ -17,9 +17,9 @@ public class AKTTextView : NSTextView, NSTextStorageDelegate {
 
 									// Apply attributes
 									self.textStorage!.addAttribute(.foregroundColor, value: NSColor.controlTextColor,
-											range: NSRange(location: 0, length: newValue.count))
+											range: NSRange(location: 0, length: (newValue as NSString).length))
 									self.textStorage!.addAttribute(.font, value: NSFont.controlContentFont(ofSize: 13.0),
-											range: NSRange(location: 0, length: newValue.count))
+											range: NSRange(location: 0, length: (newValue as NSString).length))
 								}
 							}
 

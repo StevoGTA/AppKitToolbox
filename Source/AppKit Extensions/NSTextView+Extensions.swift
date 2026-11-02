@@ -86,11 +86,11 @@ public extension NSTextView {
 		var	originalHasVerticalScroller = false
 		var	originalScrollValue = 0.0
 
-		let	scrollView = self.superview?.superview as? NSScrollView
+		let	scrollView = self.enclosingScrollView
 		if let scrollView {
 			// Contained within an NSScrollView
 			originalHasVerticalScroller = scrollView.hasVerticalScroller
-			originalScrollValue = scrollView.verticalScroller!.doubleValue
+			originalScrollValue = scrollView.verticalScroller?.doubleValue ?? 0.0
 		}
 
 		// Append text
