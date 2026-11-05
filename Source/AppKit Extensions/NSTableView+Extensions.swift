@@ -68,7 +68,7 @@ public extension NSTableView {
 				// Backtab - move to previous editable table column
 				if let tableColumnIndex = self.tableColumns.firstIndex(of: tableColumn),
 						let previousColumnIndex =
-								self.tableColumns[...(tableColumnIndex - 1)].lastIndex(where: { $0.isEditable }) {
+								self.tableColumns[..<tableColumnIndex].lastIndex(where: { $0.isEditable }) {
 					// Wait a beate
 					DispatchQueue.main.async() { [weak self] in
 						// Start editing

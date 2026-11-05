@@ -87,7 +87,9 @@ public class AKTTextFieldStepperHelper : NSObject {
 								}
 								self.textField.didEndEditingProc = { [unowned self] textField, string, textMovement in
 									// Setup
-									let	value = self.valueForStringProc(string)
+									let	value =
+												min(max(self.valueForStringProc(string), self.stepper.minValue),
+														self.stepper.maxValue)
 
 									// Update UI
 									self.textField.isValueValid = true

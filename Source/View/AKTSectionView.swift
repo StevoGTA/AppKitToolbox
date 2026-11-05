@@ -178,7 +178,9 @@ public class AKTSectionView : NSView {
 	//------------------------------------------------------------------------------------------------------------------
 	private func cleanup() {
 		// Cleanup
+		self.contentClipView = nil
 		self.contentScrollView = nil
+		self.contentView = nil
 		self.contentViewTrailingLayoutConstraint = nil
 
 		self.notificationObserver = nil

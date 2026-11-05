@@ -183,6 +183,9 @@ public class AKTChipView : NSView {
 		// Update Text Field
 		self.textField.textColor = self.tintColor
 
+		// Update Image View
+		self.imageView.contentTintColor = self.isEmphasized ? .white : .secondaryLabelColor
+
 		// Needs display
 		self.needsDisplay = true
 	}
