@@ -38,11 +38,8 @@ public class AKTSecureTextField : NSSecureTextField {
 		// Do super
 		super.textDidEndEditing(notification)
 
-		// Check if actually editing
-		if self.currentEditor() != nil {
-			// Call proc
-			self.didEndEditingProc()
-		}
+		// Call proc
+		self.didEndEditingProc()
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
