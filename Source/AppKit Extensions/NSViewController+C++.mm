@@ -70,70 +70,7 @@ static	void	sHandleNotification(const CString& notificationName, const OR<CNotif
 
 @implementation NSViewController (Cpp)
 
-//----------------------------------------------------------------------------------------------------------------------
-- (NSMutableArray<NSViewControllerNotificationObserver*>*) notificationObservers
-//----------------------------------------------------------------------------------------------------------------------
-{
-	// Setup
-	static	const	void*	sKey = &sKey;
-
-	// Get or create notification observers
-	NSMutableArray<NSViewControllerNotificationObserver*>*	notificationObservers =
-																	objc_getAssociatedObject(self, sKey);
-	if (notificationObservers == nil) {
-		// Create
-		notificationObservers = [NSMutableArray array];
-
-		// Associate
-		objc_setAssociatedObject(self, sKey, notificationObservers, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-	}
-
-	return notificationObservers;
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-- (void) performWithResultProgressViewController:(AKTProgressViewController*) progressViewController
-		progress:(const I<CProgress>&) progress procDispatchQueue:(dispatch_queue_t) procDispatchQueue
-		proc:
-				(void* _Nullable (^)(__unsafe_unretained NSViewController* viewController,
-							const I<CProgress>& progress)) proc
-		cancelProc:(void (^)(__unsafe_unretained NSViewController* viewController)) cancelProc
-		completionProc:(void (^)(__unsafe_unretained NSViewController* viewController, void* result)) completionProc
-{
-	// Setup
-	__block				BOOL			isCancelled = NO;
-	__unsafe_unretained	typeof(self)	unsafeUnretainedSelf = self;
-	progressViewController.cancelProc = ^{
-		// Cancelled
-		isCancelled = YES;
-
-		// Call cancel proc
-		cancelProc(unsafeUnretainedSelf);
-	};
-
-	// Present as sheet
-	[self presentViewControllerAsSheet:progressViewController];
-
-	// Perform on proc dispatch queue
-	__block	I<CProgress>	progressUse(progress);
-	dispatch_async(procDispatchQueue, ^{
-		// Call proc
-		void*	result = proc(unsafeUnretainedSelf, progressUse);
-
-		// Jump to main queue
-		dispatch_async(dispatch_get_main_queue(), ^{
-			// Check if still presented.  It may have been previously dismissed and then not presented again.
-			if (unsafeUnretainedSelf.presentedViewControllers.count > 0)
-				// Dismiss
-				[unsafeUnretainedSelf dismissViewController:progressViewController];
-
-			// Check cancelled
-			if (!isCancelled)
-				// Call completion proc
-				completionProc(unsafeUnretainedSelf, result);
-		});
-	});
-}
+// MARK: Instance methods
 
 //----------------------------------------------------------------------------------------------------------------------
 - (void) performWithResultProgressViewController:(AKTProgressViewController*) progressViewController
@@ -142,7 +79,9 @@ static	void	sHandleNotification(const CString& notificationName, const OR<CNotif
 				(void* _Nullable (^)(__unsafe_unretained NSViewController* viewController,
 						const I<CProgress>& progress)) proc
 		cancelProc:(void (^)(__unsafe_unretained NSViewController* viewController)) cancelProc
-		completionProc:(void (^)(__unsafe_unretained NSViewController* viewController, void* result)) completionProc
+		completionProc:
+				(void (^)(__unsafe_unretained NSViewController* viewController, void* result, BOOL wasCancelled))
+						completionProc;
 {
 	// Perform
 	[self performWithResultProgressViewController:progressViewController progress:progress
@@ -155,7 +94,8 @@ static	void	sHandleNotification(const CString& notificationName, const OR<CNotif
 		progress:(const I<CProgress>&) progress
 		proc:(void (^)(__unsafe_unretained NSViewController* viewController, const I<CProgress>& progress)) proc
 		cancelProc:(void (^)(__unsafe_unretained NSViewController* viewController)) cancelProc
-		completionProc:(void (^)(__unsafe_unretained NSViewController* viewController)) completionProc
+		completionProc:
+				(void (^)(__unsafe_unretained NSViewController* viewController, BOOL wasCancelled)) completionProc
 {
 	// Perform
 	[self performWithResultProgressViewController:progressViewController progress:progress
@@ -165,10 +105,31 @@ static	void	sHandleNotification(const CString& notificationName, const OR<CNotif
 				proc(viewController, progress_);
 
 				return nil;
-			} cancelProc:cancelProc completionProc:^(NSViewController* viewController, void* result){
+			}
+			cancelProc:cancelProc
+			completionProc:^(NSViewController* viewController, void* result, BOOL wasCancelled){
 				// Call completion proc
-				completionProc(viewController);
+				completionProc(viewController, wasCancelled);
 			}];
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) performWithProgressViewController:(AKTProgressViewController*) progressViewController
+		progress:(const I<CProgress>&) progress
+		proc:(void (^)(__unsafe_unretained NSViewController* viewController, const I<CProgress>& progress)) proc
+		cancelProc:(void (^)(__unsafe_unretained NSViewController* viewController)) cancelProc
+{
+	// Perform
+	[self performWithResultProgressViewController:progressViewController progress:progress
+			procDispatchQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+			proc:^void*(NSViewController* viewController, const I<CProgress>& progress_){
+				// Call proc
+				proc(viewController, progress_);
+
+				return nil;
+			}
+			cancelProc:cancelProc
+			completionProc:^(NSViewController* viewController, void* result, BOOL wasCancelled){}];
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -208,6 +169,74 @@ static	void	sHandleNotification(const CString& notificationName, const OR<CNotif
 					[[NSViewControllerNotificationObserver alloc] initWithNotificationCenter:notificationCenter
 							notificationName:notificationName sender:OR<const CNotificationCenter::Sender>()
 							notificationProc:proc]];
+}
+
+
+// MARK: Private methods
+
+//----------------------------------------------------------------------------------------------------------------------
+- (NSMutableArray<NSViewControllerNotificationObserver*>*) notificationObservers
+//----------------------------------------------------------------------------------------------------------------------
+{
+	// Setup
+	static	const	void*	sKey = &sKey;
+
+	// Get or create notification observers
+	NSMutableArray<NSViewControllerNotificationObserver*>*	notificationObservers =
+																	objc_getAssociatedObject(self, sKey);
+	if (notificationObservers == nil) {
+		// Create
+		notificationObservers = [NSMutableArray array];
+
+		// Associate
+		objc_setAssociatedObject(self, sKey, notificationObservers, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+	}
+
+	return notificationObservers;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) performWithResultProgressViewController:(AKTProgressViewController*) progressViewController
+		progress:(const I<CProgress>&) progress procDispatchQueue:(dispatch_queue_t) procDispatchQueue
+		proc:
+				(void* _Nullable (^)(__unsafe_unretained NSViewController* viewController,
+							const I<CProgress>& progress)) proc
+		cancelProc:(void (^)(__unsafe_unretained NSViewController* viewController)) cancelProc
+		completionProc:
+				(void (^)(__unsafe_unretained NSViewController* viewController, void* result, BOOL wasCancelled))
+						completionProc
+{
+	// Setup
+	__block				BOOL			isCancelled = NO;
+	__unsafe_unretained	typeof(self)	unsafeUnretainedSelf = self;
+	progressViewController.cancelProc = ^{
+		// Cancelled
+		isCancelled = YES;
+
+		// Call cancel proc
+		cancelProc(unsafeUnretainedSelf);
+	};
+
+	// Present as sheet
+	[self presentViewControllerAsSheet:progressViewController];
+
+	// Perform on proc dispatch queue
+	__block	I<CProgress>	progressUse(progress);
+	dispatch_async(procDispatchQueue, ^{
+		// Call proc
+		void*	result = proc(unsafeUnretainedSelf, progressUse);
+
+		// Jump to main queue
+		dispatch_async(dispatch_get_main_queue(), ^{
+			// Check if still presented.  It may have been previously dismissed and then not presented again.
+			if (unsafeUnretainedSelf.presentedViewControllers.count > 0)
+				// Dismiss
+				[unsafeUnretainedSelf dismissViewController:progressViewController];
+
+			// Call completion proc
+			completionProc(unsafeUnretainedSelf, result, isCancelled);
+		});
+	});
 }
 
 @end
