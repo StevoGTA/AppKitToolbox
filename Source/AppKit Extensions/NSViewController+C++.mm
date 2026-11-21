@@ -171,6 +171,13 @@ static	void	sHandleNotification(const CString& notificationName, const OR<CNotif
 							notificationProc:proc]];
 }
 
+//----------------------------------------------------------------------------------------------------------------------
+- (void) unregisterNotificationObservers
+{
+	// Remove notification observers.  Each unregisters as it is released.
+	[self.notificationObservers removeAllObjects];
+}
+
 
 // MARK: Private methods
 

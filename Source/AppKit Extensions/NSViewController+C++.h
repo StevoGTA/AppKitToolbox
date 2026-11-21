@@ -54,6 +54,7 @@ typedef	void	(^NSViewControllerNotificationProc)(const CString& notificationName
 		proc:(NSViewControllerNotificationProc) proc;
 - (void) registerNotificationObserverForNotificationCenter:(CNotificationCenter&) notificationCenter
 		notificationName:(const CString&) notificationName proc:(NSViewControllerNotificationProc) proc;
+- (void) unregisterNotificationObservers;
 
 @end
 
