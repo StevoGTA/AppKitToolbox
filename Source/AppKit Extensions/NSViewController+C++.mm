@@ -224,6 +224,9 @@ static	void	sHandleNotification(const CString& notificationName, const OR<CNotif
 		cancelProc(unsafeUnretainedSelf);
 	};
 
+	// Update UI for the progress as it starts
+	progressViewController.progressUpdateInfo.notify(*progress);
+
 	// Present as sheet
 	[self presentViewControllerAsSheet:progressViewController];
 
